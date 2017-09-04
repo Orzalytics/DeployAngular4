@@ -1,0 +1,194 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+body {
+    margin: 0;
+}
+
+.md-spacer {
+    flex: 1 1 auto;
+}
+
+.md-toolbar-tools{
+    background: #ff6f31;
+    color: white;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
+}
+
+.md-toolbar-bottom{
+    position : fixed;
+    bottom : 0px;
+    color : black;
+    background-color: white !important;
+    box-shadow: 0 -1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
+    height: 64px;
+}
+
+md-slider {
+    width: 100%;
+}
+.m-slider{
+    margin-left: 20px;
+    margin-right: 5px;
+    cursor : pointer;
+}
+.mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
+    background-color: transparent !important;
+}
+.mat-slider-track-fill, .mat-slider-thumb, .mat-mini-fab{
+    background-color: #ff6f31 !important;
+}
+
+.tick text{
+    font-size: 16px;
+    stroke: none;
+    fill: black;
+}
+
+.scatter_title{
+    color: #ff6f31;
+}
+
+.scatter_tooltip{
+    position : absolute;
+    border : 1px solid #ff6f31;
+    border-radius : 5px;
+    background-color: white;
+    padding : 10px;
+    width: 320px;
+    z-index: 100;
+    display: none;
+}
+
+.scatter_tooltip div{
+    font-family:  Roboto,Helvetica Neue,sans-serif;
+}
+
+.logo-img-lg{
+    width : 90px;
+    margin-left : -15px;
+    margin-top : 4px;
+}
+
+.md-main-page{
+    margin-bottom: 100px;
+}
+
+.md-card-top{
+    margin: 10px;
+}
+
+.md-card-title{
+    border-bottom: 1px solid black;
+}
+
+.md-card-nochat{
+    color: #ff6f31;
+}
+
+.md-card-child{
+    width: 100%;
+    height: 215px !important;
+}
+.md-card-child div{
+    font-size: 16px;
+}
+.md-input-portfolio{
+    text-transform: lowercase;
+    width: 100%;
+}
+
+.md-select-fund{
+    width: 90%;
+    margin-top: 14px !important;
+    margin-bottom: 18px;
+}
+
+.node {
+    border: solid 1px white;
+    font: 14px sans-serif;
+    line-height: 12px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 1px;
+    color:#fff;
+}
+
+.data-treegraph div{
+    white-space: pre;
+}
+.md-input-buy{
+    width: 65%;
+}
+.md-table-header{
+    width: 100% !important;
+}
+.md-table-back{
+    background-color : #ff6f31;
+    text-align: center;
+    -webkit-box-shadow:inset 0px 0px 0px 1px white;
+    -moz-box-shadow:inset 0px 0px 0px 1px white;
+    box-shadow:inset 0px 0px 0px 1px white;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+.md-table-back div{
+    color : white;
+    cursor : default;
+    font-family:  Roboto,Helvetica Neue,sans-serif;
+    font-size: 16px;
+}
+.md-table-back i{
+    color: white;
+    cursor: default;
+}
+.md-table-back:focus{
+    outline: none;
+}
+
+.md-table-header-back{
+    font-family:  Roboto,Helvetica Neue,sans-serif;
+    background-color : lightgray;
+    text-align: center;
+    /* height: 45px;
+    padding-top: 10px; */
+}
+.md-table-header-back div, .md-table-header-back i{
+    color : white;
+    cursor : default;
+}
+.md-table-header-back:focus{
+    outline: none;
+}
+.md-table-body-back{
+    background-color : white;
+    text-align: center;
+    /* padding-top: 12px;
+    height: 50px; */
+    font-family:  Roboto,Helvetica Neue,sans-serif;
+    cursor: pointer;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+.md-table-body-back div{
+    color : black;
+}
+.md-table-body-back:focus{
+    outline: none;
+}
+.md-table-body-back-left{
+    font-family:  Roboto,Helvetica Neue,sans-serif;
+    background-color : white;
+    text-align: left;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+.md-table-body-back-left figure{
+    right : auto !important;
+}
+.md-table-body-back-left div{
+    margin-left: 40px;
+}

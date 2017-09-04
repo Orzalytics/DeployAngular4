@@ -1,0 +1,207 @@
+<div *ngIf="isValid" class="md-main-page">
+    <md-card class="md-card-top">
+        <md-card-title>
+            retorno y riesgo: cambio en últimos 91 días, máxima caída en 7 días
+        </md-card-title>
+        <md-card-content>
+            <div class="scatter_tooltip" id="scatter_tooltip">
+                <div class="scatter_title" id="scatter_title">Title1234567889</div>
+                <div class="scatter_y" id="scatter_y">y : 1.123456</div>                                                            
+                <div class="scatter_port" id="scatter_port">p : 1.123456</div>
+                <div class="scatter_x" id="scatter_x">x : 1.123456</div>    
+            </div>
+            <div [SliderIndex]="ngSliderIndex" [RefreshAll]="ngAllRefresh" [SliderDisable]="disabled" [WindowSize]="ngWidth" d3Scatter></div>
+        </md-card-content>
+    </md-card>
+
+    <md-grid-list cols="{{tile_Col}}" (window:resize)="onResize($event)" rowHeight="280px" style="margin-bottom:10px;">
+        <md-grid-tile [colspan]="tile_One"> 
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-nochat">
+                    escoje portafolio
+                </md-card-title>
+                <md-card-content>
+                    <md-input-container class="md-input-portfolio">
+                        <input mdInput placeholder="input portafolio nombre" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()" [disabled]="disabled" value="accionescolombia" class="md-input-portfolio" spellcheck="false">
+                    </md-input-container>
+                    <div>${{ngScopeVoP}} valor actual</div>
+                    <div>{{ngScopeGoL}}% de utilidad sobre valor</div>
+                    <div>${{ngScopeMax}} máxima utilidad</div>
+                    <div>${{ngScopeMin}} mínima utilidad</div>
+                    <div>{{ngScopeRate}}% desde inicio, tasa periodo o anua</div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile [colspan]="tile_Two">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">
+                    utilidad portafolio en pesos
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex" [RefreshStatus]="ngSecondGraphModel" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3portline></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile [colspan]="tile_Tre">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">
+                    composición portafolio
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3treemap></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+    </md-grid-list>
+
+    <md-grid-list cols="{{tile_Col}}" (window:resize)="onResize($event)" rowHeight="280px">
+        <md-grid-tile [colspan]="tile_One"> 
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-nochat">
+                    escoje fondo
+                </md-card-title>
+                <md-card-content>
+                    <md-select [(ngModel)]="ngSelFondosValue" placeholder="fondos" class="md-select-fund" (ngModelChange)="onSelectFondos()" [disabled]="disabled">
+                        <md-option *ngFor="let fondo of fondos" [value]="fondo.value">
+                            {{ fondo.viewValue }}
+                        </md-option>
+                    </md-select>
+                    <div>{{ngScopeDay91}}% en 91 días</div>
+                    <div>{{ngScopeDay182}}% en 182 días</div>
+                    <div>{{ngScopeDay365}}% en 365 días</div>
+                    <div>{{ngScopeYear}}% desde inicio, tasa periodo o anual</div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile [colspan]="tile_Two">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">
+                    precio unidad
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex" [FondosValue]="ngSelFondosValue" [WindowSize]="ngWidth" d3fundline></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile [colspan]="tile_Tre">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-nochat">
+                    comprar o vender
+                </md-card-title>
+                <md-card-content>
+                    <md-input-container class="md-input-buy">
+                        <input mdInput [(ngModel)]="ngSecondGraphModel" (ngModelChange)="onUnidadesChange()" [disabled]="!ngPortfolioName" spellcheck="false" placeholder="input unidades" type="number">
+                    </md-input-container>
+                    <span class="md-spacer"></span>
+                    <button md-mini-fab class="md-btn-transaction md-raised md-primary md-icon-button" (click)="onBuy()" [disabled]="!ngPortfolioName">
+                        <span><i class="material-icons">check</i></span>
+                    </button>
+                    <button md-mini-fab class="md-btn-transaction md-raised md-primary md-icon-button" (click)="onClose()" [disabled]="!ngPortfolioName">
+                        <span><i class="material-icons">clear</i></span>
+                    </button>
+
+                    <md-input-container class="md-input-buy">
+                        <input mdInput [(ngModel)]="ngSecondGraphAmount" (ngModelChange)="onPesosChange()" [disabled]="!ngPortfolioName" spellcheck="false" placeholder="input pesos" type="number">
+                    </md-input-container>
+
+                    <div>{{ngScopeUnidades}} unidades</div>
+                    <div>${{ngScopeTranPrice}} pesos</div> 
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+    </md-grid-list>
+
+    <md-grid-list class="md-table-header" cols="15" rowHeight="45px">
+        <md-grid-tile class="md-table-back" (click)="onTableReorder(eachHeader.index)" [colspan]="2" *ngFor="let eachHeader of tbHeader">
+            <div>{{eachHeader.title}}</div>
+            <i class="material-icons">{{eachHeader.icon}}</i>
+        </md-grid-tile>
+        <md-grid-tile class="md-table-back" [colspan]="1">
+            <div>borrar</div>
+        </md-grid-tile>
+    </md-grid-list>
+
+    <div *ngFor="let eachObj of tableInfo" class="md-table-body">
+        <md-grid-list cols="15" rowHeight="45px">
+            <md-grid-tile class="md-table-header-back" [colspan]="15" (click)="onShowHide(eachObj.PortIndex, 1)">
+                <div>{{eachObj.Portname}}</div><i class="material-icons">{{eachObj.PortIcon}}</i>
+            </md-grid-tile>
+        </md-grid-list>
+        <md-grid-list cols="15" rowHeight="45px" *ngFor="let eachTransaction of eachObj.Portarray">
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>{{eachTransaction.strPortID}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex2">
+                <div>{{eachTransaction.tDate}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex3">
+                <div>{{eachTransaction.strFundName}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex4">
+                <div>{{eachTransaction.strBoS}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex5">
+                <div>{{eachTransaction.str_nItemCnt}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex6">
+                <div>${{eachTransaction.str_fItemValue}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex7">
+                <div>${{eachTransaction.str_fTotal}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="1">
+                <button md-button (click)="onDelete(eachTransaction)" [disabled]="eachTransaction.deletable"><i class="material-icons">clear</i></button>
+            </md-grid-tile>
+
+            
+            <!-- <md-grid-tile class="md-table-body-back-left" [colspan]="15">
+                <div><b>- fondo:</b> {{eachTransaction.strFundName}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
+                <div><b>- compra o venta:</b> {{eachTransaction.strBoS}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
+                <div><b>- unidades:</b> {{eachTransaction.str_nItemCnt}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
+                <div><b>- precio unidad:</b> ${{eachTransaction.str_fItemValue}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
+                <div><b>- total pesos:</b> ${{eachTransaction.str_fTotal}}</div>
+            </md-grid-tile> -->
+        </md-grid-list>
+    </div>
+
+    <md-grid-list cols="12" rowHeight="45px">
+        <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <div></div>
+        </md-grid-tile>
+        <md-grid-tile class="md-table-body-back" [colspan]="8">
+            <button md-button (click)="onUpload()"><i class="material-icons">file_upload</i>subir transacciones en archivo csv</button>
+        </md-grid-tile>
+        <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <input type="file" id="file" name="file" style="display:none;" [(ngModel)]="ngFileUploadPath" accept=".csv" (change)="onChangeFilePath($event)"/>
+        </md-grid-tile>
+    </md-grid-list>
+    <md-grid-list cols="12" rowHeight="45px">
+        <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <div></div>
+        </md-grid-tile>
+        <md-grid-tile class="md-table-body-back" [colspan]="8">
+            <button md-button (click)="onDownload()"><i class="material-icons">file_download</i>bajar plantilla en archivo csv</button>
+        </md-grid-tile>
+        <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <a target="_self" href="./s302kd02.csv" download="Template.csv" id="download" style="display:none">download</a>
+        </md-grid-tile>
+    </md-grid-list>
+
+    <md-toolbar class="md-toolbar-bottom">
+        <md-slider class="m-slider" (input)="onInputChange($event)"
+            [disabled]="disabled"
+            [max]="maxVal"
+            [min]="minVal"
+            [step]="1">
+        </md-slider>
+        <label class="md-label-date">{{ng_strDate}}</label>
+    </md-toolbar>
+</div>
