@@ -14,6 +14,7 @@ import { ServiceComponent } from './service/service.component';
 
 // Directives
 import { D3ScatterPlot } from './d3scatter/d3scatter-directive';
+import { D3FanchartDirective } from './d3FanChart/d3fanchart-directive';
 import { D3FundLine } from './d3FundLine/d3fundline-directive';
 import { D3PortLine } from './d3PortLine/d3portline-directive';
 import { D3TreeMap } from './d3TreeMap/d3treemap-directive';
@@ -29,6 +30,7 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     D3ScatterPlot,
+    D3FanchartDirective,
     D3FundLine,
     D3PortLine,
     D3TreeMap
@@ -37,7 +39,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
-    
+
     BrowserAnimationsModule,
     MdButtonModule,
     MdMenuModule,

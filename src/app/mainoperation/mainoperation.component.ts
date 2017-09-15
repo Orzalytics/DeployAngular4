@@ -1,3 +1,4 @@
+import { fill, last } from 'lodash';
 import * as Globals from '../globals/globals.component';
 
 export function onCalculateData(){
@@ -10,7 +11,6 @@ export function onCalculateData(){
     for (var i = 0; i < fundnames.length; i ++){
     fundnames[i].fund_id_alias_fund = fundnames[i].fund_id_alias_fund * 1;
     }
-
     for (var i=0; i < Globals.g_GlobalStatic.arrPortIndex.length; i++){
     n[Globals.g_GlobalStatic.arrPortIndex[i]] = [];
     for (var j = 0; j < fundnames.length; j ++){
@@ -22,50 +22,50 @@ export function onCalculateData(){
     };
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
-
-
-    ///////////////////////////////////////////////////////////////////
     ////////////////////// Filter Fund Pricess ////////////////////////
     ///////////////////////////////////////////////////////////////////
+
+
     var f = [];
     var rows = Globals.g_DatabaseInfo.RawFundPriceList;
-
     for (var i = 0; i < rows.length; i ++){
-    rows[i].fund_id_pr_fund = rows[i].fund_id_pr_fund * 1;
-    rows[i].pr_fund = rows[i].pr_fund * 1;
+
+        rows[i].fund_id_pr_fund = rows[i].fund_id_pr_fund * 1;
+        rows[i].pr_fund = rows[i].pr_fund * 1;
     }
-    
     // loop to create fund-filtered arrays
+
     for (var i=0; i<Globals.g_GlobalStatic.arrPortIndex.length; i++){
         f[Globals.g_GlobalStatic.arrPortIndex[i]] = [];
         for (var j = 0; j < rows.length; j ++){
             if (rows[j].fund_id_pr_fund == Globals.g_GlobalStatic.arrPortIndex[i]){
-            f[Globals.g_GlobalStatic.arrPortIndex[i]].push(rows[j]);
+                f[Globals.g_GlobalStatic.arrPortIndex[i]].push(rows[j]);
             }
         }
     }
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
-
     var arru =[];
+
     var arrudate =[];
     var u=0;
     var dt : any;
-    
     // nested loop to create array of funds and fund calculations
-    for (var j=0; j<Globals.g_GlobalStatic.arrPortIndex.length; j++){
-    arru.push([]);
-    arrudate.push([]);
-    for (var i = 0; i < f[Globals.g_GlobalStatic.arrPortIndex[j]].length; i++) {
-        u = f[Globals.g_GlobalStatic.arrPortIndex[j]][i].pr_fund;
-        dt = new Date(f[Globals.g_GlobalStatic.arrPortIndex[j]][i].date_value_pr_fund.replace(/-/g, '\/'));
-        arru[j].push(u);
-        arrudate[j].push(dt);
-    }
-    }
 
+    for (var j=0; j<Globals.g_GlobalStatic.arrPortIndex.length; j++){
+        arru.push([]);
+        arrudate.push([]);
+        for (var i = 0; i < f[Globals.g_GlobalStatic.arrPortIndex[j]].length; i++) {
+            u = f[Globals.g_GlobalStatic.arrPortIndex[j]][i].pr_fund;
+            dt = new Date(f[Globals.g_GlobalStatic.arrPortIndex[j]][i].date_value_pr_fund.replace(/-/g, '\/'));
+            arru[j].push(u);
+            arrudate[j].push(dt);
+        }
+    }
     // filling listOfPriceFund array with each fund
     var maxDate = new Date('2000-01-01');
+
+    ///////////////////////////////////////////////////////////////////
     for (var i = 0; i < Globals.g_GlobalStatic.arrPortIndex.length; i ++){
     var item = {'name' : '', 'u' : '', 'udate':'', 'ulen' : 0, 'index' : 0, 'dict' : []};
     item.name = n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias;              
@@ -461,4 +461,54 @@ export function  CalculatePortfolioData(){
 
         Globals.g_Portfolios.arrDataByPortfolio.push(objOther);
     }
+}
+
+export function calculateFanChartData(fundIndex) {
+    const THRESHOLD = 91;
+    const {u: fundPrices, udate: fundPricesDates} = Globals.g_DatabaseInfo.ListofPriceFund[fundIndex];
+    const day91Returns = Globals.g_FundParent.arrAllReturns.day91_return[fundIndex];
+    let minReturn = Infinity;
+    let maxReturn = -Infinity;
+
+    if(fundPrices && fundPricesDates && day91Returns) {
+        const extremeData = fundPrices.map((fundPrice, idx) => {
+            const day91return = day91Returns[idx];
+            if(day91return > maxReturn) {
+                maxReturn = day91return;
+            }
+            if(day91return < minReturn) {
+                minReturn = day91return;
+            }
+
+            return {
+                date: fundPricesDates[idx],
+                fundPrice,
+                day91return,
+                minReturn,
+                maxReturn
+            };
+        });
+        let lastExtreme = last(extremeData);
+        const chartData = [];
+        const chartDataLength = fundPrices.length + THRESHOLD;
+
+        for(let idx = 0; idx < chartDataLength; ++idx) {
+            const extremeItem = extremeData[idx] || {};
+
+            if(idx > THRESHOLD * 2) {
+                const prevIdx = idx - THRESHOLD;
+                const prevExtremeItem = extremeData[prevIdx] || {};
+                const date = extremeItem.date || Globals.addDays(lastExtreme.date, 1);
+                const worstScenario = prevExtremeItem.fundPrice * prevExtremeItem.minReturn;
+                const bestScenario = prevExtremeItem.fundPrice * prevExtremeItem.maxReturn;
+
+                chartData.push(Object.assign({}, extremeData[idx], {date, worstScenario, bestScenario}));
+                lastExtreme = last(chartData);
+            } else {
+                chartData.push(extremeItem);
+            }
+        }
+        return chartData;
+    }
+    return [];
 }

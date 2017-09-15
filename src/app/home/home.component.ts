@@ -1,3 +1,4 @@
+import { compact } from 'lodash';
 import { Component, OnInit } from '@angular/core';
 import { ServiceComponent } from '../service/service.component';
 import * as Globals from '../globals/globals.component';
@@ -38,6 +39,8 @@ export class HomeComponent implements OnInit {
     ngScopeDay182 : any;
     ngScopeDay365 : any;
     ngScopeYear : any;
+
+    ngScopeFanData: any;
 
     // comprar o vender //
     ngScopeUnidades : any;
@@ -261,7 +264,7 @@ export class HomeComponent implements OnInit {
         this.onInitGraphData();
     }
     onSelectFondos(){
-        // console.log(this.ngSelFondosValue);
+        this.ngScopeFanData = MainOpr.calculateFanChartData(this.ngSelFondosValue);
     }
     onUnidadesChange(){
         this.disabled = true;

@@ -13,7 +13,8 @@ export const g_DatabaseInfo = {
 
 export const g_GlobalStatic = {
     startDate : '2013-01-01 00:00:00',
-    arrPortIndex : [40,48,51,54,59,80,88,104,105,106,126,149,176,179,190]
+    arrPortIndex : [999, 3, 5, 6, 7, 8, 9, 60, 103, 113]
+    // arrPortIndex : [40,48,51,54,59,80,88,104,105,106,126,149,176,179,190]
 };
 
 export const g_FundParent = {
@@ -40,6 +41,12 @@ export const g_AllStatus = {
     strPfName : '',
     arrPortfolioData : [],
     arrStaircaseData : []
+}
+
+export function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
 }
 
 export function convertDate(paramDate){
