@@ -499,8 +499,8 @@ export function calculateFanChartData(fundIndex) {
                 const prevIdx = idx - THRESHOLD;
                 const prevExtremeItem = extremeData[prevIdx] || {};
                 const date = extremeItem.date || Globals.addDays(lastExtreme.date, 1);
-                const worstScenario = prevExtremeItem.fundPrice * prevExtremeItem.minReturn;
-                const bestScenario = prevExtremeItem.fundPrice * prevExtremeItem.maxReturn;
+                const worstScenario = prevExtremeItem.fundPrice * (prevExtremeItem.minReturn + 1);
+                const bestScenario = prevExtremeItem.fundPrice * (prevExtremeItem.maxReturn + 1);
 
                 chartData.push(Object.assign({}, extremeData[idx], {date, worstScenario, bestScenario}));
                 lastExtreme = last(chartData);

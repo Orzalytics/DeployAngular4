@@ -35,9 +35,9 @@ export class D3FanchartDirective {
         return rawData
             .map((d) => ({
                 date: d.date,
-                fundPrice: (d.fundPrice || 0) / 1000,
-                worstScenario: (d.worstScenario || 0) / 1000,
-                bestScenario: (d.bestScenario || 0) / 1000
+                fundPrice: (d.fundPrice || 0),
+                worstScenario: (d.worstScenario || 0),
+                bestScenario: (d.bestScenario || 0)
             }));
     }
 
