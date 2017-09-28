@@ -41,7 +41,7 @@ export class D3FanchartDirective {
             }));
     }
 
-    createChart(data: { date: Date, bestScenario: number }[]) {
+    createChart(data: { date: Date, bestScenario: number, fundPrice: number }[]) {
         const SVG_CLASSNAME = 'data-fan';
         if (!data.length) {
             return null;
@@ -53,7 +53,7 @@ export class D3FanchartDirective {
 
         let svgWidth = window.innerWidth;
         const svgHeight = 190;
-        const margin = {top: 0, right: 20, bottom: 20, left: 40};
+        const margin = {top: 0, right: 10, bottom: 20, left: 30};
         if (window.innerWidth >= 1280) svgWidth = window.innerWidth / 100 * 50 - margin.left - margin.right;
         else svgWidth = window.innerWidth - margin.left - margin.right;
         const chartWidth = svgWidth - margin.left - margin.right;
@@ -91,22 +91,23 @@ export class D3FanchartDirective {
             .attr('height', svgHeight)
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-        const axes = svg.append('g')
-            .attr('clip-path', 'url(#axes-clip)');
 
-        axes.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + chartHeight + ')')
-            .call(xAxis);
+        // const axes = svg.append('g')
+        //     .attr('clip-path', 'url(#axes-clip)');
 
-        axes.append('g')
-            .attr('class', 'y axis')
-            .call(yAxis)
-            .append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('y', 6)
-            .attr('dy', '.71em')
-            .style('text-anchor', 'end');
+        // axes.append('g')
+        //     .attr('class', 'x axis')
+        //     .attr('transform', 'translate(0,' + chartHeight + ')')
+        //     .call(xAxis);
+
+        // axes.append('g')
+        //     .attr('class', 'y axis')
+        //     .call(yAxis)
+        //     .append('text')
+        //     .attr('transform', 'rotate(-90)')
+        //     .attr('y', 6)
+        //     .attr('dy', '.71em')
+        //     .style('text-anchor', 'end');
 
         const funArea = d3.area()
             .x(function (d: any) {
@@ -152,9 +153,9 @@ export class D3FanchartDirective {
 
         var verticalLine = svg.append('line')
             .attr("x1", 0)
-            .attr("y1", 8)
+            .attr("y1", 0)
             .attr("x2", 0)
-            .attr("y2", svgHeight - 8)
+            .attr("y2", svgHeight - 20)
             .attr("stroke", "black")
             .attr('class', 'verticalLine')
             .style('stroke-width', 2)
@@ -163,22 +164,22 @@ export class D3FanchartDirective {
                 return "translate(" + xPosition + ",0)";
             });
 
-        // var toolTipValue = svg.append('text')
-        //     .text(function(d) { return d3.format("$0,.02f")(y_Data[nSliderIndex]); })
-        //     .attr('text-anchor', 'start')
-        //     .attr('class', 'toolTipValue')
-        //     .attr('dy', '20')
-        //     .attr('dx', '8');
-        //
-        // toolTipValue.attr("transform", function () {
-        //     const xPosition = x(x_Data[nSliderIndex]);
-        //     const node: SVGTSpanElement = <SVGTSpanElement>toolTipValue.node();
-        //     const thisWidth = node.getComputedTextLength();
-        //     if (thisWidth + xPosition + 20 > svgWidth){
-        //         xPosition = xPosition - thisWidth - 15;
-        //     }
-        //     return "translate(" + xPosition + ",0)";
-        // });
+        var toolTipValue = svg.append('text')
+            .text(function(d) { return d3.format("$0,.06f")(data[nSliderIndex].fundPrice); })
+            .attr('text-anchor', 'start')
+            .attr('class', 'line_extoolTipValue')
+            .attr('dy', '20')
+            .attr('dx', '8');
+        
+        toolTipValue.attr("transform", function () {
+            var xPosition = x(data[nSliderIndex].date);
+            var node: SVGTSpanElement = <SVGTSpanElement>toolTipValue.node(); 
+            var thisWidth = node.getComputedTextLength();
+            if (thisWidth + xPosition + 20 > chartWidth){
+              xPosition = xPosition - thisWidth - 15;
+            }
+            return "translate(" + xPosition + ",0)";
+        });
     }
 }
 
