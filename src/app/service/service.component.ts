@@ -5,7 +5,13 @@ import 'rxjs';
 import * as Globals from '../globals/globals.component';
 import { Input } from '@angular/core';
 
-const urlHeader = 'http://localhost:8080';
+import { environment } from '../../environments/environment';
+
+const urlHeader = Globals.urlHeader.development;
+
+if (environment.production) {
+    urlHeader = Globals.urlHeader.production;
+}
 
 @Injectable()
 export class ServiceComponent {

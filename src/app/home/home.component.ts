@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     tile_One : number = 1;
     tile_Two : number = 2;
     tile_Tre : number = 1;
+    tile_Four : number = 1;
 
     // Chart Input Values //
     ngPortfolioName : any;
@@ -665,13 +666,15 @@ export class HomeComponent implements OnInit {
         if (window.innerWidth > 1280){
             this.tile_Col = 4;
             this.tile_One = 1;
-            this.tile_Two = 2;
+            this.tile_Two = 1;
             this.tile_Tre = 1;
+            this.tile_Four = 1;
         }else{
             this.tile_Col = 1;
             this.tile_One = 1;
             this.tile_Two = 1;
             this.tile_Tre = 1;
+            this.tile_Four = 1;
         }
     }
 }

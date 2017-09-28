@@ -2,6 +2,11 @@
 
 'use strict'
 
+export const urlHeader = {
+    production: 'http://orza.clockwisesoftware.com/',
+    development: 'http://localhost:8080'
+};
+
 export const g_DatabaseInfo = {
     bIsStartCalc : false,
     FundHeader : [],

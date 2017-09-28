@@ -54,7 +54,7 @@ export class D3FanchartDirective {
         let svgWidth = window.innerWidth;
         const svgHeight = 190;
         const margin = {top: 0, right: 10, bottom: 20, left: 30};
-        if (window.innerWidth >= 1280) svgWidth = window.innerWidth / 100 * 50 - margin.left - margin.right;
+        if (window.innerWidth >= 1280) svgWidth = window.innerWidth / 100 * 25 - margin.left - margin.right;
         else svgWidth = window.innerWidth - margin.left - margin.right;
         const chartWidth = svgWidth - margin.left - margin.right;
         const chartHeight = svgHeight - margin.top - margin.bottom;
