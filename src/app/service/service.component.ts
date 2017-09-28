@@ -7,7 +7,7 @@ import { Input } from '@angular/core';
 
 import { environment } from '../../environments/environment';
 
-const urlHeader = Globals.urlHeader.development;
+let urlHeader = Globals.urlHeader.development;
 
 if (environment.production) {
     urlHeader = Globals.urlHeader.production;
