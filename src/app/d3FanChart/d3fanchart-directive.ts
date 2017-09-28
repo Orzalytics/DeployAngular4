@@ -24,7 +24,6 @@ export class D3FanchartDirective {
         this.createChart(parsedData);
     }
 
-
     ngOnChanges(changes: SimpleChanges) {
         nSliderIndex = this.SliderIndex;
         const parsedData = this.createData(this.Data);
