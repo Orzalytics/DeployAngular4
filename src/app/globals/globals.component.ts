@@ -3,7 +3,7 @@
 'use strict'
 
 export const urlHeader = {
-    production: 'http://orza.clockwisesoftware.com/',
+    production: 'http://orza.clockwisesoftware.com',
     development: 'http://localhost:8080'
 };
 
