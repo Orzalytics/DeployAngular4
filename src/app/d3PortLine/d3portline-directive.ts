@@ -59,7 +59,7 @@ export class D3PortLine {
         var width = window.innerWidth;
         var height = 150;
         var margin = {top: 20, right: 11, bottom: 20, left: 10};
-        if (window.innerWidth >= 1280) width = window.innerWidth / 100 * 50 - margin.left - margin.right;
+        if (window.innerWidth >= 1280) width = window.innerWidth / 100 * 25 - margin.left - margin.right;
         else width = window.innerWidth - margin.left - margin.right;
 
         width = width - 16 * 2 - 20; // card content
