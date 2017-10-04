@@ -4,6 +4,22 @@ import { ServiceComponent } from '../service/service.component';
 import * as Globals from '../globals/globals.component';
 import * as MainOpr from '../mainoperation/mainoperation.component';
 
+// flex-layout
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { ObservableMedia } from '@angular/flex-layout';
+
+// material
+import { MdGridListModule } from '@angular/material';
+import {Observable} from "rxjs/Observable";
+
+// rxjs
+// import { Observable } from "rxjs/Observable";
+// import "rxjs/add/operator/takeWhile";
+// import "rxjs/add/operator/startWith";
+// import "rxjs/add/operator/map";
+// import "rxjs/add/observable/of";
+
+
 var HttpService : any;
 var self : any;
 
@@ -14,11 +30,13 @@ var self : any;
   providers: [ServiceComponent]
 })
 export class HomeComponent implements OnInit {
+    public cols: Observable<number>;
+
     ngPortIndex : number = -1;
 
-    tile_Col : number = 4;
+    tile_Col : number = 3;
     tile_One : number = 1;
-    tile_Two : number = 2;
+    tile_Two : number = 1;
     tile_Tre : number = 1;
     tile_Four : number = 1;
 
@@ -76,7 +94,7 @@ export class HomeComponent implements OnInit {
     isValid:boolean = false;
     nTimerId : any;
 
-    constructor(private service : ServiceComponent) {
+    constructor(private service : ServiceComponent, private observableMedia: ObservableMedia) {
         self = this;
         HttpService = this.service;
     }
@@ -103,6 +121,10 @@ export class HomeComponent implements OnInit {
             });
         }
     };
+
+    createCharts() {
+
+    }
 
     setSlider(){
         this.minVal = 0;
@@ -634,14 +656,17 @@ export class HomeComponent implements OnInit {
         }    
         myReader.readAsText(file);
     }
+
     // upload transaction
     onUpload(){
         document.getElementById("file").click();
     }
+
     // download transaction
     onDownload(){
         document.getElementById("download").click();
     }
+
     ngOnInit() {
         HttpService.getDatabaseInfo();
         this.nTimerId = setInterval(() => {
@@ -653,6 +678,23 @@ export class HomeComponent implements OnInit {
         this.ngScopeDay182 = "0.0";
         this.ngScopeDay365 = "0.0";
         this.ngScopeYear = "0.0";
+
+        const grid = new Map([
+            ["xs", 1],
+            ["sm", 1],
+            ["md", 1],
+            ["lg", 3],
+            ["xl", 3]
+        ]);
+        let start: number;
+        grid.forEach((cols, mqAlias) => {
+            if (this.observableMedia.isActive(mqAlias)) {
+                start = cols;
+            }
+        });
+        this.cols = this.observableMedia.asObservable()
+            .map(change => grid.get(change.mqAlias))
+            .startWith(start);
     }
 
     ngOnDestroy() {
@@ -662,19 +704,19 @@ export class HomeComponent implements OnInit {
     }
 
     onResize(event) {
-        this.ngWidth = window.innerWidth;
-        if (window.innerWidth > 1280){
-            this.tile_Col = 4;
-            this.tile_One = 1;
-            this.tile_Two = 1;
-            this.tile_Tre = 1;
-            this.tile_Four = 1;
-        }else{
-            this.tile_Col = 1;
-            this.tile_One = 1;
-            this.tile_Two = 1;
-            this.tile_Tre = 1;
-            this.tile_Four = 1;
-        }
+        // this.ngWidth = window.innerWidth;
+        // if (window.innerWidth > 1280){
+        //     this.tile_Col = 3;
+        //     this.tile_One = 1;
+        //     this.tile_Two = 1;
+        //     this.tile_Tre = 1;
+        //     this.tile_Four = 1;
+        // }else{
+        //     this.tile_Col = 1;
+        //     this.tile_One = 1;
+        //     this.tile_Two = 1;
+        //     this.tile_Tre = 1;
+        //     this.tile_Four = 1;
+        // }
     }
 }

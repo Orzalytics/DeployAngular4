@@ -18,6 +18,7 @@ import { D3FanchartDirective } from './d3FanChart/d3fanchart-directive';
 import { D3FundLine } from './d3FundLine/d3fundline-directive';
 import { D3PortLine } from './d3PortLine/d3portline-directive';
 import { D3TreeMap } from './d3TreeMap/d3treemap-directive';
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -39,6 +40,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
+    FlexLayoutModule,
 
     BrowserAnimationsModule,
     MdButtonModule,
