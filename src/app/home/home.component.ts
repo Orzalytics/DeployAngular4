@@ -565,7 +565,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
     }
 
-    onShowHide(index, bIsDraw){
+    onShowHide(index, bIsDraw) {
+        console.log('on show hide',);
         this.tableInfo = [];
         this.tableStore[index].PortStatus = (this.tableStore[index].PortStatus == 'Show') ? 'Hide' : 'Show';
         this.tableStore[index].PortIcon = (this.tableStore[index].PortStatus == 'Show') ? 'add' : 'remove';
@@ -585,8 +586,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     // parsing excel data
     onParsing(data) {
         let postData = [];
-        for (let i = 0; i < data.length; i ++){
-            var fundObj = data[i]['fondo'];
+        for (let i = 0; i < data.length; i ++) {
+            const fundObj = data[i]['fondo'];
 
             if ((data[i]['año'] == undefined) || (data[i]['año'] == '')) break;
             if ((data[i]['mes'] == undefined) || (data[i]['mes'] == '')) break;

@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -11,7 +11,7 @@ var nSliderIndex: number;
     selector: '[d3Scatter]'
 })
 
-export class D3ScatterPlot implements OnInit {
+export class D3ScatterPlot implements OnInit, OnChanges {
     private chartElement: any;
     private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
@@ -46,27 +46,27 @@ export class D3ScatterPlot implements OnInit {
         x_Day7LossMin = [];
         y_Day91Return = [];
         this.createData();
-        setTimeout(() => {
-            //this.createChart();
-        }, 100)
+        // setTimeout(() => {
+            this.createChart();
+        // }, 100)
     }
     createData() {
         // calculate for funds
-        for (let i = 0; i < Globals.g_FundParent.arrAllReturns.day91_return.length; i ++){
+        for (let i = 0; i < Globals.g_FundParent.arrAllReturns.day91_return.length; i ++) {
           y_Day91Return[i] = Globals.g_FundParent.arrAllReturns.day91_return[i][this.SliderIndex];
 
           let min = 99999;
-          for (let j = 0; j <= this.SliderIndex; j ++){
+          for (let j = 0; j <= this.SliderIndex; j ++) {
             if (min > Globals.g_FundParent.arrAllReturns.day7_loss[i][j]) min = Globals.g_FundParent.arrAllReturns.day7_loss[i][j];
           }
           x_Day7LossMin[i] = 0-min;
         }
         // calculate for portfolio
-        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
+        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
           if (Globals.g_Portfolios.arrDataByPortfolio[i] == undefined) continue;
           y_Day91Return.push(Globals.g_Portfolios.arrDataByPortfolio[i].day91Array[this.SliderIndex]);
           let min = 99999;
-          for (let j = 0; j <= this.SliderIndex; j ++){
+          for (let j = 0; j <= this.SliderIndex; j ++) {
             if (min > Globals.g_Portfolios.arrDataByPortfolio[i].day7Array[j])
                 min = Globals.g_Portfolios.arrDataByPortfolio[i].day7Array[j];
           }
@@ -79,7 +79,7 @@ export class D3ScatterPlot implements OnInit {
 
     createChart() {
         const elements = document.querySelectorAll('.data-scattergraph');
-        for (let i = 0; i < elements.length; i ++){
+        for (let i = 0; i < elements.length; i ++) {
             elements[i].parentNode.removeChild(elements[i]);
         }
 
