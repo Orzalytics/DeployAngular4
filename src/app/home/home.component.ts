@@ -5,23 +5,15 @@ import * as Globals from '../globals/globals.component';
 import * as MainOpr from '../mainoperation/mainoperation.component';
 
 // flex-layout
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ObservableMedia } from '@angular/flex-layout';
 
 // material
-import { MdGridListModule } from '@angular/material';
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs/Observable';
 
-// rxjs
-// import { Observable } from "rxjs/Observable";
-// import "rxjs/add/operator/takeWhile";
-// import "rxjs/add/operator/startWith";
-// import "rxjs/add/operator/map";
-// import "rxjs/add/observable/of";
+import * as moment from 'moment';
 
-
-var HttpService : any;
-var self : any;
+let HttpService: any;
+let self: any;
 
 @Component({
   selector: 'app-home',
@@ -32,44 +24,43 @@ var self : any;
 export class HomeComponent implements OnInit {
     public cols: Observable<number>;
 
-    ngPortIndex : number = -1;
+    ngPortIndex: number = -1;
 
-    tile_Col : number = 3;
-    tile_One : number = 1;
-    tile_Two : number = 1;
-    tile_Tre : number = 1;
-    tile_Four : number = 1;
+    tile_Col: number = 3;
+    tile_One: number = 1;
+    tile_Two: number = 1;
+    tile_Tre: number = 1;
 
     // Chart Input Values //
-    ngPortfolioName : any;
-    ngSelFondosValue : any;
-    ngWidth : any;
-    fondos : any;
+    ngPortfolioName: any;
+    ngSelFondosValue: any;
+    ngWidth: any;
+    fondos: any;
 
     // escoje portafolio //
-    ngScopeVoP : any;
-    ngScopeGoL : any;
-    ngScopeMax : any;
-    ngScopeMin : any;
-    ngScopeRate : any;
+    ngScopeVoP: any;
+    ngScopeGoL: any;
+    ngScopeMax: any;
+    ngScopeMin: any;
+    ngScopeRate: any;
 
     // escoje fondo //
-    ngScopeDay91 : any;
-    ngScopeDay182 : any;
-    ngScopeDay365 : any;
-    ngScopeYear : any;
+    ngScopeDay91: any;
+    ngScopeDay182: any;
+    ngScopeDay365: any;
+    ngScopeYear: any;
 
     ngScopeFanData: any;
 
     // comprar o vender //
-    ngScopeUnidades : any;
-    ngScopeTranPrice : any;
-    ngSecondGraphModel : any;
-    ngSecondGraphAmount : any;
+    ngScopeUnidades: any;
+    ngScopeTranPrice: any;
+    ngSecondGraphModel: any;
+    ngSecondGraphAmount: any;
 
     // transaction table //
     // values for icon information on table header
-    tbHeader = [        
+    tbHeader = [
         {index : 0, title : 'portafolio', icon : ''},
         {index : 1, title : 'fecha', icon : ''},
         {index : 2, title : 'fondo', icon : ''},
@@ -85,21 +76,20 @@ export class HomeComponent implements OnInit {
     ngSliderIndex = 0;
     disabled = false;
     maxVal = 0;
-    minVal = 0;    
+    minVal = 0;
     ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
-    ////////////    
-
-    ngAllRefresh : number = 0;
-    ngFileUploadPath : any;
-    isValid:boolean = false;
-    nTimerId : any;
+    ngAllRefresh: number = 0;
+    ngFileUploadPath: any;
+    isValid: boolean = false;
+    nTimerId: any;
+    ngDate = new Date(Globals.g_GlobalStatic.startDate);
 
     constructor(private service : ServiceComponent, private observableMedia: ObservableMedia) {
         self = this;
         HttpService = this.service;
     }
 
-    checkStart(){
+    checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc){
             clearInterval(this.nTimerId);
             MainOpr.onCalculateData();
@@ -112,7 +102,7 @@ export class HomeComponent implements OnInit {
                     this.onInitSelect();
                     this.onPfnameChanged();
                     this.setEscojePortafolio();
-                    this.setEscojeFondo();       
+                    this.setEscojeFondo();
                     this.setComprarVender();
                     this.onInitGraphData();
                     this.onRefreshTable();
@@ -126,19 +116,19 @@ export class HomeComponent implements OnInit {
 
     }
 
-    setSlider(){
+    setSlider() {
         this.minVal = 0;
         this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
     }
 
-    setEscojePortafolio(){
-        if (this.ngPortIndex > -1){
+    setEscojePortafolio() {
+        if (this.ngPortIndex > -1) {
             var VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
             var Max = 0;
             var Min = 999999;
             var GoL = 0;
 
-            for (var i = 0; i <= this.ngSliderIndex; i ++){
+            for (var i = 0; i <= this.ngSliderIndex; i ++) {
                 if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
                 if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
             }
@@ -150,27 +140,27 @@ export class HomeComponent implements OnInit {
             this.ngScopeMin = (Min != 999999) ? Globals.numberWithCommas(Min.toFixed(2)) : 0;
             this.ngScopeRate = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].yearRateArray[this.ngSliderIndex];
         }else{
-            this.ngScopeVoP = "0.00";
-            this.ngScopeGoL = "0.00";
-            this.ngScopeMax = "0.00";
-            this.ngScopeMin = "0.00";
-            this.ngScopeRate = "0.00";
+            this.ngScopeVoP = '0.00';
+            this.ngScopeGoL = '0.00';
+            this.ngScopeMax = '0.00';
+            this.ngScopeMin = '0.00';
+            this.ngScopeRate = '0.00';
         }        
     }
 
-    setEscojeFondo(){
-        var day91 = Globals.g_FundParent.arrAllReturns.day91_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        var day182 = Globals.g_FundParent.arrAllReturns.day182_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        var day365 = Globals.g_FundParent.arrAllReturns.day365_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        var year = Globals.g_FundParent.arrAllReturns.newstart_return[this.ngSelFondosValue][this.ngSliderIndex] * 1;
+    setEscojeFondo() {
+        const day91 = Globals.g_FundParent.arrAllReturns.day91_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+        const day182 = Globals.g_FundParent.arrAllReturns.day182_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+        const day365 = Globals.g_FundParent.arrAllReturns.day365_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+        const year = Globals.g_FundParent.arrAllReturns.newstart_return[this.ngSelFondosValue][this.ngSliderIndex] * 1;
         this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
         this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
         this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
         this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
-        if (this.ngScopeDay91 > 0) this.ngScopeDay91 = "+"+this.ngScopeDay91;
-        if (this.ngScopeDay182 > 0) this.ngScopeDay182 = "+"+this.ngScopeDay182;
-        if (this.ngScopeDay365 > 0) this.ngScopeDay365 = "+"+this.ngScopeDay365;
-        if (this.ngScopeYear > 0) this.ngScopeYear = "+"+this.ngScopeYear;
+        if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
+        if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
+        if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
+        if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
     }
 
     setComprarVender(){
@@ -179,10 +169,10 @@ export class HomeComponent implements OnInit {
         this.ngScopeUnidades = 0;
         this.ngScopeTranPrice = 0;
 
-        for (var i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
+        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
             if (this.ngPortfolioName == Globals.g_Portfolios.arrDataByPortfolio[i].portname){
-                var sum = 0;
-                for (var j = 0; j <= this.ngSliderIndex; j ++){
+                let sum = 0;
+                for (let j = 0; j <= this.ngSliderIndex; j ++){
                     sum = sum + Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][j].unidades;
                 }
 
@@ -196,10 +186,11 @@ export class HomeComponent implements OnInit {
     }
 
     onInputChange(event: any) {
-        var updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-        var selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
+        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
+        this.ngDate = new Date(selectedDate);
 
         // Update Slider Index for send Event
         this.ngSliderIndex = event.value;
@@ -210,10 +201,24 @@ export class HomeComponent implements OnInit {
         this.setComprarVender();
     }
 
-    onInitSelect(){
+    onInputDatepicker(event: any) {
+        const diffDate = moment(event.value).diff(moment(Globals.g_GlobalStatic.startDate), 'days');
+        this.ng_strDate = Globals.convertDate(moment(event.value).format('YYYY-DD-MM'));
+        Globals.g_Portfolios.nSliderIndex = diffDate;
+
+        // Update Slider Index for send Event
+        this.ngSliderIndex = diffDate;
+
+        // Update Escoje Fondo&Portafolio
+        this.setEscojePortafolio();
+        this.setEscojeFondo();
+        this.setComprarVender();
+    }
+
+    onInitSelect() {
         this.fondos = [];
-        for (var i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
-            var fondoType = {value : 0, viewValue : ''};
+        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
+            const fondoType = {value : 0, viewValue : ''};
             fondoType.value = i;
             fondoType.viewValue = Globals.g_DatabaseInfo.ListofPriceFund[i].name;
             this.fondos[i] = fondoType;
@@ -221,47 +226,46 @@ export class HomeComponent implements OnInit {
         this.ngSelFondosValue = this.fondos[0].value;
     }
 
-    onInitGraphData(){
-        var arrOtherNew999Price = [];
-        var arrOtherStaircase = [];
+    onInitGraphData() {
+        const arrOtherNew999Price = [];
+        const arrOtherStaircase = [];
 
-        for (var i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
+        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
             arrOtherNew999Price[i] = [];
             arrOtherStaircase[i] = [];
-            for (var j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
+            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++) {
                 arrOtherNew999Price[i][j] = 0;
                 arrOtherStaircase[i][j] = 0;
                 if (this.ngPortIndex > -1) arrOtherNew999Price[i][j] = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].arrPurchase[i][j].unidades;
-                if ((i == this.ngSelFondosValue) && (j == this.ngSliderIndex)){
+                if ((i == this.ngSelFondosValue) && (j == this.ngSliderIndex)) {
                     arrOtherNew999Price[i][j] = this.ngSecondGraphModel;
                 }
             }
         }
 
-        for (var i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
-            var temp = 0;
-            var new999Price = 0;
-            for (var j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
+        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
+            let temp = 0;
+            let new999Price = 0;
+            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
                 if (arrOtherNew999Price[i][j] != 0){
                     temp = temp + arrOtherNew999Price[i][j];
-                    new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];                        
+                    new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];
                 }
                 arrOtherNew999Price[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] - new999Price;
                 arrOtherStaircase[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j];
             }
-            
         }
 
-        var arrPortSum = [];
-        var arrStairSum = [];
-        for (var i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund[0].ulen; i++) {
-            var sum1 = 0;
-            var sum2 = 0;
+        const arrPortSum = [];
+        const arrStairSum = [];
+        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund[0].ulen; i++) {
+            let sum1 = 0;
+            let sum2 = 0;
 
-            for (var j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
+            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
                 sum1 = sum1 + arrOtherNew999Price[j][i];
                 sum2 = sum2 + arrOtherStaircase[j][i];
-            }   
+            }
 
             arrPortSum.push(sum1);
             arrStairSum.push(sum2);
@@ -407,7 +411,7 @@ export class HomeComponent implements OnInit {
             url = url + '/' + this.ngSecondGraphAmount;
             url = url + '/' + this.ng_strDate;
             url = url + '/' + this.ngPortfolioName;  
-            url = url + '/' + "deploy_user";
+            url = url + '/' + 'deploy_user';
             url = url + '/' + Globals.convertDate(new Date());
         }else{
             // sell item
@@ -417,7 +421,7 @@ export class HomeComponent implements OnInit {
             url = url + '/' + Math.abs(this.ngSecondGraphAmount);
             url = url + '/' + this.ng_strDate;
             url = url + '/' + this.ngPortfolioName;  
-            url = url + '/' + "deploy_user";
+            url = url + '/' + 'deploy_user';
             url = url + '/' + Globals.convertDate(new Date());
         }
 
@@ -470,30 +474,30 @@ export class HomeComponent implements OnInit {
     onTableReorder(index){
         var strIconName = this.tbHeader[index].icon;
         for (var i = 0; i < this.tbHeader.length; i ++){
-            this.tbHeader[i].icon = "";
+            this.tbHeader[i].icon = '';
         }
-        var strOrderCmd = "";
-        if (strIconName == ""){
-            this.tbHeader[index].icon = "arrow_drop_down";
-            strOrderCmd = "down";
-        }else if(strIconName == "arrow_drop_down"){
-            this.tbHeader[index].icon = "arrow_drop_up";
-          strOrderCmd = "up";
-        }else if(strIconName == "arrow_drop_up"){
-            this.tbHeader[index].icon = "arrow_drop_down";
-            strOrderCmd = "down";
+        var strOrderCmd = '';
+        if (strIconName == ''){
+            this.tbHeader[index].icon = 'arrow_drop_down';
+            strOrderCmd = 'down';
+        }else if(strIconName == 'arrow_drop_down'){
+            this.tbHeader[index].icon = 'arrow_drop_up';
+          strOrderCmd = 'up';
+        }else if(strIconName == 'arrow_drop_up'){
+            this.tbHeader[index].icon = 'arrow_drop_down';
+            strOrderCmd = 'down';
         }
         this.sortTable(index, strOrderCmd);
     }
     sortTable(index, strOrderCmd){
         for (var i = 0; i < this.tableInfo.length; i ++){
-            this.tableInfo[i].Portarray.sort(function(a, b){        
+            this.tableInfo[i].Portarray.sort(function(a, b){
                 var keyA = a[Object.keys(a)[index]],
                     keyB = b[Object.keys(a)[index]];
                     
                 // Compare the 2 dates
-                if(keyA < keyB) return (strOrderCmd == "down") ? -1 : 1;
-                if(keyA > keyB) return (strOrderCmd == "down") ? 1 : -1;
+                if(keyA < keyB) return (strOrderCmd == 'down') ? -1 : 1;
+                if(keyA > keyB) return (strOrderCmd == 'down') ? 1 : -1;
                 return 0;
             });
         }
@@ -511,7 +515,7 @@ export class HomeComponent implements OnInit {
             }
   
             if (listOfSaverTransaction.length > 0){
-                var eachObj = {"PortIndex" : 0, "PortStatus" : "Show", "PortIcon" : "add", "Portname" : listOfSaverTransaction[0].strPortID, "Portarray" : listOfSaverTransaction};
+                var eachObj = {'PortIndex' : 0, 'PortStatus' : 'Show', 'PortIcon' : 'add', 'Portname' : listOfSaverTransaction[0].strPortID, 'Portarray' : listOfSaverTransaction};
                 this.tableInfo.push(eachObj);
                 this.tableStore.push(eachObj);
             }
@@ -522,14 +526,14 @@ export class HomeComponent implements OnInit {
             this.tableStore[i].PortIndex = i;
         }
 
-        this.tbHeader[1].icon = "";
+        this.tbHeader[1].icon = '';
         this.onTableReorder(1);
     }
     checkTable(){
         for (var i = 0; i < this.tableInfo.length; i ++){
-            for (var j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
+            for (var j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
                 var eachArray = []
-                for (var k = 0; k < this.tableInfo[i].Portarray.length; k ++){              
+                for (var k = 0; k < this.tableInfo[i].Portarray.length; k ++){
                     if (this.tableInfo[i].Portarray[k].nFundIndex == j) eachArray.push(this.tableInfo[i].Portarray[k]);
                 }
                 if (eachArray.length > 0){
@@ -552,13 +556,13 @@ export class HomeComponent implements OnInit {
     }
     onShowHide(index, bIsDraw){
         this.tableInfo = [];
-        this.tableStore[index].PortStatus = (this.tableStore[index].PortStatus == "Show") ? "Hide" : "Show";
-        this.tableStore[index].PortIcon = (this.tableStore[index].PortStatus == "Show") ? "add" : "remove";
+        this.tableStore[index].PortStatus = (this.tableStore[index].PortStatus == 'Show') ? 'Hide' : 'Show';
+        this.tableStore[index].PortIcon = (this.tableStore[index].PortStatus == 'Show') ? 'add' : 'remove';
         
         for (var i = 0; i < this.tableStore.length; i ++){
             
             this.tableInfo.push(Object.assign({}, this.tableStore[i]));
-            if (this.tableStore[i].PortStatus != "Show"){
+            if (this.tableStore[i].PortStatus != 'Show'){
                 Globals.g_Portfolios.arrDataByPortfolio[i].showhide = 0;
                 this.tableInfo[i].Portarray = [];
             }else{
@@ -571,47 +575,47 @@ export class HomeComponent implements OnInit {
     onParsing(data){
         var postData = [];
         for (var i = 0; i < data.length; i ++){
-            var fundObj = data[i]["fondo"];
+            var fundObj = data[i]['fondo'];
 
-            if ((data[i]["año"] == undefined) || (data[i]["año"] == "")) break;
-            if ((data[i]["mes"] == undefined) || (data[i]["mes"] == "")) break;
-            if ((data[i]["día"] == undefined) || (data[i]["día"] == "")) break;
-            if ((data[i]["fondo"] == undefined) || (data[i]["fondo"] == "")) break;          
-            if ((data[i]["compra/-venta"] == undefined) || (data[i]["compra/-venta"] == "")) break;
-            if ((data[i]["portafolio"] == undefined) || (data[i]["portafolio"] == "")) break;
+            if ((data[i]['año'] == undefined) || (data[i]['año'] == '')) break;
+            if ((data[i]['mes'] == undefined) || (data[i]['mes'] == '')) break;
+            if ((data[i]['día'] == undefined) || (data[i]['día'] == '')) break;
+            if ((data[i]['fondo'] == undefined) || (data[i]['fondo'] == '')) break;
+            if ((data[i]['compra/-venta'] == undefined) || (data[i]['compra/-venta'] == '')) break;
+            if ((data[i]['portafolio'] == undefined) || (data[i]['portafolio'] == '')) break;
 
             var strFundName = Globals.GetFundIndexByKey(fundObj);
             if (strFundName == undefined) break;
 
             var nFundID = Globals.GetFundIndex(strFundName);
-            var strDate = Globals.convertDate(new Date(data[i]["año"] + "-" + data[i]["mes"] + "-" + data[i]["día"]));
-            var strPortName = data[i]["portafolio"];
-            var nItemCnt = data[i]["compra/-venta"]*1;
+            var strDate = Globals.convertDate(new Date(data[i]['año'] + '-' + data[i]['mes'] + '-' + data[i]['día']));
+            var strPortName = data[i]['portafolio'];
+            var nItemCnt = data[i]['compra/-venta']*1;
             var nSliderIndex = Globals.GetDateIndex(Globals.g_DatabaseInfo.ListofPriceFund[0].udate, strDate);
             var nItemValue = Globals.g_DatabaseInfo.ListofPriceFund[nFundID].u[nSliderIndex];
             var strCurDate = Globals.convertDate(new Date());
             var nTotal = Globals.multiple(Math.abs(nItemCnt), nItemValue);
 
-            var objParam = {"fund_id_bought" : 0, "units_bought" : 0, "fund_id_sold" : 0, "units_sold" : 0, "date_value_transaction" : "", "portfolio_id" : 0, "saver_id" : "", "nowDate" : ""};
+            var objParam = {'fund_id_bought' : 0, 'units_bought' : 0, 'fund_id_sold' : 0, 'units_sold' : 0, 'date_value_transaction' : '', 'portfolio_id' : 0, 'saver_id' : '', 'nowDate' : ''};
             objParam.fund_id_bought = (nItemCnt >= 0) ? Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index : 999;
             objParam.units_bought = Math.abs(nItemCnt);
-            objParam.fund_id_sold = (nItemCnt >= 0) ? "999" : Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index;
+            objParam.fund_id_sold = (nItemCnt >= 0) ? '999' : Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index;
             objParam.units_sold = nTotal;
             objParam.date_value_transaction = strDate;
             objParam.portfolio_id = strPortName;
-            objParam.saver_id = "deploy_user";
+            objParam.saver_id = 'deploy_user';
             objParam.nowDate = strCurDate;
 
-            var url = "/buy/";
-            var cond1 = (nItemCnt >= 0) ? Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index : 999;
-            url = url + cond1 + "/";
-            url = url + Math.abs(nItemCnt) + "/";
-            var cond2 = (nItemCnt >= 0) ? "999" : Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index;
-            url = url + cond2 + "/";
-            url = url + nTotal + "/";
-            url = url + strDate + "/";
-            url = url + this.ngPortfolioName + "/";
-            url = url + "deploy_user" + "/";
+            let url = '/buy/';
+            const cond1 = (nItemCnt >= 0) ? Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index : 999;
+            url = url + cond1 + '/';
+            url = url + Math.abs(nItemCnt) + '/';
+            const cond2 = (nItemCnt >= 0) ? '999' : Globals.g_DatabaseInfo.ListofPriceFund[nFundID].index;
+            url = url + cond2 + '/';
+            url = url + nTotal + '/';
+            url = url + strDate + '/';
+            url = url + this.ngPortfolioName + '/';
+            url = url + 'deploy_user' + '/';
             url = url + strCurDate;
 
             postData.push(objParam);
@@ -626,12 +630,10 @@ export class HomeComponent implements OnInit {
                                 response => {
                                     MainOpr.getTransactionData(response);
                                     MainOpr.CalculatePortfolioData();
-            
                                     this.onPfnameChanged();
                                     this.setEscojeFondo();
                                     this.onRefreshTable();
                                     this.checkTable();
-            
                                     this.disabled = false;
                             });
                     });
@@ -639,52 +641,49 @@ export class HomeComponent implements OnInit {
             this.tableInfo = [];
         }
     }
-    onChangeFilePath($event) : void {
+    onChangeFilePath($event): void {
         this.readCSVFile($event.target);
     }
-    
-    readCSVFile(inputValue: any) : void {
-        var file:File = inputValue.files[0]; 
-        var myReader:FileReader = new FileReader();
-    
+    readCSVFile(inputValue: any): void {
+        const file:File = inputValue.files[0];
+        const myReader:FileReader = new FileReader();
         myReader.onloadend = function(e){
             // you can perform an action with readed data here
             HttpService.sendExcelData(myReader.result).subscribe(
                 response => {
                     self.onParsing(response);
             });
-        }    
+        }
         myReader.readAsText(file);
     }
 
     // upload transaction
-    onUpload(){
-        document.getElementById("file").click();
+    onUpload() {
+        document.getElementById('file').click();
     }
 
     // download transaction
-    onDownload(){
-        document.getElementById("download").click();
+    onDownload() {
+        document.getElementById('download').click();
     }
 
     ngOnInit() {
         HttpService.getDatabaseInfo();
         this.nTimerId = setInterval(() => {
-            this.checkStart(); 
+            this.checkStart();
         }, 100);
         this.onResize(null);
-        
-        this.ngScopeDay91 = "0.0";
-        this.ngScopeDay182 = "0.0";
-        this.ngScopeDay365 = "0.0";
-        this.ngScopeYear = "0.0";
+        this.ngScopeDay91 = '0.0';
+        this.ngScopeDay182 = '0.0';
+        this.ngScopeDay365 = '0.0';
+        this.ngScopeYear = '0.0';
 
         const grid = new Map([
-            ["xs", 1],
-            ["sm", 1],
-            ["md", 1],
-            ["lg", 3],
-            ["xl", 3]
+            ['xs', 1],
+            ['sm', 1],
+            ['md', 1],
+            ['lg', 3],
+            ['xl', 3]
         ]);
         let start: number;
         grid.forEach((cols, mqAlias) => {
