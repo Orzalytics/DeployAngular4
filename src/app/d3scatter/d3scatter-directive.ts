@@ -89,7 +89,9 @@ export class D3ScatterPlot implements OnInit, OnChanges {
         const margin = {top: 20, right: 10, bottom: 40, left: 40};
 
         this.width = widthContainer - margin.right - margin.left - 20;
-        this.height = (widthContainer > 650) ? widthContainer / 4 : widthContainer / 2;
+
+        const height = this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
+        this.height = 196 - this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
         const svg = d3.select(element).append('svg')
             .attr('width', this.width)
