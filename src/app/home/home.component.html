@@ -2,7 +2,7 @@
     <md-grid-list cols="3" rowHeight="100px">
         <md-grid-tile></md-grid-tile>
         <md-grid-tile>
-            <h2 class="title">Analizar</h2>
+            <h2 class="title mat-headline">Analizar</h2>
             <!--<md-input-container class="md-input-portfolio">-->
                 <!--<input mdInput placeholder="input portafolio nombre" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()" [disabled]="disabled" value="accionescolombia" class="md-input-portfolio" spellcheck="false">-->
             <!--</md-input-container>-->
@@ -12,8 +12,14 @@
         </md-grid-tile>
         <md-grid-tile></md-grid-tile>
     </md-grid-list>
+    <md-grid-list cols="4" rowHeight="100px" class="mat-title">
+        <md-grid-tile></md-grid-tile>
+        <md-grid-tile>${{ngScopeVoP}} valor actual</md-grid-tile>
+        <md-grid-tile>{{ngScopeRate}}% desde inicio, tasa periodo o anua</md-grid-tile>
+        <md-grid-tile></md-grid-tile>
+    </md-grid-list>
 
-    <md-grid-list [cols]="cols | async" rowHeight="280px" style="margin-bottom:10px;">
+    <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
