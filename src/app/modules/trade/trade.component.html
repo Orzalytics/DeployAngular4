@@ -18,9 +18,9 @@
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
-                <md-card-title class="md-card-chat">Utilidad portafolio en pesos</md-card-title>
+                <md-card-title class="md-card-chat">Composición portafolio</md-card-title>
                 <md-card-content>
-                    <!--<div [SliderIndex]="ngSliderIndex" [RefreshStatus]="ngSecondGraphModel" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3portline></div>-->
+                    <div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3treemap></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
@@ -28,13 +28,15 @@
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">Fan chart</md-card-title>
                 <md-card-content>
-                    <!--<div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>-->
+                    <div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
         <md-grid-tile>
-            <md-card class="md-card-top">
+            <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">Retorno y riesgo: cambio en últimos 91 días, máxima caída en 7 días</md-card-title>
+                <md-card-content>
+                </md-card-content>
             </md-card>
         </md-grid-tile>
     </md-grid-list>

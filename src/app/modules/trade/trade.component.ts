@@ -31,6 +31,8 @@ export class TradeComponent implements OnInit, OnDestroy {
     public isValid: boolean = false;
     public cols:  Observable<number>;
 
+    public ngPortfolioName: string;
+
     // slider and datepicker attr
     public ngSliderIndex = 0;
     public disabled = false;
@@ -50,6 +52,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
         this.sub = route.params.subscribe(params => {
             this.routeName = params['name'];
+            this.ngPortfolioName = params['name'];
         });
     }
 
