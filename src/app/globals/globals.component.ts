@@ -4,7 +4,7 @@
 
 export const urlHeader = {
     production: 'http://orza.clockwisesoftware.com/api',
-    development: 'http://192.168.0.126:9051'
+    development: 'http://localhost:8080'
 };
 
 export const g_DatabaseInfo = {
@@ -54,8 +54,8 @@ export function addDays(date, days) {
     return result;
 }
 
-export function convertDate(paramDate){
-    var date = new Date(paramDate);   
+export function convertDate(paramDate) {
+    var date = new Date(paramDate);
     var month = (date.getMonth()+1 < 10) ? '0'+(date.getMonth()+1) : (date.getMonth()+1);
     var day = (date.getDate()<10) ? '0'+date.getDate() : date.getDate();
     var strDate = date.getFullYear() + '-' + month + '-' + day;
