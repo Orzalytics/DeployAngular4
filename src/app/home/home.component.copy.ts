@@ -17,14 +17,19 @@ let self: any;
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
+  templateUrl: './home.component.copy.html',
   styleUrls: ['./home.component.css'],
   providers: [ServiceComponent]
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeCopyComponent implements OnInit, OnDestroy {
     public cols: Observable<number>;
 
     ngPortIndex: number = -1;
+
+    tile_Col: number = 3;
+    tile_One: number = 1;
+    tile_Two: number = 1;
+    tile_Tre: number = 1;
 
     // Chart Input Values //
     ngPortfolioName: any;
@@ -130,13 +135,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
                     this.setSlider();
                     this.onInitSelect();
-                    this.onRefreshTable();
                     this.onPfnameChanged();
-                    // this.setEscojePortafolio();
-                    // this.setEscojeFondo();
-                    // this.setComprarVender();
-                    // this.onInitGraphData();
-                    // this.checkTable();
+                    this.setEscojePortafolio();
+                    this.setEscojeFondo();
+                    this.setComprarVender();
+                    this.onInitGraphData();
+                    this.onRefreshTable();
+                    this.checkTable();
                     this.isValid = true;
             });
         }
@@ -563,17 +568,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.tbHeader[1].icon = '';
         this.onTableReorder(1);
-        this.ngPortfolioName = this.tableInfo[0].Portname;
     }
 
-    checkTable() {
+    checkTable(){
         for (let i = 0; i < this.tableInfo.length; i ++) {
             for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
                 const eachArray = [];
                 for (let k = 0; k < this.tableInfo[i].Portarray.length; k ++) {
                     if (this.tableInfo[i].Portarray[k].nFundIndex == j) eachArray.push(this.tableInfo[i].Portarray[k]);
                 }
-                if (eachArray.length > 0) {
+                if (eachArray.length > 0){
                     for (let k = 0; k < eachArray.length; k ++) {
                         eachArray[k].deletable = false;
                         let sum = 0;
