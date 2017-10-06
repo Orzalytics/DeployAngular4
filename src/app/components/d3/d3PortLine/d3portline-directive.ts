@@ -77,7 +77,6 @@ export class D3PortLine implements OnInit, OnChanges {
         let height = this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
         height = 296 - this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
-        console.log('Size ', widthContainer, width, height);
          // width = width - 16 * 2 - 20; // card content
 
         // creating a div to contain fund line chart
