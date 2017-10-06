@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, SimpleChanges } from '@angular/core';
-import * as Globals from '../globals/globals.component';
+import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
 var listofTreeMap : any;

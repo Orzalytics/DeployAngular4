@@ -5,9 +5,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
-import {TradeComponent} from './trade/trade.component';
+import { LoginComponent } from './modules/login/login.component';
+import { HomeComponent } from './modules/home/home.component';
+import {TradeComponent} from './modules/trade/trade.component';
 // import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,13 +18,13 @@ import {
 import { ServiceComponent } from './service/service.component';
 
 // Directives
-import { D3ScatterPlot } from './d3scatter/d3scatter-directive';
-import { D3FanchartDirective } from './d3FanChart/d3fanchart-directive';
-import { D3FundLine } from './d3FundLine/d3fundline-directive';
-import { D3PortLine } from './d3PortLine/d3portline-directive';
-import { D3TreeMap } from './d3TreeMap/d3treemap-directive';
+import { D3ScatterPlot } from './components/d3/d3scatter/d3scatter-directive';
+import { D3FanchartDirective } from './components/d3/d3FanChart/d3fanchart-directive';
+import { D3FundLine } from './components/d3/d3FundLine/d3fundline-directive';
+import { D3PortLine } from './components/d3/d3PortLine/d3portline-directive';
+import { D3TreeMap } from './components/d3/d3TreeMap/d3treemap-directive';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import { D3PortHisogram } from './d3PortHisogram/d3porthisogram-directive';
+import { D3PortHisogram } from './components/d3/d3PortHisogram/d3porthisogram-directive';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },

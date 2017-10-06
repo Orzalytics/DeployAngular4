@@ -1,8 +1,8 @@
 import { compact } from 'lodash';
 import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import { ServiceComponent } from '../service/service.component';
-import * as Globals from '../globals/globals.component';
-import * as MainOpr from '../mainoperation/mainoperation.component';
+import { ServiceComponent } from '../../service/service.component';
+import * as Globals from '../../globals/globals.component';
+import * as MainOpr from '../../mainoperation/mainoperation.component';
 
 // flex-layout
 import { ObservableMedia } from '@angular/flex-layout';

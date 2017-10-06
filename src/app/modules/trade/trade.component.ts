@@ -1,7 +1,7 @@
 import { compact } from 'lodash';
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { ServiceComponent } from '../service/service.component';
-import * as Globals from '../globals/globals.component';
+import { ServiceComponent } from '../../service/service.component';
+import * as Globals from '../../globals/globals.component';
 // import * as MainOpr from '../mainoperation/mainoperation.component';
 
 // flex-layout
