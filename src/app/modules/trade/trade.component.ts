@@ -90,6 +90,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     tableStore = {};
 
     public portfolioList = [];
+    public fondoList: any;
 
     constructor( private route: ActivatedRoute,
                  private service:ServiceComponent,
@@ -330,13 +331,13 @@ export class TradeComponent implements OnInit, OnDestroy {
 
     onRefreshTable() {
         const transactions = Globals.g_FundParent.arrAllTransaction;
-        this.tableInfo = [];
-        this.tableStore = {};
+        // this.tableInfo = [];
+        this.fondoList = {};
 
         const transactionsByPort = transactions.filter((obj) => {
             return obj.strPortID === this.ngPortfolioName;
         });
-        this.tableStore = {
+        this.fondoList = {
                 'PortIndex': 0,
                 'PortStatus': 'Show',
                 'PortIcon': 'add',
@@ -344,37 +345,8 @@ export class TradeComponent implements OnInit, OnDestroy {
                 'Portarray': transactionsByPort
             };
 
-        console.log('test', transactionsByPort);
-        // for (let i = 0; i < Globals.g_DatabaseInfo.PortfolioList.length; i ++) {
-        //     const listOfSaverTransaction = [];
-        //     for (let j = 0; j < transactions.length; j ++) {
-        //         if (Globals.g_DatabaseInfo.PortfolioList[i].portfolio_id !== transactions[j].strPortID) continue;
-        //         listOfSaverTransaction.push(transactions[j]);
-        //         console.log('listOfSaverTransaction', listOfSaverTransaction);
-        //     }
-        //
-        //     if (listOfSaverTransaction.length > 0) {
-        //         const eachObj = {
-        //             'PortIndex': 0,
-        //             'PortStatus': 'Show',
-        //             'PortIcon': 'add',
-        //             'Portname': listOfSaverTransaction[0].strPortID,
-        //             'Portarray': listOfSaverTransaction
-        //         };
-        //         this.tableInfo.push(eachObj);
-        //         // this.tableStore.push(eachObj);
-        //         console.log('tableInfo', this.tableInfo);
-        //         console.log('tableStore', this.tableStore);
-        //     }
-        // }
-
-        // for (var i = 0; i < this.tableStore.length; i ++){
-        //     // this.tableInfo[i].PortIndex = i;
-        //     // this.tableStore[i].PortIndex = i;
-        // }
-
         this.tbHeader[0].icon = '';
-        this.onTableReorder(1);
+        this.onTableReorder(0);
     }
 
     checkTable(){
@@ -409,31 +381,33 @@ export class TradeComponent implements OnInit, OnDestroy {
             this.tbHeader[i].icon = '';
         }
         let strOrderCmd = '';
-        if (strIconName == '') {
-            this.tbHeader[index].icon = 'arrow_drop_down';
-            strOrderCmd = 'down';
-        } else if(strIconName == 'arrow_drop_down') {
-            this.tbHeader[index].icon = 'arrow_drop_up';
-            strOrderCmd = 'up';
-        } else if (strIconName == 'arrow_drop_up') {
-            this.tbHeader[index].icon = 'arrow_drop_down';
-            strOrderCmd = 'down';
+        switch (strIconName) {
+            case '':
+                this.tbHeader[index].icon = 'arrow_drop_down';
+                strOrderCmd = 'down';
+                break;
+            case 'arrow_drop_down':
+                this.tbHeader[index].icon = 'arrow_drop_up';
+                strOrderCmd = 'up';
+                break;
+            case 'arrow_drop_up':
+                this.tbHeader[index].icon = 'arrow_drop_down';
+                strOrderCmd = 'down';
+                break;
         }
         this.sortTable(index, strOrderCmd);
     }
 
     sortTable(index, strOrderCmd) {
-        for (let i = 0; i < this.tableInfo.length; i ++) {
-            this.tableInfo[i].Portarray.sort(function(a, b){
-                const keyA = a[Object.keys(a)[index]],
-                    keyB = b[Object.keys(a)[index]];
+        this.fondoList.Portarray.sort(function(a, b){
+            const keyA = a[Object.keys(a)[index]],
+                keyB = b[Object.keys(a)[index]];
 
-                // Compare the 2 dates
-                if(keyA < keyB) return (strOrderCmd == 'down') ? -1 : 1;
-                if(keyA > keyB) return (strOrderCmd == 'down') ? 1 : -1;
-                return 0;
-            });
-        }
+            // Compare the 2 dates
+            if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
+            if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
+            return 0;
+        });
     }
 
 

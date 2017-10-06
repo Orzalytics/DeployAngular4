@@ -15,35 +15,35 @@
         </md-grid-tile>
     </md-grid-list>
 
-    <!--<md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">-->
-        <!--<md-grid-tile>-->
-            <!--<md-card class="md-card-top md-card-child">-->
-                <!--<md-card-title class="md-card-chat">Composición portafolio</md-card-title>-->
-                <!--<md-card-content>-->
-                    <!--<div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3treemap></div>-->
-                <!--</md-card-content>-->
-            <!--</md-card>-->
-        <!--</md-grid-tile>-->
-        <!--<md-grid-tile>-->
-            <!--<md-card class="md-card-top md-card-child">-->
-                <!--<md-card-title class="md-card-chat">Fan chart</md-card-title>-->
-                <!--<md-card-content>-->
-                    <!--<div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>-->
-                <!--</md-card-content>-->
-            <!--</md-card>-->
-        <!--</md-grid-tile>-->
-        <!--<md-grid-tile>-->
-            <!--<md-card class="md-card-top md-card-child">-->
-                <!--<md-card-title id="card-title">Retorno y riesgo: cambio en últimos 91 días, máxima caída en 7 días</md-card-title>-->
-                <!--<md-card-content>-->
-                <!--</md-card-content>-->
-            <!--</md-card>-->
-        <!--</md-grid-tile>-->
-    <!--</md-grid-list>-->
+    <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
+        <md-grid-tile>
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">Composición portafolio</md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3treemap></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile>
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">Fan chart</md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+        <md-grid-tile>
+            <md-card class="md-card-top md-card-child">
+                <md-card-title id="card-title">Retorno y riesgo: cambio en últimos 91 días, máxima caída en 7 días</md-card-title>
+                <md-card-content>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+    </md-grid-list>
 
 
     <md-grid-list class="md-table-header" cols="15" rowHeight="45px">
-        <md-grid-tile class="md-table-back" (click)="onTableReorder(eachHeader.index)" [colspan]="2" *ngFor="let eachHeader of tbHeader">
+        <md-grid-tile class="md-table-back" (click)="onTableReorder(eachHeader.index)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
             <div>{{eachHeader.title}}</div>
             <i class="material-icons">{{eachHeader.icon}}</i>
         </md-grid-tile>
@@ -52,20 +52,11 @@
         </md-grid-tile>
     </md-grid-list>
 
-    <!--<div *ngFor="let eachObj of tableInfo" class="md-table-body">-->
-        <!--<md-grid-list cols="15" rowHeight="45px">-->
-            <!--<md-grid-tile class="md-table-header-back" [colspan]="15" (click)="onShowHide(eachObj.PortIndex, 1)">-->
-                <!--<div>{{eachObj.Portname}}</div><i class="material-icons">{{eachObj.PortIcon}}</i>-->
-            <!--</md-grid-tile>-->
-        <!--</md-grid-list>-->
-        <md-grid-list cols="15" rowHeight="45px" *ngFor="let eachTransaction of tableStore.Portarray">
-            <!--<md-grid-tile class="md-table-body-back" [colspan]="2">-->
-                <!--<div>{{eachTransaction.strPortID}}</div>-->
-            <!--</md-grid-tile>-->
+        <md-grid-list cols="15" rowHeight="45px" *ngFor="let eachTransaction of fondoList.Portarray">
             <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex2">
                 <div>{{eachTransaction.tDate}}</div>
             </md-grid-tile>
-            <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex3">
+            <md-grid-tile class="md-table-body-back" [colspan]="4" [ngStyle]="styleFlex3">
                 <div>{{eachTransaction.strFundName}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2" [ngStyle]="styleFlex4">
@@ -83,25 +74,7 @@
             <md-grid-tile class="md-table-body-back" [colspan]="1">
                 <!--<button md-button (click)="onDelete(eachTransaction)" [disabled]="eachTransaction.deletable"><i class="material-icons">clear</i></button>-->
             </md-grid-tile>
-
-
-            <!-- <md-grid-tile class="md-table-body-back-left" [colspan]="15">
-                <div><b>- fondo:</b> {{eachTransaction.strFundName}}</div>
-            </md-grid-tile>
-            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
-                <div><b>- compra o venta:</b> {{eachTransaction.strBoS}}</div>
-            </md-grid-tile>
-            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
-                <div><b>- unidades:</b> {{eachTransaction.str_nItemCnt}}</div>
-            </md-grid-tile>
-            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
-                <div><b>- precio unidad:</b> ${{eachTransaction.str_fItemValue}}</div>
-            </md-grid-tile>
-            <md-grid-tile class="md-table-body-back-left" [colspan]="15">
-                <div><b>- total pesos:</b> ${{eachTransaction.str_fTotal}}</div>
-            </md-grid-tile> -->
         </md-grid-list>
-    <!--</div>-->
 
     <!--<md-grid-list cols="12" rowHeight="45px">-->
         <!--<md-grid-tile class="md-table-body-back" [colspan]="2">-->
