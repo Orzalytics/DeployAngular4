@@ -18,6 +18,7 @@ import { D3FanchartDirective } from './d3FanChart/d3fanchart-directive';
 import { D3FundLine } from './d3FundLine/d3fundline-directive';
 import { D3PortLine } from './d3PortLine/d3portline-directive';
 import { D3TreeMap } from './d3TreeMap/d3treemap-directive';
+import { D3PortHisogram } from './d3PortHisogram/d3porthisogram-directive';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -33,7 +34,8 @@ const appRoutes: Routes = [
     D3FanchartDirective,
     D3FundLine,
     D3PortLine,
-    D3TreeMap
+    D3TreeMap,
+    D3PortHisogram
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@
 
 export const urlHeader = {
     production: 'http://orza.clockwisesoftware.com/api',
-    development: 'http://localhost:8080'
+    development: 'http://192.168.0.126:9051'
 };
 
 export const g_DatabaseInfo = {
