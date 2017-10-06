@@ -1,22 +1,18 @@
 <div *ngIf="isValid" class="md-main-page">
     <md-grid-list cols="3" rowHeight="100px">
-        <md-grid-tile></md-grid-tile>
         <md-grid-tile>
-            <h2 class="title mat-headline">Analizar</h2>
-            <!--<md-input-container class="md-input-portfolio">-->
-                <!--<input mdInput placeholder="input portafolio nombre" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()" [disabled]="disabled" value="accionescolombia" class="md-input-portfolio" spellcheck="false">-->
-            <!--</md-input-container>-->
-            <md-select placeholder="Select portfolio" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">
-                <md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>
-            </md-select>
+            <!--<md-select placeholder="Select portfolio" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">-->
+                <!--<md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>-->
+            <!--</md-select>-->
         </md-grid-tile>
-        <md-grid-tile></md-grid-tile>
-    </md-grid-list>
-    <md-grid-list cols="4" rowHeight="100px" class="mat-title">
-        <md-grid-tile></md-grid-tile>
-        <md-grid-tile>${{ngScopeVoP}} valor actual</md-grid-tile>
-        <md-grid-tile>{{ngScopeRate}}% cambio desde el inicio</md-grid-tile>
-        <md-grid-tile></md-grid-tile>
+        <md-grid-tile>
+            <h2 class="title mat-headline">Comprar / vender</h2>
+        </md-grid-tile>
+        <md-grid-tile>
+            <!--<md-select placeholder="Select portfolio" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">-->
+                <!--<md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>-->
+            <!--</md-select>-->
+        </md-grid-tile>
     </md-grid-list>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
@@ -24,31 +20,21 @@
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">Utilidad portafolio en pesos</md-card-title>
                 <md-card-content>
-                    <div [SliderIndex]="ngSliderIndex" [RefreshStatus]="ngSecondGraphModel" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3portline></div>
+                    <!--<div [SliderIndex]="ngSliderIndex" [RefreshStatus]="ngSecondGraphModel" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3portline></div>-->
                 </md-card-content>
             </md-card>
         </md-grid-tile>
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
-                <md-card-title class="md-card-chat">Retornos de portafolio en 91 dias</md-card-title>
+                <md-card-title class="md-card-chat">Fan chart</md-card-title>
+                <md-card-content>
+                    <!--<div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>-->
+                </md-card-content>
             </md-card>
         </md-grid-tile>
-        <md-grid-tile class="scatter-container" id="scatterContainer" #scatterContainer>
+        <md-grid-tile>
             <md-card class="md-card-top">
                 <md-card-title id="card-title">Retorno y riesgo: cambio en últimos 91 días, máxima caída en 7 días</md-card-title>
-                <md-card-content>
-                    <div class="scatter_tooltip" id="scatter_tooltip">
-                        <div class="scatter_title" id="scatter_title">Title1234567889</div>
-                        <div class="scatter_y" id="scatter_y">y : 1.123456</div>
-                        <div class="scatter_port" id="scatter_port">p : 1.123456</div>
-                        <div class="scatter_x" id="scatter_x">x : 1.123456</div>
-                    </div>
-                    <div [scatterContainer]="scatterContainer"
-                         [SliderIndex]="ngSliderIndex"
-                         [RefreshAll]="ngAllRefresh"
-                         [SliderDisable]="disabled"
-                         [WindowSize]="ngWidth" d3Scatter></div>
-                </md-card-content>
             </md-card>
         </md-grid-tile>
     </md-grid-list>
@@ -220,9 +206,9 @@
             [step]="1">
         </md-slider>
         <md-form-field>
-            <input mdInput [value]="ngDate" [mdDatepicker]="picker" placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
+            <input mdInput [value]="ngDatepicker" [mdDatepicker]="picker" placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
             <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
-            <md-datepicker [value]="ngDate" #picker></md-datepicker>
+            <md-datepicker [value]="ngDatepicker" #picker></md-datepicker>
         </md-form-field>
     </md-toolbar>
 </div>
