@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import {TradeComponent} from './trade/trade.component';
 // import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,6 +27,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
+  { path:'trade', component: TradeComponent },
   { path:'login', component: LoginComponent }
 ]
 
@@ -34,6 +36,7 @@ const appRoutes: Routes = [
     AppComponent,
     LoginComponent,
     HomeComponent,
+    TradeComponent,
     D3ScatterPlot,
     D3FanchartDirective,
     D3FundLine,
