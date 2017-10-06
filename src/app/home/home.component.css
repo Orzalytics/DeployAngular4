@@ -1,0 +1,17 @@
+.title {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+    margin-top: 30px;
+    margin-right: 20px;
+}
+.mat-button {
+    position: absolute;
+    bottom: 100px;
+    right: 10px;
+    font-size: 24px;
+    background-color: #ff6f31;
+    color: #fff;
+    font-weight: 400;
+}
+.md-input-portfolio {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
