@@ -290,3 +290,10 @@ md-slider {
 .d3porthisogram .axis.axis-y {
     display: none;
 }
+.custom-analizar.mat-title .mat-figure {
+    justify-content: left !important;
+    padding: 0 10px;
+}
+.custom-analizar .mat-select-value-text {
+    font-size: 24px;
+}
