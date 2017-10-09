@@ -1,0 +1,21 @@
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: stretch;
+    justify-content: center;
+}
+.sidenav-content .mat-button {
+    margin-left: -16px;
+    margin-right: 16px;
+    padding: 0px;
+    min-width: 64px;
+}
+
+.sidenav {
+    padding: 20px;
+}

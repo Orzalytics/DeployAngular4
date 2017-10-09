@@ -13,7 +13,7 @@ import {TradeComponent} from './modules/trade/trade.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MdButtonModule, MdCardModule, MdMenuModule, MdToolbarModule, MdIconModule, MdInputModule, MdSliderModule,
-  MdGridListModule, MdSelectModule, MdDatepickerModule, MdNativeDateModule
+  MdGridListModule, MdSelectModule, MdDatepickerModule, MdNativeDateModule, MdSidenavModule
 } from '@angular/material';
 import { ServiceComponent } from './service/service.component';
 
@@ -64,7 +64,11 @@ const appRoutes: Routes = [
     MdDatepickerModule,
     MdNativeDateModule,
     ReactiveFormsModule,
+    MdSidenavModule,
     RouterModule.forRoot(appRoutes)
+  ],
+  exports: [
+    // MdSidenavModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

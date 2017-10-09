@@ -399,15 +399,16 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     sortTable(index, strOrderCmd) {
-        this.fondoList.Portarray.sort(function(a, b){
-            const keyA = a[Object.keys(a)[index]],
-                keyB = b[Object.keys(a)[index]];
-
-            // Compare the 2 dates
-            if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
-            if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
-            return 0;
-        });
+        console.log('Prop', this.fondoList.Portarray);
+        // this.fondoList.Portarray.sort(function(a, b){
+        //     const keyA = a[Object.keys(a)[index]],
+        //         keyB = b[Object.keys(a)[index]];
+        //
+        //     // Compare the 2 dates
+        //     if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
+        //     if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
+        //     return 0;
+        // });
     }
 
 
