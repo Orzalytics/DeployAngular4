@@ -2,7 +2,11 @@
     <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
         <md-grid-tile>
             <h2 class="title mat-headline">Analizar</h2>
-            <md-select placeholder="" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">
+            <md-select placeholder=""
+                       cdk-connected-overlay
+                       [style.width]="width + 'px'"
+                       [(ngModel)]="ngPortfolioName"
+                       (ngModelChange)="onPfnameChanged()" #selectPortfolio>
                 <md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>
             </md-select>
         </md-grid-tile>

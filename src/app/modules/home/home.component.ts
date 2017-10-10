@@ -1,5 +1,5 @@
 import { compact } from 'lodash';
-import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
 import * as Globals from '../../globals/globals.component';
 import * as MainOpr from '../../mainoperation/mainoperation.component';
@@ -22,8 +22,9 @@ let self: any;
   providers: [ServiceComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy {
+    @ViewChild('selectPortfolio', {read: ElementRef}) selectPortfolio: ElementRef;
     public cols: Observable<number>;
-
+    width: number;
     ngPortIndex: number = -1;
 
     // Chart Input Values //
@@ -269,11 +270,11 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
         }
 
-        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
+        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
             let temp = 0;
             let new999Price = 0;
-            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
-                if (arrOtherNew999Price[i][j] != 0){
+            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++) {
+                if (arrOtherNew999Price[i][j] != 0) {
                     temp = temp + arrOtherNew999Price[i][j];
                     new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];
                 }
@@ -288,7 +289,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             let sum1 = 0;
             let sum2 = 0;
 
-            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
+            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
                 sum1 = sum1 + arrOtherNew999Price[j][i];
                 sum2 = sum2 + arrOtherStaircase[j][i];
             }
@@ -302,11 +303,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     onPfnameChanged() {
+        setTimeout(() => {
+            this.width = this.selectPortfolio.nativeElement.querySelector('.mat-select-value-text .ng-tns-c9-1').offsetWidth + 22;
+        });
+
         Globals.g_AllStatus.strPfName = this.ngPortfolioName;
 
         this.ngPortIndex = -1;
-        for (var i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
-            if (Globals.g_Portfolios.arrDataByPortfolio[i].portname == this.ngPortfolioName){
+        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
+            if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.ngPortfolioName) {
                 this.ngPortIndex = i;
                 break;
             }
