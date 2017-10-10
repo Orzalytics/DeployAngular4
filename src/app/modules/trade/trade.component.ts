@@ -89,6 +89,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     tableInfo = [];
     tableStore = {};
 
+    // my refactoring;
     public portfolioList = [];
     public fondoList: any;
 
@@ -144,7 +145,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
                     this.setSlider();
                     // this.onInitSelect();
-                    // this.onPfnameChanged();
+                    this.onPfnameChanged();
                     // this.setEscojePortafolio();
                     // this.setEscojeFondo();
                     // this.setComprarVender();
@@ -189,136 +190,139 @@ export class TradeComponent implements OnInit, OnDestroy {
         // this.setEscojeFondo();
         // this.setComprarVender();
     }
-    setEscojePortafolio() {
-        if (this.ngPortIndex > -1) {
-            let VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
-            let Max = 0;
-            let Min = 999999;
-            let GoL = 0;
-
-            for (let i = 0; i <= this.ngSliderIndex; i ++) {
-                if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
-                if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
-            }
-            if (VoP > 0) GoL = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[this.ngSliderIndex] / VoP * 100;
-
-            this.ngScopeVoP = (VoP != undefined) ? Globals.numberWithCommas(VoP.toFixed(2)) : 0;
-            this.ngScopeGoL = (GoL != undefined) ? Globals.numberWithCommas(GoL.toFixed(2)) : 0;
-            this.ngScopeMax = Globals.numberWithCommas(Max.toFixed(2));
-            this.ngScopeMin = (Min != 999999) ? Globals.numberWithCommas(Min.toFixed(2)) : 0;
-            this.ngScopeRate = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].yearRateArray[this.ngSliderIndex];
-        }else{
-            this.ngScopeVoP = '0.00';
-            this.ngScopeGoL = '0.00';
-            this.ngScopeMax = '0.00';
-            this.ngScopeMin = '0.00';
-            this.ngScopeRate = '0.00';
-        }
-    }
-
-    setEscojeFondo() {
-        const day91 = Globals.g_FundParent.arrAllReturns.day91_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        const day182 = Globals.g_FundParent.arrAllReturns.day182_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        const day365 = Globals.g_FundParent.arrAllReturns.day365_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-        const year = Globals.g_FundParent.arrAllReturns.newstart_return[this.ngSelFondosValue][this.ngSliderIndex] * 1;
-        this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
-        this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
-        this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
-        this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
-        if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
-        if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
-        if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
-        if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
-    }
-
-    setComprarVender() {
-        this.ngSecondGraphModel = 0;
-        this.ngSecondGraphAmount  = 0;
-        this.ngScopeUnidades = 0;
-        this.ngScopeTranPrice = 0;
-
-        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
-            if (this.ngPortfolioName == Globals.g_Portfolios.arrDataByPortfolio[i].portname){
-                let sum = 0;
-                for (let j = 0; j <= this.ngSliderIndex; j ++){
-                    sum = sum + Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][j].unidades;
-                }
-
-                this.ngScopeUnidades = Globals.numberWithCommas(sum.toFixed(6));
-                this.ngScopeTranPrice = Globals.numberWithCommas(Globals.g_Portfolios.arrDataByPortfolio[i].staircase[this.ngSelFondosValue][this.ngSliderIndex].toFixed(2));
-                this.ngSecondGraphModel = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].unidades;
-                this.ngSecondGraphAmount = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].pesos;
-                break;
-            }
-        }
-    }
-
-    onInitSelect() {
-        this.fondos = [];
-        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
-            const fondoType = {value : 0, viewValue : ''};
-            fondoType.value = i;
-            fondoType.viewValue = Globals.g_DatabaseInfo.ListofPriceFund[i].name;
-            this.fondos[i] = fondoType;
-        }
-        this.ngSelFondosValue = this.fondos[0].value;
-    }
-
-    onInitGraphData() {
-        const arrOtherNew999Price = [];
-        const arrOtherStaircase = [];
-
-        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
-            arrOtherNew999Price[i] = [];
-            arrOtherStaircase[i] = [];
-            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++) {
-                arrOtherNew999Price[i][j] = 0;
-                arrOtherStaircase[i][j] = 0;
-                if (this.ngPortIndex > -1) arrOtherNew999Price[i][j] = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].arrPurchase[i][j].unidades;
-                if ((i == this.ngSelFondosValue) && (j == this.ngSliderIndex)) {
-                    arrOtherNew999Price[i][j] = this.ngSecondGraphModel;
-                }
-            }
-        }
-
-        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
-            let temp = 0;
-            let new999Price = 0;
-            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
-                if (arrOtherNew999Price[i][j] != 0){
-                    temp = temp + arrOtherNew999Price[i][j];
-                    new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];
-                }
-                arrOtherNew999Price[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] - new999Price;
-                arrOtherStaircase[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j];
-            }
-        }
-
-        const arrPortSum = [];
-        const arrStairSum = [];
-        for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund[0].ulen; i++) {
-            let sum1 = 0;
-            let sum2 = 0;
-
-            for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
-                sum1 = sum1 + arrOtherNew999Price[j][i];
-                sum2 = sum2 + arrOtherStaircase[j][i];
-            }
-
-            arrPortSum.push(sum1);
-            arrStairSum.push(sum2);
-        }
-
-        Globals.g_AllStatus.arrPortfolioData = arrPortSum;
-        Globals.g_AllStatus.arrStaircaseData = arrStairSum;
-    }
+    // setEscojePortafolio() {
+    //     if (this.ngPortIndex > -1) {
+    //         let VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
+    //         let Max = 0;
+    //         let Min = 999999;
+    //         let GoL = 0;
+    //
+    //         for (let i = 0; i <= this.ngSliderIndex; i ++) {
+    //             if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
+    //             if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
+    //         }
+    //         if (VoP > 0) GoL = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[this.ngSliderIndex] / VoP * 100;
+    //
+    //         this.ngScopeVoP = (VoP != undefined) ? Globals.numberWithCommas(VoP.toFixed(2)) : 0;
+    //         this.ngScopeGoL = (GoL != undefined) ? Globals.numberWithCommas(GoL.toFixed(2)) : 0;
+    //         this.ngScopeMax = Globals.numberWithCommas(Max.toFixed(2));
+    //         this.ngScopeMin = (Min != 999999) ? Globals.numberWithCommas(Min.toFixed(2)) : 0;
+    //         this.ngScopeRate = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].yearRateArray[this.ngSliderIndex];
+    //     }else{
+    //         this.ngScopeVoP = '0.00';
+    //         this.ngScopeGoL = '0.00';
+    //         this.ngScopeMax = '0.00';
+    //         this.ngScopeMin = '0.00';
+    //         this.ngScopeRate = '0.00';
+    //     }
+    // }
+    //
+    // setEscojeFondo() {
+    //     const day91 = Globals.g_FundParent.arrAllReturns.day91_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+    //     const day182 = Globals.g_FundParent.arrAllReturns.day182_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+    //     const day365 = Globals.g_FundParent.arrAllReturns.day365_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
+    //     const year = Globals.g_FundParent.arrAllReturns.newstart_return[this.ngSelFondosValue][this.ngSliderIndex] * 1;
+    //     this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
+    //     this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
+    //     this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
+    //     this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
+    //     if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
+    //     if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
+    //     if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
+    //     if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
+    // }
+    //
+    // setComprarVender() {
+    //     this.ngSecondGraphModel = 0;
+    //     this.ngSecondGraphAmount  = 0;
+    //     this.ngScopeUnidades = 0;
+    //     this.ngScopeTranPrice = 0;
+    //
+    //     for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
+    //         if (this.ngPortfolioName == Globals.g_Portfolios.arrDataByPortfolio[i].portname){
+    //             let sum = 0;
+    //             for (let j = 0; j <= this.ngSliderIndex; j ++){
+    //                 sum = sum + Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][j].unidades;
+    //             }
+    //
+    //             this.ngScopeUnidades = Globals.numberWithCommas(sum.toFixed(6));
+    //             this.ngScopeTranPrice = Globals.numberWithCommas(Globals.g_Portfolios.arrDataByPortfolio[i].staircase[this.ngSelFondosValue][this.ngSliderIndex].toFixed(2));
+    //             this.ngSecondGraphModel = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].unidades;
+    //             this.ngSecondGraphAmount = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].pesos;
+    //             break;
+    //         }
+    //     }
+    // }
+    //
+    // onInitSelect() {
+    //     this.fondos = [];
+    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
+    //         const fondoType = {value : 0, viewValue : ''};
+    //         fondoType.value = i;
+    //         fondoType.viewValue = Globals.g_DatabaseInfo.ListofPriceFund[i].name;
+    //         this.fondos[i] = fondoType;
+    //     }
+    //     this.ngSelFondosValue = this.fondos[0].value;
+    // }
+    //
+    // onInitGraphData() {
+    //     const arrOtherNew999Price = [];
+    //     const arrOtherStaircase = [];
+    //
+    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
+    //         arrOtherNew999Price[i] = [];
+    //         arrOtherStaircase[i] = [];
+    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++) {
+    //             arrOtherNew999Price[i][j] = 0;
+    //             arrOtherStaircase[i][j] = 0;
+    //             if (this.ngPortIndex > -1) arrOtherNew999Price[i][j] = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].arrPurchase[i][j].unidades;
+    //             if ((i == this.ngSelFondosValue) && (j == this.ngSliderIndex)) {
+    //                 arrOtherNew999Price[i][j] = this.ngSecondGraphModel;
+    //             }
+    //         }
+    //     }
+    //
+    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
+    //         let temp = 0;
+    //         let new999Price = 0;
+    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
+    //             if (arrOtherNew999Price[i][j] != 0){
+    //                 temp = temp + arrOtherNew999Price[i][j];
+    //                 new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];
+    //             }
+    //             arrOtherNew999Price[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] - new999Price;
+    //             arrOtherStaircase[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j];
+    //         }
+    //     }
+    //
+    //     const arrPortSum = [];
+    //     const arrStairSum = [];
+    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund[0].ulen; i++) {
+    //         let sum1 = 0;
+    //         let sum2 = 0;
+    //
+    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
+    //             sum1 = sum1 + arrOtherNew999Price[j][i];
+    //             sum2 = sum2 + arrOtherStaircase[j][i];
+    //         }
+    //
+    //         arrPortSum.push(sum1);
+    //         arrStairSum.push(sum2);
+    //     }
+    //
+    //     Globals.g_AllStatus.arrPortfolioData = arrPortSum;
+    //     Globals.g_AllStatus.arrStaircaseData = arrStairSum;
+    // }
 
     onPfnameChanged() {
+        this.portfolioList = Globals.g_Portfolios.arrDataByPortfolio;
+        console.log('Globals', Globals.g_Portfolios);
+        console.log('this.ngPortfolioName', this.ngPortfolioName);
         Globals.g_AllStatus.strPfName = this.ngPortfolioName;
 
         this.ngPortIndex = -1;
-        for (var i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
-            if (Globals.g_Portfolios.arrDataByPortfolio[i].portname == this.ngPortfolioName){
+        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
+            if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.ngPortfolioName) {
                 this.ngPortIndex = i;
                 break;
             }
@@ -349,7 +353,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.onTableReorder(0);
     }
 
-    checkTable(){
+    checkTable() {
         for (let i = 0; i < this.tableInfo.length; i ++) {
             for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
                 const eachArray = [];
