@@ -93,7 +93,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public ngFondoName: string;
 
     public portfolioList = [];
-    public fondosList: Array<number>;
+    public fondosList = [];
     public fondoList: any;
 
     public tradeForm = new FormGroup({
@@ -144,7 +144,15 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
         this.tradeForm.controls['fondo'].valueChanges.subscribe((value) => {
             this.ngFondoName = value;
+            const indexValue = this.fondosList.findIndex((obj) => {
+                return obj.name === value;
+            });
+            this.ngScopeFanData = MainOpr.calculateFanChartData(indexValue);
         });
+    }
+
+    onSelectFondos() {
+        // this.ngScopeFanData = MainOpr.calculateFanChartData(this.ngSelFondosValue);
     }
 
     ngOnDestroy() {
@@ -182,6 +190,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                     // Set fondos list
                     this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
                     this.ngFondoName = this.fondosList[0]['name'];
+                    console.log('Init 2',);
                     this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
                     console.log('Form ',this.fondosList[0]['name']);
                 });
