@@ -45,7 +45,7 @@
 
 
     <md-grid-list class="md-table-header" cols="15" rowHeight="45px">
-        <md-grid-tile class="md-table-back" (click)="onTableReorder(eachHeader.index)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
+        <md-grid-tile class="md-table-back" (click)="onTableReorder(i)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
             <div>{{eachHeader.title}}</div>
             <i class="material-icons">{{eachHeader.icon}}</i>
         </md-grid-tile>

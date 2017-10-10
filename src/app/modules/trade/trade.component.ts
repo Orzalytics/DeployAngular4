@@ -71,12 +71,12 @@ export class TradeComponent implements OnInit, OnDestroy {
     // values for icon information on table header
     tbHeader = [
         // {index : 0, title : 'portafolio', icon : ''},
-        {index : 0, title : 'fecha', icon : ''},
-        {index : 1, title : 'fondo', icon : ''},
-        {index : 2, title : 'compra o venta', icon : ''},
-        {index : 3, title : 'unidades', icon : ''},
-        {index : 4, title : 'precio unidad', icon : ''},
-        {index : 5, title : 'total pesos', icon : ''},
+        {index : 1, title : 'fecha', icon : ''},
+        {index : 2, title : 'fondo', icon : ''},
+        {index : 3, title : 'compra o venta', icon : ''},
+        {index : 4, title : 'unidades', icon : ''},
+        {index : 5, title : 'precio unidad', icon : ''},
+        {index : 6, title : 'total pesos', icon : ''},
     ];
 
     tableInfo = [];
@@ -152,10 +152,6 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
     }
 
-    onSelectFondos() {
-        // this.ngScopeFanData = MainOpr.calculateFanChartData(this.ngSelFondosValue);
-    }
-
     ngOnDestroy() {
         this.sub.unsubscribe();
     }
@@ -194,7 +190,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                     this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
                 });
         }
-    };
+    }
 
     setSlider() {
         this.minVal = 0;
@@ -229,6 +225,60 @@ export class TradeComponent implements OnInit, OnDestroy {
         // this.setEscojeFondo();
         // this.setComprarVender();
     }
+    onRefreshTable() {
+        const transactions = Globals.g_FundParent.arrAllTransaction;
+        this.fondoList = {};
+
+        const transactionsByPort = transactions.filter((obj) => {
+            return obj.strPortID === this.ngPortfolioName;
+        });
+        this.fondoList = {
+            'PortIndex': 0,
+            'PortStatus': 'Show',
+            'PortIcon': 'add',
+            'Portname': transactionsByPort[0].strPortID,
+            'Portarray': transactionsByPort
+        };
+
+        this.tbHeader[0].icon = '';
+        this.onTableReorder(0);
+    }
+
+    onTableReorder(index) {
+        const strIconName = this.tbHeader[index].icon;
+        for (let i = 0; i < this.tbHeader.length; i ++) {
+            this.tbHeader[i].icon = '';
+        }
+
+        let strOrderCmd = '';
+        switch (strIconName) {
+            case '':
+                this.tbHeader[index].icon = 'arrow_drop_down';
+                strOrderCmd = 'down';
+                break;
+            case 'arrow_drop_down':
+                this.tbHeader[index].icon = 'arrow_drop_up';
+                strOrderCmd = 'up';
+                break;
+            case 'arrow_drop_up':
+                this.tbHeader[index].icon = 'arrow_drop_down';
+                strOrderCmd = 'down';
+                break;
+        }
+        this.sortTable(this.tbHeader[index].index, strOrderCmd);
+    }
+
+    sortTable(index, strOrderCmd) {
+        this.fondoList.Portarray.sort(function(a, b){
+            const keyA = a[Object.keys(a)[index]],
+                keyB = b[Object.keys(a)[index]];
+
+            if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
+            if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
+            return 0;
+        });
+    }
+
     // setEscojePortafolio() {
     //     if (this.ngPortIndex > -1) {
     //         let VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
@@ -353,44 +403,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     //     Globals.g_AllStatus.arrStaircaseData = arrStairSum;
     // }
 
-    onPfnameChanged() {
-        console.log('Globals', Globals.g_Portfolios);
-        console.log('this.ngPortfolioName', this.ngPortfolioName);
-        Globals.g_AllStatus.strPfName = this.ngPortfolioName;
-
-        this.ngPortIndex = -1;
-        for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
-            if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.ngPortfolioName) {
-                this.ngPortIndex = i;
-                break;
-            }
-        }
-
-        // this.setEscojePortafolio();
-        // this.setComprarVender();
-        // this.onInitGraphData();
-    }
-
-    onRefreshTable() {
-        const transactions = Globals.g_FundParent.arrAllTransaction;
-        // this.tableInfo = [];
-        this.fondoList = {};
-
-        const transactionsByPort = transactions.filter((obj) => {
-            return obj.strPortID === this.ngPortfolioName;
-        });
-        this.fondoList = {
-                'PortIndex': 0,
-                'PortStatus': 'Show',
-                'PortIcon': 'add',
-                'Portname': transactionsByPort[0].strPortID,
-                'Portarray': transactionsByPort
-            };
-
-        this.tbHeader[0].icon = '';
-        this.onTableReorder(0);
-    }
-
     checkTable() {
         for (let i = 0; i < this.tableInfo.length; i ++) {
             for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
@@ -416,43 +428,4 @@ export class TradeComponent implements OnInit, OnDestroy {
             }
         }
     }
-
-    onTableReorder(index) {
-        const strIconName = this.tbHeader[index].icon;
-        for (let i = 0; i < this.tbHeader.length; i ++) {
-            this.tbHeader[i].icon = '';
-        }
-        let strOrderCmd = '';
-        switch (strIconName) {
-            case '':
-                this.tbHeader[index].icon = 'arrow_drop_down';
-                strOrderCmd = 'down';
-                break;
-            case 'arrow_drop_down':
-                this.tbHeader[index].icon = 'arrow_drop_up';
-                strOrderCmd = 'up';
-                break;
-            case 'arrow_drop_up':
-                this.tbHeader[index].icon = 'arrow_drop_down';
-                strOrderCmd = 'down';
-                break;
-        }
-        this.sortTable(index, strOrderCmd);
-    }
-
-    sortTable(index, strOrderCmd) {
-        console.log('Prop', this.fondoList.Portarray);
-        // this.fondoList.Portarray.sort(function(a, b){
-        //     const keyA = a[Object.keys(a)[index]],
-        //         keyB = b[Object.keys(a)[index]];
-        //
-        //     // Compare the 2 dates
-        //     if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
-        //     if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
-        //     return 0;
-        // });
-    }
-
-
-
 }
