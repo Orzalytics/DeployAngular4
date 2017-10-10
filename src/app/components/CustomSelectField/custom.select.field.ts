@@ -1,6 +1,5 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input,
-    OnInit
-} from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnInit } from '@angular/core';
+import {FormControl} from '@angular/forms';
 
 @Component({
     selector: 'app-custom-select-field',
@@ -11,6 +10,8 @@ import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input,
 export class CustomSelectComponent implements OnInit, AfterViewChecked {
     @Input('dataSelected') dataSelected: string;
     @Input('dataList') dataList: string;
+    @Input('field') field: FormControl;
+
     public width: number = 0;
     public selectElement: any;
 
