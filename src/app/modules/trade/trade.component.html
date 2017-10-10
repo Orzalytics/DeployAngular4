@@ -15,6 +15,37 @@
                                          [dataList]="fondosList"></app-custom-select-field>
             </md-grid-tile>
         </md-grid-list>
+        <md-grid-list cols="1" rowHeight="134px">
+            <md-grid-tile>
+                <md-card class="md-card-top" [style.width]="'100%'">
+                    <md-card-content class="flex">
+                        <md-form-field>
+                            <input mdInput
+                                   [value]="ngDatepicker"
+                                   [mdDatepicker]="pickerForm"
+                                   placeholder="Choose a date"
+                                   (dateInput)="onInputDatepicker($event)"
+                                   (dateChange)="onInputDatepicker($event)">
+                            <md-datepicker-toggle mdSuffix [for]="pickerForm" style="width: 10px"></md-datepicker-toggle>
+                            <md-datepicker [value]="ngDatepicker" #pickerForm></md-datepicker>
+                        </md-form-field>
+                        <md-select cdk-connected-overlay>
+                            <md-option value="comprar">Comprar</md-option>
+                            <md-option value="comprar 2">Comprar2</md-option>
+                        </md-select>
+                        <md-input-container>
+                            <input mdInput placeholder="Pessos" name="pessos">
+                        </md-input-container>
+                        <md-input-container>
+                            <input mdInput placeholder="Unidades" name="unidades">
+                        </md-input-container>
+                        <md-input-container>
+                            <input mdInput placeholder="% del portfolio" name="delPortfolio">
+                        </md-input-container>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+        </md-grid-list>
     </form>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
@@ -109,7 +140,11 @@
             [step]="1">
         </md-slider>
         <md-form-field>
-            <input mdInput [value]="ngDatepicker" [mdDatepicker]="picker" placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
+            <input mdInput [value]="ngDatepicker"
+                   [mdDatepicker]="picker"
+                   placeholder="Choose a date"
+                   (dateInput)="onInputDatepicker($event)"
+                   (dateChange)="onInputDatepicker($event)">
             <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
             <md-datepicker [value]="ngDatepicker" #picker></md-datepicker>
         </md-form-field>
