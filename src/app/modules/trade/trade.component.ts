@@ -11,9 +11,10 @@ import * as MainOpr from './../../mainoperation/mainoperation.component';
 // import {Observable} from 'rxjs/Observable';
 
 import * as moment from 'moment';
-import {ActivatedRoute} from '@angular/router';
-import {ObservableMedia} from "@angular/flex-layout";
-import {Observable} from "rxjs/Observable";
+import { ActivatedRoute } from '@angular/router';
+import { ObservableMedia } from '@angular/flex-layout';
+import { Observable } from 'rxjs/Observable';
+import { FormControl, FormGroup } from '@angular/forms';
 
 let HttpService: any;
 let self: any;
@@ -25,14 +26,6 @@ let self: any;
   providers: [ServiceComponent]
 })
 export class TradeComponent implements OnInit, OnDestroy {
-    private routeName: string;
-    private sub: any;
-
-    public isValid: boolean = false;
-    public cols:  Observable<number>;
-
-    public ngPortfolioName: string;
-
     ngPortIndex: number = -1;
 
     // Chart Input Values //
@@ -90,9 +83,23 @@ export class TradeComponent implements OnInit, OnDestroy {
     tableStore = {};
 
     // my refactoring;
+    private routeName: string;
+    private sub: any;
+
+    public isValid: boolean = false;
+    public cols:  Observable<number>;
+
+    public ngPortfolioName: string;
+    public ngFondoName: string;
+
     public portfolioList = [];
     public fondosList: Array<number>;
     public fondoList: any;
+
+    public tradeForm = new FormGroup({
+        portfolio: new FormControl('test'),
+        fondo: new FormControl(),
+    });
 
     constructor( private route: ActivatedRoute,
                  private service:ServiceComponent,
@@ -103,6 +110,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.sub = route.params.subscribe(params => {
             this.routeName = params['name'];
             this.ngPortfolioName = params['name'];
+            this.tradeForm.controls['portfolio'].setValue(params['name']);
         });
     }
 
@@ -129,6 +137,14 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.cols = this.observableMedia.asObservable()
             .map(change => grid.get(change.mqAlias))
             .startWith(start);
+
+        // Rerender graph after changes portfolio or fondo
+        this.tradeForm.controls['portfolio'].valueChanges.subscribe((value) => {
+            this.ngPortfolioName = value;
+        });
+        this.tradeForm.controls['fondo'].valueChanges.subscribe((value) => {
+            this.ngFondoName = value;
+        });
     }
 
     ngOnDestroy() {
@@ -165,6 +181,9 @@ export class TradeComponent implements OnInit, OnDestroy {
                     });
                     // Set fondos list
                     this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
+                    this.ngFondoName = this.fondosList[0]['name'];
+                    this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
+                    console.log('Form ',this.fondosList[0]['name']);
                 });
         }
     };

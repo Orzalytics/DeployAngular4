@@ -1,21 +1,21 @@
 <div *ngIf="isValid" class="md-main-page">
-    <md-grid-list cols="3" rowHeight="100px">
-        <md-grid-tile>
-            <app-custom-select-field [dataSelected]="ngPortfolioName" [dataList]="portfolioList"></app-custom-select-field>
-            <!--<md-select [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">-->
-                <!--<md-option *ngFor="let eachObj of portfolioList" [value]="eachObj.portname">{{eachObj.portname}}</md-option>-->
-            <!--</md-select>-->
-        </md-grid-tile>
-        <md-grid-tile>
-            <h2 class="title mat-headline">Comprar / vender</h2>
-        </md-grid-tile>
-        <md-grid-tile>
-            <app-custom-select-field [dataSelected]="ngPortfolioName" [dataList]="fondosList"></app-custom-select-field>
-            <!--<md-select placeholder="Select portfolio" [(ngModel)]="ngPortfolioName" (ngModelChange)="onPfnameChanged()">-->
-                <!--<md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>-->
-            <!--</md-select>-->
-        </md-grid-tile>
-    </md-grid-list>
+    <form [formGroup]="tradeForm">
+        <md-grid-list cols="3" rowHeight="100px">
+            <md-grid-tile>
+                <app-custom-select-field [field]="tradeForm.controls['portfolio']"
+                                         [dataSelected]="tradeForm.controls['portfolio'].value"
+                                         [dataList]="portfolioList"></app-custom-select-field>
+            </md-grid-tile>
+            <md-grid-tile>
+                <h2 class="title mat-headline">Comprar / vender</h2>
+            </md-grid-tile>
+            <md-grid-tile>
+                <app-custom-select-field [field]="tradeForm.controls['fondo']"
+                                         [dataSelected]="tradeForm.controls['fondo'].value"
+                                         [dataList]="fondosList"></app-custom-select-field>
+            </md-grid-tile>
+        </md-grid-list>
+    </form>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
         <md-grid-tile>
