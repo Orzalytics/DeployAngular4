@@ -15,11 +15,11 @@
                                          [dataList]="fondosList"></app-custom-select-field>
             </md-grid-tile>
         </md-grid-list>
-        <md-grid-list cols="1" rowHeight="134px">
-            <md-grid-tile>
-                <md-card class="md-card-top" [style.width]="'100%'">
-                    <md-card-content class="flex">
-                        <md-form-field>
+        <md-card class="md-card-top">
+            <md-card-content>
+                <div fxLayout="row" fxLayoutWrap>
+                    <div fxFlex="20" fxFlex.sm="33" fxFlex.xs="50">
+                        <md-form-field fxFlex="97">
                             <input mdInput
                                    [value]="ngDatepicker"
                                    [mdDatepicker]="pickerForm"
@@ -29,23 +29,34 @@
                             <md-datepicker-toggle mdSuffix [for]="pickerForm" style="width: 10px"></md-datepicker-toggle>
                             <md-datepicker [value]="ngDatepicker" #pickerForm></md-datepicker>
                         </md-form-field>
-                        <md-select cdk-connected-overlay>
+                    </div>
+                    <div fxFlex="auto" fxFlex.sm="33" fxFlex.xs="50">
+                        <md-select cdk-connected-overlay fxFlex="97">
                             <md-option value="comprar">Comprar</md-option>
                             <md-option value="comprar 2">Comprar2</md-option>
                         </md-select>
-                        <md-input-container>
+                    </div>
+                    <div fxFlex="20" fxFlex.sm="33" fxFlex.xs="50">
+                        <md-input-container fxFlex="97">
                             <input mdInput placeholder="Pessos" name="pessos">
                         </md-input-container>
-                        <md-input-container>
+                    </div>
+                    <div fxFlex="20" fxFlex.sm="33" fxFlex.xs="50">
+                        <md-input-container fxFlex="97">
                             <input mdInput placeholder="Unidades" name="unidades">
                         </md-input-container>
-                        <md-input-container>
+                    </div>
+                    <div fxFlex="20" fxFlex.sm="33" fxFlex.xs="50">
+                        <md-input-container fxFlex="97">
                             <input mdInput placeholder="% del portfolio" name="delPortfolio">
                         </md-input-container>
-                    </md-card-content>
-                </md-card>
-            </md-grid-tile>
-        </md-grid-list>
+                    </div>
+                    <div fxFlex="none" fxFlex.sm="33" fxFlex.xs="50" [style.textAlign]="'right'">
+                        <button md-mini-fab>ok</button>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
     </form>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
