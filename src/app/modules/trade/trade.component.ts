@@ -91,6 +91,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
     // my refactoring;
     public portfolioList = [];
+    public fondosList: Array<number>;
     public fondoList: any;
 
     constructor( private route: ActivatedRoute,
@@ -145,7 +146,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
                     this.setSlider();
                     // this.onInitSelect();
-                    this.onPfnameChanged();
+                    // this.onPfnameChanged();
                     // this.setEscojePortafolio();
                     // this.setEscojeFondo();
                     // this.setComprarVender();
@@ -153,6 +154,17 @@ export class TradeComponent implements OnInit, OnDestroy {
                     this.onRefreshTable();
                     // this.checkTable();
                     this.isValid = true;
+
+
+
+
+
+                    // Set portfolio list with transform array
+                    this.portfolioList = Globals.g_Portfolios.arrDataByPortfolio.map((obj) => {
+                        return { ...obj, name: obj.portname};
+                    });
+                    // Set fondos list
+                    this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
                 });
         }
     };
@@ -315,7 +327,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     // }
 
     onPfnameChanged() {
-        this.portfolioList = Globals.g_Portfolios.arrDataByPortfolio;
         console.log('Globals', Globals.g_Portfolios);
         console.log('this.ngPortfolioName', this.ngPortfolioName);
         Globals.g_AllStatus.strPfName = this.ngPortfolioName;
