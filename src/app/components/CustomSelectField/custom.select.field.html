@@ -1,0 +1,8 @@
+<md-select cdk-connected-overlay
+           class="custom-analizar"
+           [style.width]="width + 'px'"
+           [(ngModel)]="dataSelected">
+    <md-option *ngFor="let eachObj of dataList" [value]="eachObj.portname">
+        {{eachObj.portname}}
+    </md-option>
+</md-select>
