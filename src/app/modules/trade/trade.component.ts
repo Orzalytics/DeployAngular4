@@ -141,6 +141,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         // Rerender graph after changes portfolio or fondo
         this.tradeForm.controls['portfolio'].valueChanges.subscribe((value) => {
             this.ngPortfolioName = value;
+            this.onRefreshTable();
         });
         this.tradeForm.controls['fondo'].valueChanges.subscribe((value) => {
             this.ngFondoName = value;
@@ -190,9 +191,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                     // Set fondos list
                     this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
                     this.ngFondoName = this.fondosList[0]['name'];
-                    console.log('Init 2',);
                     this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
-                    console.log('Form ',this.fondosList[0]['name']);
                 });
         }
     };
