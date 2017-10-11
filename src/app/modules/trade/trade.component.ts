@@ -14,7 +14,7 @@ import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
-import { FormControl, FormGroup } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 let HttpService: any;
 let self: any;
@@ -46,26 +46,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     // ngFileUploadPath: any;
     public nTimerId: any;
 
-    // escoje portafolio //
-    ngScopeVoP: any;
-    ngScopeGoL: any;
-    ngScopeMax: any;
-    ngScopeMin: any;
-    ngScopeRate: any;
-
-    // escoje fondo //
-    ngScopeDay91: any;
-    ngScopeDay182: any;
-    ngScopeDay365: any;
-    ngScopeYear: any;
-
     ngScopeFanData: any;
-
-    // comprar o vender //
-    ngScopeUnidades: any;
-    ngScopeTranPrice: any;
-    ngSecondGraphModel: any;
-    ngSecondGraphAmount: any;
 
     // transaction table //
     // values for icon information on table header
@@ -99,6 +80,14 @@ export class TradeComponent implements OnInit, OnDestroy {
     public tradeForm = new FormGroup({
         portfolio: new FormControl('test'),
         fondo: new FormControl(),
+        date: new FormControl(new Date(Globals.g_GlobalStatic.startDate)),
+        trade: new FormControl('comprar'),
+        pesos: new FormControl(null, [
+            Validators.required,
+        ]),
+        unidades: new FormControl(null, [
+            Validators.required,
+        ]),
     });
 
     constructor( private route: ActivatedRoute,
@@ -150,6 +139,14 @@ export class TradeComponent implements OnInit, OnDestroy {
             });
             this.ngScopeFanData = MainOpr.calculateFanChartData(indexValue);
         });
+
+        this.resetForm();
+        // this.tradeForm.controls['pesos'].valueChanges.subscribe((value) => {
+        //     this.calculateUnidades(value);
+        // });
+        // this.tradeForm.controls['unidades'].valueChanges.subscribe((value) => {
+        //     this.calculatePesos(value);
+        // });
     }
 
     ngOnDestroy() {
@@ -166,14 +163,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                     MainOpr.CalculatePortfolioData();
 
                     this.setSlider();
-                    // this.onInitSelect();
-                    // this.onPfnameChanged();
-                    // this.setEscojePortafolio();
-                    // this.setEscojeFondo();
-                    // this.setComprarVender();
-                    // this.onInitGraphData();
                     this.onRefreshTable();
-                    // this.checkTable();
                     this.isValid = true;
 
 
@@ -202,41 +192,34 @@ export class TradeComponent implements OnInit, OnDestroy {
         const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
-        this.ngDatepicker = new Date(selectedDate);
+        this.tradeForm.controls['date'].setValue(new Date(selectedDate));
+        // this.ngDatepicker = new Date(selectedDate);
 
         this.ngSliderIndex = event.value;
-
-        // Update Escoje Fondo&Portafolio
-        // this.setEscojePortafolio();
-        // this.setEscojeFondo();
-        // this.setComprarVender();
     }
 
     onInputDatepicker(event: any) {
         const diffDate = moment(event.value).diff(moment(Globals.g_GlobalStatic.startDate), 'days');
         this.ng_strDate = Globals.convertDate(moment(event.value).format('YYYY-DD-MM'));
+        this.tradeForm.controls['date'].setValue(new Date(event.value));
         Globals.g_Portfolios.nSliderIndex = diffDate;
 
-        // Update Slider Index for send Event
         this.ngSliderIndex = diffDate;
-
-        // Update Escoje Fondo&Portafolio
-        // this.setEscojePortafolio();
-        // this.setEscojeFondo();
-        // this.setComprarVender();
     }
+
     onRefreshTable() {
         const transactions = Globals.g_FundParent.arrAllTransaction;
         this.fondoList = {};
 
         const transactionsByPort = transactions.filter((obj) => {
-            return obj.strPortID === this.ngPortfolioName;
+            return obj.strPortID === this.ngPortfolioName &&
+                   moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
         });
         this.fondoList = {
             'PortIndex': 0,
             'PortStatus': 'Show',
             'PortIcon': 'add',
-            'Portname': transactionsByPort[0].strPortID,
+            'Portname': transactionsByPort[0] && transactionsByPort[0].strPortID || [],
             'Portarray': transactionsByPort
         };
 
@@ -279,129 +262,84 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
     }
 
-    // setEscojePortafolio() {
-    //     if (this.ngPortIndex > -1) {
-    //         let VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
-    //         let Max = 0;
-    //         let Min = 999999;
-    //         let GoL = 0;
-    //
-    //         for (let i = 0; i <= this.ngSliderIndex; i ++) {
-    //             if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
-    //             if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
-    //         }
-    //         if (VoP > 0) GoL = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[this.ngSliderIndex] / VoP * 100;
-    //
-    //         this.ngScopeVoP = (VoP != undefined) ? Globals.numberWithCommas(VoP.toFixed(2)) : 0;
-    //         this.ngScopeGoL = (GoL != undefined) ? Globals.numberWithCommas(GoL.toFixed(2)) : 0;
-    //         this.ngScopeMax = Globals.numberWithCommas(Max.toFixed(2));
-    //         this.ngScopeMin = (Min != 999999) ? Globals.numberWithCommas(Min.toFixed(2)) : 0;
-    //         this.ngScopeRate = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].yearRateArray[this.ngSliderIndex];
-    //     }else{
-    //         this.ngScopeVoP = '0.00';
-    //         this.ngScopeGoL = '0.00';
-    //         this.ngScopeMax = '0.00';
-    //         this.ngScopeMin = '0.00';
-    //         this.ngScopeRate = '0.00';
-    //     }
-    // }
-    //
-    // setEscojeFondo() {
-    //     const day91 = Globals.g_FundParent.arrAllReturns.day91_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-    //     const day182 = Globals.g_FundParent.arrAllReturns.day182_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-    //     const day365 = Globals.g_FundParent.arrAllReturns.day365_return[this.ngSelFondosValue][this.ngSliderIndex]*100;
-    //     const year = Globals.g_FundParent.arrAllReturns.newstart_return[this.ngSelFondosValue][this.ngSliderIndex] * 1;
-    //     this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
-    //     this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
-    //     this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
-    //     this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
-    //     if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
-    //     if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
-    //     if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
-    //     if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
-    // }
-    //
-    // setComprarVender() {
-    //     this.ngSecondGraphModel = 0;
-    //     this.ngSecondGraphAmount  = 0;
-    //     this.ngScopeUnidades = 0;
-    //     this.ngScopeTranPrice = 0;
-    //
-    //     for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++){
-    //         if (this.ngPortfolioName == Globals.g_Portfolios.arrDataByPortfolio[i].portname){
-    //             let sum = 0;
-    //             for (let j = 0; j <= this.ngSliderIndex; j ++){
-    //                 sum = sum + Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][j].unidades;
-    //             }
-    //
-    //             this.ngScopeUnidades = Globals.numberWithCommas(sum.toFixed(6));
-    //             this.ngScopeTranPrice = Globals.numberWithCommas(Globals.g_Portfolios.arrDataByPortfolio[i].staircase[this.ngSelFondosValue][this.ngSliderIndex].toFixed(2));
-    //             this.ngSecondGraphModel = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].unidades;
-    //             this.ngSecondGraphAmount = Globals.g_Portfolios.arrDataByPortfolio[i].arrPurchase[this.ngSelFondosValue][this.ngSliderIndex].pesos;
-    //             break;
-    //         }
-    //     }
-    // }
-    //
-    // onInitSelect() {
-    //     this.fondos = [];
-    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
-    //         const fondoType = {value : 0, viewValue : ''};
-    //         fondoType.value = i;
-    //         fondoType.viewValue = Globals.g_DatabaseInfo.ListofPriceFund[i].name;
-    //         this.fondos[i] = fondoType;
-    //     }
-    //     this.ngSelFondosValue = this.fondos[0].value;
-    // }
-    //
-    // onInitGraphData() {
-    //     const arrOtherNew999Price = [];
-    //     const arrOtherStaircase = [];
-    //
-    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++) {
-    //         arrOtherNew999Price[i] = [];
-    //         arrOtherStaircase[i] = [];
-    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++) {
-    //             arrOtherNew999Price[i][j] = 0;
-    //             arrOtherStaircase[i][j] = 0;
-    //             if (this.ngPortIndex > -1) arrOtherNew999Price[i][j] = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].arrPurchase[i][j].unidades;
-    //             if ((i == this.ngSelFondosValue) && (j == this.ngSliderIndex)) {
-    //                 arrOtherNew999Price[i][j] = this.ngSecondGraphModel;
-    //             }
-    //         }
-    //     }
-    //
-    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund.length; i ++){
-    //         let temp = 0;
-    //         let new999Price = 0;
-    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund[i].ulen; j ++){
-    //             if (arrOtherNew999Price[i][j] != 0){
-    //                 temp = temp + arrOtherNew999Price[i][j];
-    //                 new999Price = new999Price + Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] * arrOtherNew999Price[i][j];
-    //             }
-    //             arrOtherNew999Price[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j] - new999Price;
-    //             arrOtherStaircase[i][j] = temp * Globals.g_DatabaseInfo.ListofPriceFund[i].u[j];
-    //         }
-    //     }
-    //
-    //     const arrPortSum = [];
-    //     const arrStairSum = [];
-    //     for (let i = 0; i < Globals.g_DatabaseInfo.ListofPriceFund[0].ulen; i++) {
-    //         let sum1 = 0;
-    //         let sum2 = 0;
-    //
-    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++){
-    //             sum1 = sum1 + arrOtherNew999Price[j][i];
-    //             sum2 = sum2 + arrOtherStaircase[j][i];
-    //         }
-    //
-    //         arrPortSum.push(sum1);
-    //         arrStairSum.push(sum2);
-    //     }
-    //
-    //     Globals.g_AllStatus.arrPortfolioData = arrPortSum;
-    //     Globals.g_AllStatus.arrStaircaseData = arrStairSum;
-    // }
+    calculateUnidades(value) {
+        const indexFondosValue = this.fondosList.findIndex((obj) => {
+            return obj.name === this.ngFondoName;
+        });
+        const Unidades = value / Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex];
+        this.tradeForm.controls['unidades'].setValue(Globals.toFixedDecimal(Unidades, 6));
+    }
+
+    calculatePesos(value) {
+        const indexFondosValue = this.fondosList.findIndex((obj) => {
+            return obj.name === this.ngFondoName;
+        });
+        const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex] * value * 10000) / 10000;
+        this.tradeForm.controls['pesos'].setValue(Globals.toFixedDecimal(Pesos, 6));
+    }
+
+    resetForm() {
+        console.log('Reset form',);
+        this.tradeForm.controls['date'].valueChanges.subscribe(() => {
+            this.tradeForm.controls['pesos'].setValue(null);
+            this.tradeForm.controls['unidades'].setValue(null);
+            this.onRefreshTable();
+        });
+        this.tradeForm.controls['fondo'].valueChanges.subscribe(() => {
+            this.tradeForm.controls['pesos'].setValue(null);
+            this.tradeForm.controls['unidades'].setValue(null);
+        });
+    }
+
+    formChange() {
+        console.log('Change form',);
+    }
+
+    onBuy(valuesForm) {
+        if (this.tradeForm.valid === false) return false;
+
+        const indexFondosValue = this.fondosList.findIndex((obj) => {
+            return obj.name === this.ngFondoName;
+        });
+
+        let url = '/buy';
+        if(valuesForm.trade === 'comprar') {
+            // buy item
+            url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
+            url = url + '/' + valuesForm.unidades;
+            url = url + '/' + 999;
+            url = url + '/' + valuesForm.pesos;
+            url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
+            url = url + '/' + valuesForm.portfolio;
+            url = url + '/' + 'deploy_user';
+            url = url + '/' + Globals.convertDate(new Date());
+            console.log('BUY URL', url);
+        } else {
+            // sell item
+            url = url + '/' + 999;
+            url = url + '/' + Math.abs(valuesForm.unidades);
+            url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
+            url = url + '/' + Math.abs(valuesForm.pesos);
+            url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
+            url = url + '/' + valuesForm.portfolio;
+            url = url + '/' + 'deploy_user';
+            url = url + '/' + Globals.convertDate(new Date());
+            console.log('SELL URL', url);
+        }
+
+        // HttpService.getBuyResponse(url).subscribe(
+        //     response => {
+        //         HttpService.getTransactionList().subscribe(
+        //             response => {
+        //                 MainOpr.getTransactionData(response);
+        //                 MainOpr.CalculatePortfolioData();
+        //                 this.onRefreshTable();
+        //                 this.checkTable();
+        //
+        //                 this.disabled = false;
+        //             });
+        //     });
+    }
 
     checkTable() {
         for (let i = 0; i < this.tableInfo.length; i ++) {
