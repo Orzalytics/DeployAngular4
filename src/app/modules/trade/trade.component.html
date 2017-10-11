@@ -36,7 +36,12 @@
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">Retorno 91 dias, Riesgo 7 dias</md-card-title>
                 <md-card-content>
-                </md-card-content>
+                  <div [SliderIndex]="ngSliderIndex"
+                       [RefreshAll]="ngAllRefresh"
+                       [SliderDisable]="disabled"
+                       [PfName]="ngPortfolioName"
+                       [WindowSize]="ngWidth" d3ScatterCompare></div>
+               </md-card-content>
             </md-card>
         </md-grid-tile>
     </md-grid-list>

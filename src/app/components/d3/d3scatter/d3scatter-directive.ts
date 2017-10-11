@@ -121,14 +121,14 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             .attr('transform', 'translate(' + (margin.left) + ', 0)')
             .call(d3.axisLeft(y));
 
-        d3.selectAll('.tick > text')
+        svg.selectAll('.tick > text')
             .style('font-size', '12px');
 
-        d3.selectAll('.x_axis > path')
+        svg.selectAll('.x_axis > path')
             .style('stroke-dasharray', ('3, 3'))
             .style('stroke', '#F44336')
             .attr('transform', 'translate(0 , ' + (-this.height+y(0)+margin.top) + ')');
-        d3.selectAll('.y_axis > path')
+        svg.selectAll('.y_axis > path')
             .style('stroke', '#F44336');
 
         const clip = svg.append('defs').append('svg:clipPath')

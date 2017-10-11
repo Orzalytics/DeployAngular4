@@ -58,9 +58,9 @@ export class D3PortHisogram{
 
 	createData(){
 		for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
-				if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
-						this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
-				}
+			if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
+				this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
+			}
 		}
 
 		let histogramRange = ['-0.10', '-0.05', '0.00', '0.05', '0.10', '0.15', '0.20', '0.25'];
@@ -132,7 +132,7 @@ export class D3PortHisogram{
 		const element = this.chartElement;
 		this.width = window.innerWidth
 		this.height = 150;
-		if (window.innerWidth >= 1280) this.width = window.innerWidth / 100 * 25 - this.margin.left - this.margin.right;
+		if (window.innerWidth >= 1280) this.width = window.innerWidth / 100 * 33 - this.margin.left - this.margin.right;
 		else this.width = window.innerWidth - this.margin.left - this.margin.right;
 		this.width = this.width - 16 * 2 - 20;
 

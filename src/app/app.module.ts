@@ -25,6 +25,7 @@ import { D3PortLine } from './components/d3/d3PortLine/d3portline-directive';
 import { D3TreeMap } from './components/d3/d3TreeMap/d3treemap-directive';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { D3PortHisogram } from './components/d3/d3PortHisogram/d3porthisogram-directive';
+import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scattercompare-directive';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     D3FundLine,
     D3PortLine,
     D3TreeMap,
-    D3PortHisogram
+    D3PortHisogram,
+    D3ScatterPlotCompare
   ],
   imports: [
     BrowserModule,

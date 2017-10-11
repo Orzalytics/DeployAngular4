@@ -27,14 +27,12 @@ export class D3PortLine implements OnInit, OnChanges {
 
     ngOnInit() {
         x_Data = [];
-        console.log('resize',);
         y_Data = [];
         this.createData();
         setTimeout(() => {
             this.createChart();
         }, 100);
         window.onresize = () => {
-            console.log('resize',);
             setTimeout(() => {
                 this.createChart();
             }, 100);
