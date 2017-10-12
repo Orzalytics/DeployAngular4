@@ -17,6 +17,7 @@
     </md-grid-list>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
+
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">Utilidad portafolio en pesos</md-card-title>
@@ -25,6 +26,7 @@
                 </md-card-content>
             </md-card>
         </md-grid-tile>
+
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">Retorno portafolio 91 días</md-card-title>
@@ -33,6 +35,7 @@
                 </md-card-content>
             </md-card>
         </md-grid-tile>
+
         <md-grid-tile>
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">Retorno 91 dias, Riesgo 7 dias</md-card-title>
@@ -46,10 +49,12 @@
                     <div [SliderIndex]="ngSliderIndex"
                          [RefreshAll]="ngAllRefresh"
                          [SliderDisable]="disabled"
+                         [PortfolioName]="ngPortfolioName"
                          [WindowSize]="ngWidth" d3Scatter></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
+
     </md-grid-list>
     <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
     <md-toolbar class="md-toolbar-bottom">

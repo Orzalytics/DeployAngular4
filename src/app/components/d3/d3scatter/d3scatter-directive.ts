@@ -2,10 +2,11 @@ import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@a
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
-var y_Day91Return: any;
-var x_Day7LossMin: any;
+let y_Day91Return: any;
+let x_Day7LossMin: any;
 
-var nSliderIndex: number;
+let nSliderIndex: number;
+let nPortfolioName: string;
 
 @Directive({
     selector: '[d3Scatter]'
@@ -22,6 +23,8 @@ export class D3ScatterPlot implements OnInit, OnChanges {
     @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshAll') RefreshAll: any;
+    @Input('PortfolioName') PortfolioName: any;
+
 
     constructor (private el: ElementRef) {
         this.chartElement = el.nativeElement;
@@ -35,7 +38,6 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             this.createChart();
         }, 100);
         window.onresize = () => {
-            console.log('resize',);
             setTimeout(() => {
                 this.createChart();
             }, 100);
@@ -44,6 +46,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         nSliderIndex = this.SliderIndex;
+        nPortfolioName = this.PortfolioName;
         x_Day7LossMin = [];
         y_Day91Return = [];
         this.createData();
@@ -55,7 +58,6 @@ export class D3ScatterPlot implements OnInit, OnChanges {
         // calculate for funds
         for (let i = 0; i < Globals.g_FundParent.arrAllReturns.day91_return.length; i ++) {
           y_Day91Return[i] = Globals.g_FundParent.arrAllReturns.day91_return[i][this.SliderIndex];
-
           let min = 99999;
           for (let j = 0; j <= this.SliderIndex; j ++) {
             if (min > Globals.g_FundParent.arrAllReturns.day7_loss[i][j]) min = Globals.g_FundParent.arrAllReturns.day7_loss[i][j];
@@ -170,7 +172,13 @@ export class D3ScatterPlot implements OnInit, OnChanges {
                 return y(yValue) - 10;
             })
             .text( function (d, i) {
-                if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) return Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
+                    let portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                    if (nPortfolioName == portName) {
+                        return portName;
+                    }
+                    else return '';
+                }   
                 else return '';
             })
             .attr('font-family', 'sans-serif')
@@ -242,8 +250,8 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             .on('mouseout',  onMouseOut);
 
             function onMouseOver(index){
-                var xData = x_Day7LossMin[index];
-                var yData = y_Day91Return[index];
+                let xData = x_Day7LossMin[index];
+                let yData = y_Day91Return[index];
 
                 if (xData > 0.25) xData = 0.25;
                 if (xData < 0) xData = 0;
