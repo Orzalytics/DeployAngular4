@@ -8,6 +8,9 @@ let x_Day7LossMin: any;
 let nSliderIndex: number;
 let nPortfolioName: string;
 
+let portСompositionObj: Array<any>;
+let includedFunds: Array<any>;
+
 @Directive({
     selector: '[d3Scatter]'
 })
@@ -24,7 +27,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshAll') RefreshAll: any;
     @Input('PortfolioName') PortfolioName: any;
-
+    @Input('TableInfo') TableInfo: any;
 
     constructor (private el: ElementRef) {
         this.chartElement = el.nativeElement;
@@ -33,6 +36,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
     ngOnInit() {
         x_Day7LossMin = [];
         y_Day91Return = [];
+        this.prepareData();
         this.createData();
         setTimeout(() => {
             this.createChart();
@@ -54,6 +58,17 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             this.createChart();
         // }, 100)
     }
+
+    prepareData() {
+        portСompositionObj = [];
+        for (let portfolio of this.TableInfo) {
+            portСompositionObj[portfolio.Portname] = [];
+            for (let port of portfolio.Portarray) {
+                portСompositionObj[portfolio.Portname].push(port.strFundName);
+            }
+        }
+    }
+
     createData() {
         // calculate for funds
         for (let i = 0; i < Globals.g_FundParent.arrAllReturns.day91_return.length; i ++) {
@@ -178,7 +193,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
                         return portName;
                     }
                     else return '';
-                }   
+                }
                 else return '';
             })
             .attr('font-family', 'sans-serif')
@@ -227,10 +242,20 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             })
             .attr('clip-path', 'url(#clip)')
             .style('fill', function(d, i){
-                const cntFund = Globals.g_DatabaseInfo.ListofPriceFund.length;
-                const isPort = (i < cntFund) ? 0 : 1;
-                const color = d3.rgb(isPort * (100 + 150/(i-cntFund+1)), (100 + 100/(i+1)) * (1-isPort), 0);
-                return color + '';
+                if (portСompositionObj !== undefined) {
+                    if ( i < Globals.g_DatabaseInfo.ListofPriceFund.length &&
+                        portСompositionObj[nPortfolioName].indexOf( Globals.g_DatabaseInfo.ListofPriceFund[i].name ) != -1 ) {
+                        return '#ff5800';
+                    }
+                    else if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
+                        let portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                        if (nPortfolioName == portName) {
+                            return 'ff0000';
+                        }
+                        else return '#006e00';
+                    }
+                    else return '#006e00';
+                }
             })
             .style('opacity', function(d, i){
                 const cntFund = Globals.g_DatabaseInfo.ListofPriceFund.length;
