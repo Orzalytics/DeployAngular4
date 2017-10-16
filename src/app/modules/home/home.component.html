@@ -36,9 +36,13 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile>
+        <md-grid-tile #clickEl>
             <md-card class="md-card-top md-card-child">
-                <md-card-title id="card-title">Retorno 91 dias, Riesgo 7 dias</md-card-title>
+                <md-card-title id="card-title">
+                    <span>Retorno 91 dias, Riesgo 7 dias</span>
+                    <md-icon (click)="tranformFunc()" class="pull-right">fullscreen</md-icon>
+                    <!--<md-icon *ngIf="fullscreen" (click)="tranformFunc()" class="pull-right">fullscreen_exit</md-icon>-->
+                </md-card-title>
                 <md-card-content>
                     <div class="scatter_tooltip" id="scatter_tooltip">
                         <div class="scatter_title" id="scatter_title">Title1234567889</div>

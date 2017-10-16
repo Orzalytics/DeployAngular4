@@ -284,7 +284,8 @@ md-slider {
     text-anchor: middle;
 }
 
-/*.d3porthisogram .d3-chart {
+/*
+.d3porthisogram .d3-chart {
   width: 100%;
   height: 400px;
 }
@@ -296,7 +297,8 @@ md-slider {
 
 .d3porthisogram .d3-chart .axis text {
   fill: #999;
-}*/
+}
+*/
 
 .d3porthisogram .axis.axis-y {
     display: none;
@@ -308,4 +310,8 @@ md-slider {
     background-color: transparent;
     position: absolute !important;
     z-index: 1000;
+}
+.mat-grid-tile, .mat-card {
+    transition: all .6s ease !important;
+    z-index: 1;
 }

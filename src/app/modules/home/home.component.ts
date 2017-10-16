@@ -23,6 +23,10 @@ let self: any;
 })
 export class HomeComponent implements OnInit, OnDestroy {
     @ViewChild('selectPortfolio', {read: ElementRef}) selectPortfolio: ElementRef;
+
+    @ViewChild('clickEl', {read: ElementRef}) clickEl: ElementRef;
+    fullscreen: boolean = false;
+
     public cols: Observable<number>;
     width: number;
     ngPortIndex: number = -1;
@@ -711,6 +715,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     // download transaction
     onDownload() {
         document.getElementById('download').click();
+    }
+
+    tranformFunc() {
+        if(this.fullscreen) {
+            this.clickEl.nativeElement.classList.remove('full-size');
+        } else {
+            this.clickEl.nativeElement.classList.add('full-size');
+        }
+
+        this.fullscreen = !this.fullscreen;
+        console.log('tranformFunc', this.fullscreen);
     }
 
     onResize(event) {
