@@ -3,15 +3,3 @@
     margin-top: 30px;
     margin-right: 20px;
 }
-.md-main-page1 {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-.md-main-page form {
-    /*flex: 1 0 auto;*/
-    margin-bottom: 100px;
-}
-.md-toolbar-bottom1 {
-    flex: 0 0 auto;
-}

@@ -12,6 +12,9 @@ body {
     min-height: 100%;
     position: relative;
 }
+.mat-drawer-opened {
+    width: 100%;
+}
 .mat-drawer-opened + .container-scrolling {
     height: calc(100vh - 64px);
     overflow: hidden;
@@ -84,7 +87,10 @@ md-slider {
 }
 
 .md-main-page{
-    margin-bottom: 100px;
+    /*margin-bottom: 100px;*/
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 128px);
 }
 
 .md-card-top{

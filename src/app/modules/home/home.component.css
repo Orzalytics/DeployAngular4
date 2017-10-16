@@ -3,10 +3,14 @@
     margin-top: 30px;
     margin-right: 20px;
 }
+.md-button-conteiner {
+    align-self: flex-end;
+    flex-grow: 4;
+    align-content: flex-end;
+    margin-bottom: 84px;
+    margin-right: 10px;
+}
 .mat-button {
-    position: absolute;
-    bottom: 100px;
-    right: 10px;
     font-size: 24px;
     background-color: #ff6f31;
     color: #fff;

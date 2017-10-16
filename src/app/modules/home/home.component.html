@@ -1,4 +1,4 @@
-<div *ngIf="isValid" class="md-main-page" cdk-scrollable>
+<div *ngIf="isValid" class="md-main-page">
     <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
         <md-grid-tile>
             <h2 class="title mat-headline">Analizar</h2>
@@ -57,8 +57,10 @@
         </md-grid-tile>
 
     </md-grid-list>
-    <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
-    <md-toolbar class="md-toolbar-bottom" fxFlex="none">
+    <div class="md-button-conteiner">
+        <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
+    </div>
+    <md-toolbar class="md-toolbar-bottom">
         <md-slider class="m-slider" (input)="onInputChange($event)"
             [disabled]="disabled"
             [max]="maxVal"
