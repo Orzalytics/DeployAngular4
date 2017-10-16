@@ -58,9 +58,9 @@ export class D3PortHisogram{
 
 	createData(){
 		for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
-				if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
-						this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
-				}
+			if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
+				this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
+			}
 		}
 
 		let histogramRange = ['-0.10', '-0.05', '0.00', '0.05', '0.10', '0.15', '0.20', '0.25'];
@@ -101,11 +101,10 @@ export class D3PortHisogram{
 			this.histogramData.push({label:histogramRange[i], value:0});
 		}
 		this.histogramData.push({label:" ", value:0});
-
 		//data calculation for tooltips (the value of each column in percent)
 		let histogramSumm = 0;
 		for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
-			this.histogramData[i+1].value = this.portfolioHistogramData[this.SliderIndex][i];
+			this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
 			histogramSumm += this.portfolioHistogramData[this.SliderIndex][i];
 		}
 
@@ -130,13 +129,12 @@ export class D3PortHisogram{
 
 	createChart() {
 		const element = this.chartElement;
+
 		this.width = window.innerWidth
-		this.height = 150;
-		if (window.innerWidth >= 1280) this.width = window.innerWidth / 100 * 25 - this.margin.left - this.margin.right;
+		this.height = 250;
+		if (window.innerWidth >= 1280) this.width = window.innerWidth / 100 * 33 - this.margin.left - this.margin.right;
 		else this.width = window.innerWidth - this.margin.left - this.margin.right;
 		this.width = this.width - 16 * 2 - 20;
-
-		console.log(this.width, this.height);
 
 		this.svg = d3.select(element).append('svg')
 			.attr('width', this.width + 50)
@@ -153,7 +151,7 @@ export class D3PortHisogram{
 		const yDomain = [0, d3.max(this.histogramData, d => d.value)];
 
 		// create scales
-		this.xScale = d3.scaleBand().padding(0.1).domain(xDomain).rangeRound([0, this.width+50]);
+		this.xScale = d3.scaleBand().padding(0.02).domain(xDomain).rangeRound([0, this.width+50]);
 		this.yScale = d3.scaleLinear().domain(yDomain).range([this.height, 0]);
 
 		// bar colors
@@ -201,7 +199,7 @@ export class D3PortHisogram{
 			.attr('y', d => this.yScale(0))
 			.attr('width', this.xScale.bandwidth())
 			.attr('height', 0)
-			// .style('fill', (d, i) => this.colors(i))		
+			// .style('fill', (d, i) => this.colors(i))
 			.style('fill', '#f7732d')
 			.transition()
 			.delay((d, i) => i * 10)
@@ -209,12 +207,23 @@ export class D3PortHisogram{
 			.attr('height', d => this.height - this.yScale(d.value));
 
 		//move x-axis left on half the width of the column to to display intervals
+		let bar = this.svg.select(".bars .bar").node().getBBox().width;
+		this.svg.select(".bars")
+					.attr("transform", "translate("+ Math.round(bar/2) +",0)");
+
 		let g = this.svg.select(".axis-x")
-				.attr("transform", "translate(2," + (this.height + this.margin.top) + ")");
-		let shift = g.select('.tick').attr('transform').match(/\((.*)\,/);
+				.attr("transform", "translate(0," + (this.height + this.margin.top) + ")");
+		
 		g.select("path").remove();
-		g.insert("path")
-				.attr("d", "M0.0,0V0.5H315V0")
-				.attr("transform", shift.input);
+		
+		let xAxis = this.svg.select(".axis-x").node().getBBox().width;
+
+		let shift = g.select('.tick').attr('transform').match(/\((.*)\,/);
+		if (d3.select(".custom-axis-x").empty()) {
+			g.insert("path")
+					.attr("d", "M0.0,0V0.5H"+ xAxis +"V0")
+					.attr("transform", shift.input)
+					.attr('class', 'custom-axis-x');
+		}
 	}
 }
