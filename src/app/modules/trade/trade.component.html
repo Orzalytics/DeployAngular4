@@ -68,6 +68,7 @@
                         <md-input-container fxFlex="97">
                             <input mdInput
                                    type="number"
+                                   max="10"
                                    placeholder="Pesos"
                                    formControlName="pesos"
                                    (change)="calculateUnidades(tradeForm.controls['pesos'].value)">

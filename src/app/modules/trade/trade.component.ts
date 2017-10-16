@@ -9,6 +9,7 @@ import * as MainOpr from './../../mainoperation/mainoperation.component';
 
 // material
 // import {Observable} from 'rxjs/Observable';
+import {CustomValidators} from './CustomValidators';
 
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
@@ -84,6 +85,8 @@ export class TradeComponent implements OnInit, OnDestroy {
         trade: new FormControl('comprar'),
         pesos: new FormControl(null, [
             Validators.required,
+            // CustomValidators.number,
+            // CustomValidators.numberq({max: 12})
         ]),
         unidades: new FormControl(null, [
             Validators.required,
