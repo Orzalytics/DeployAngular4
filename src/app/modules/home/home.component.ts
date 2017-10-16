@@ -304,7 +304,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     onPfnameChanged() {
         setTimeout(() => {
-            this.width = this.selectPortfolio.nativeElement.querySelector('.mat-select-value-text .ng-tns-c9-1').offsetWidth + 22;
+            this.width = this.selectPortfolio.nativeElement.querySelector('.mat-select-value-text span').offsetWidth + 22;
         });
 
         Globals.g_AllStatus.strPfName = this.ngPortfolioName;
