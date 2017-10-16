@@ -58,7 +58,7 @@
 
     </md-grid-list>
     <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
-    <md-toolbar class="md-toolbar-bottom">
+    <md-toolbar class="md-toolbar-bottom" fxFlex="none">
         <md-slider class="m-slider" (input)="onInputChange($event)"
             [disabled]="disabled"
             [max]="maxVal"

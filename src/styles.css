@@ -12,7 +12,10 @@ body {
     min-height: 100%;
     position: relative;
 }
-
+.mat-drawer-opened + .container-scrolling {
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
 .md-spacer {
     flex: 1 1 auto;
 }
@@ -294,4 +297,9 @@ md-slider {
 }
 .custom-analizar .mat-select-value-text {
     font-size: 24px;
+}
+.mat-drawer-container {
+    background-color: transparent;
+    position: absolute !important;
+    z-index: 1000;
 }
