@@ -295,3 +295,16 @@ md-slider {
 .custom-analizar .mat-select-value-text {
     font-size: 24px;
 }
+
+div.hoverTooltip {
+    position: absolute;
+    text-align: center;
+    width: 30px;
+    height: 15px;
+    padding: 4px;
+    font: 12px sans-serif;
+    background-color: white;
+    border : 1px solid #ff6f31;
+    border-radius: 5px;
+    pointer-events: none;
+}

@@ -2,12 +2,15 @@ import { Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, 
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
+let hoverTooltipDiv: any;
+let topChartTooltip: any;
+
 @Directive({
-	selector : '[d3porthisogram]'    
+	selector : '[d3porthisogram]'
 })
 
 export class D3PortHisogram{
-	private margin: any = { top: 0, bottom: 20, left: 20, right: 0};
+	private margin: any = { top: 17, bottom: 20, left: 20, right: 0};
 	private chart: any;
 	private svg: any;
 	private width: number;
@@ -22,6 +25,8 @@ export class D3PortHisogram{
 	private day91ReturnPortfolio: Array<any>;
 	private portfolioHistogramData: Array<any>;
 	private histogramData: Array<any>;
+	private lastChanged: Array<any>;
+
 
 	@Input('SliderIndex') SliderIndex : number;
 	@Input('PfName') PfName : string;
@@ -40,6 +45,7 @@ export class D3PortHisogram{
 		this.portfolioHistogramData = [];
 		this.histogramData = [];
 		this.data = [];
+		this.lastChanged = [];
 		this.createData();
 		this.createChart();
 		this.updateChart();
@@ -50,13 +56,14 @@ export class D3PortHisogram{
 		this.portfolioHistogramData = [];
 		this.histogramData = [];
 		this.data = [];
+		this.lastChanged = [];
 		this.createData();
 		if (this.chart) {
 			this.updateChart();
 		}
 	}
 
-	createData(){
+	createData() {
 		for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
 			if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
 				this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
@@ -72,27 +79,32 @@ export class D3PortHisogram{
 		}
 		else {
 			for (let k = 0; k < this.day91ReturnPortfolio.length; k++) {
+				let lastChangedBarIndex = -1;
 				for (let i = 0; i < histogramRange.length + 1; i++) {
 					if (i === 0) {
 						if ( this.day91ReturnPortfolio[k] < parseFloat(histogramRange[i]) ) {
 							dataMask[i] += 1;
+							lastChangedBarIndex = i;
 							break;
 						}
 					}
 					else if (i == histogramRange.length) {
 						if ( this.day91ReturnPortfolio[k] >= parseFloat(histogramRange[i-1]) ) {
 							dataMask[i] += 1;
+							lastChangedBarIndex = i;
 							break;
 						}
 					}
 					else {
 						if ( this.day91ReturnPortfolio[k] !== 0 && this.day91ReturnPortfolio[k] < parseFloat(histogramRange[i]) && this.day91ReturnPortfolio[k] >= parseFloat(histogramRange[i-1]) ) {
 							dataMask[i] += 1;
+							lastChangedBarIndex = i;
 							break;
 						}
 					}
 				}
 				this.portfolioHistogramData.push(dataMask.slice());
+				this.lastChanged.push(lastChangedBarIndex);
 			}
 		}
 
@@ -105,6 +117,10 @@ export class D3PortHisogram{
 		let histogramSumm = 0;
 		for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
 			this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
+			if (i === this.lastChanged[this.SliderIndex])
+				this.histogramData[i].lastChanged = 1;
+			else
+				this.histogramData[i].lastChanged = 0;
 			histogramSumm += this.portfolioHistogramData[this.SliderIndex][i];
 		}
 
@@ -136,6 +152,11 @@ export class D3PortHisogram{
 		else this.width = window.innerWidth - this.margin.left - this.margin.right;
 		this.width = this.width - 16 * 2 - 20;
 
+		// Define the div for the tooltip
+		hoverTooltipDiv = d3.select("body").append("div") 
+			.attr("class", "hoverTooltip")
+			.style("opacity", 0);
+
 		this.svg = d3.select(element).append('svg')
 			.attr('width', this.width + 50)
 			.attr('height', this.height + 50)
@@ -144,7 +165,7 @@ export class D3PortHisogram{
 		// chart plot area
 		this.chart = this.svg.append('g')
 			.attr('class', 'bars')
-			.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+			.attr('transform', `translate(${this.margin.left}, ${this.margin.top + 20})`);
 
 		// define X & Y domains
 		const xDomain = this.histogramData.map(d => d.label);
@@ -160,7 +181,7 @@ export class D3PortHisogram{
 		// x & y axis
 		this.xAxis = this.svg.append('g')
 			.attr('class', 'axis axis-x')
-			.attr('transform', `translate(${this.margin.left}, ${this.margin.top + this.height})`)
+			.attr('transform', `translate(${this.margin.left}, ${this.margin.top + this.height + 20})`)
 			.call(d3.axisBottom(this.xScale));
 		this.yAxis = this.svg.append('g')
 			.attr('class', 'axis axis-y')
@@ -183,7 +204,7 @@ export class D3PortHisogram{
 		update.exit().remove();
 
 		// update existing bars
-		this.chart.selectAll('.bar').transition()
+		this.chart.selectAll('.bar')//.transition()
 			.attr('x', d => this.xScale(d.label))
 			.attr('y', d => this.yScale(d.value))
 			.attr('width', d => this.xScale.bandwidth())
@@ -194,22 +215,54 @@ export class D3PortHisogram{
 		update
 			.enter()
 			.append('rect')
+			.on("mouseover", function(d) {
+				hoverTooltipDiv.transition()
+					.duration(200)
+					.style("opacity", .9);
+				hoverTooltipDiv.html(d.percentage + "%")  
+					.style("left", (d3.event.pageX-20) + "px")
+					.style("top", (d3.event.pageY-30) + "px");  
+				})
+			.on("mouseout", function(d) {
+				hoverTooltipDiv.transition()
+					.duration(500)
+					.style("opacity", 0);
+			})
 			.attr('class', 'bar')
 			.attr('x', d => this.xScale(d.label))
 			.attr('y', d => this.yScale(0))
 			.attr('width', this.xScale.bandwidth())
 			.attr('height', 0)
-			// .style('fill', (d, i) => this.colors(i))
 			.style('fill', '#f7732d')
 			.transition()
 			.delay((d, i) => i * 10)
 			.attr('y', d => this.yScale(d.value))
 			.attr('height', d => this.height - this.yScale(d.value));
 
+		this.chart.selectAll('.topTooltip').remove();
+
+		// Define the text for the top tooltip
+		topChartTooltip = this.chart.append("text") 
+			.attr("class", "topTooltip")
+			.style("opacity", 1)
+			.style("font-size", "12px");
+
+		update.each(function(d, i) {
+			if (d.lastChanged > 0) {
+				let element = d3.select(this);
+				let x = element.attr('x');
+				let y = element.attr('y');
+				topChartTooltip
+					.text(d.percentage + "%")
+					.attr('x', parseInt(x) + 12)
+					.attr('y', parseInt(y) - 3);
+			}
+		});
+
 		//move x-axis left on half the width of the column to to display intervals
 		let bar = this.svg.select(".bars .bar").node().getBBox().width;
 		this.svg.select(".bars")
-					.attr("transform", "translate("+ Math.round(bar/2) +",0)");
+					.attr("transform", "translate("+ Math.round(bar/2) +"," + this.margin.top + ")");
 
 		let g = this.svg.select(".axis-x")
 				.attr("transform", "translate(0," + (this.height + this.margin.top) + ")");
