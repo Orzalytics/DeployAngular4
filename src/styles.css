@@ -313,6 +313,7 @@ md-slider {
     z-index: 1000;
 }
 .mat-grid-tile, .mat-card {
+    background-color: #fff;
     overflow: hidden;
     transition: all .6s ease !important;
     z-index: 1;
