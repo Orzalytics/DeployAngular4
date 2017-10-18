@@ -95,7 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.nTimerId = setInterval(() => {
             this.checkStart();
         }, 100);
-        this.onResize(null);
+
         this.ngScopeDay91 = '0.0';
         this.ngScopeDay182 = '0.0';
         this.ngScopeDay365 = '0.0';
@@ -151,11 +151,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     setSlider() {
         this.minVal = 0;
         this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
+
+        this.ngSliderIndex = this.maxVal;
+
+        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
+
+        this.ng_strDate = Globals.convertDate(selectedDate);
+        this.ngDate = new Date(selectedDate);
     }
 
     setEscojePortafolio() {
         if (this.ngPortIndex > -1) {
-            let VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
+            const VoP = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].stairArray[this.ngSliderIndex];
             let Max = 0;
             let Min = 999999;
             let GoL = 0;
@@ -220,6 +228,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     onInputChange(event: any) {
         const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
         const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
+
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
         this.ngDate = new Date(selectedDate);
@@ -372,7 +381,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[this.ngSelFondosValue].u[this.ngSliderIndex] * this.ngSecondGraphModel * 10000) / 10000;
         this.ngSecondGraphAmount = Globals.toFixedDecimal(Pesos, 6);
-        
+
         this.ngScopeUnidades = Globals.numberWithCommas(Globals.toFixedDecimal(sum + this.ngSecondGraphModel, 6));
 
         if (this.ngPortIndex > -1) {
@@ -729,8 +738,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.log('tranformFunc', this.resizableEl.nativeElement.offs);
     }
 
-    onResize(event) {
-        console.log('Resize', event);
+    // onResize(event) {
+    //     console.log('Resize', event);
         // this.ngWidth = window.innerWidth;
         // if (window.innerWidth > 1280){
         //     this.tile_Col = 3;
@@ -745,5 +754,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         //     this.tile_Tre = 1;
         //     this.tile_Four = 1;
         // }
-    }
+    // }
 }

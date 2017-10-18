@@ -35,7 +35,6 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     }
 
     ngOnInit() {
-        console.log('resizableEl',this.resizableEl._element.nativeElement);
         x_Day7LossMin = [];
         y_Day91Return = [];
         this.prepareData();
@@ -50,7 +49,6 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('Test ', this.fullscreen);
         nSliderIndex = this.SliderIndex;
         nPortfolioName = this.PortfolioName;
         x_Day7LossMin = [];

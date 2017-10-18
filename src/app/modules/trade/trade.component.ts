@@ -180,6 +180,13 @@ export class TradeComponent implements OnInit, OnDestroy {
     setSlider() {
         this.minVal = 0;
         this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
+
+        this.ngSliderIndex = this.maxVal;
+        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
+
+        this.ng_strDate = Globals.convertDate(selectedDate);
+        this.tradeForm.controls['date'].setValue(new Date(selectedDate));
     }
 
     onInputChange(event: any) {
@@ -188,8 +195,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
         this.tradeForm.controls['date'].setValue(new Date(selectedDate));
-        // this.ngDatepicker = new Date(selectedDate);
-        console.log('this.ng_strDate',updatedDate);
+
         this.ngSliderIndex = event.value;
     }
 
