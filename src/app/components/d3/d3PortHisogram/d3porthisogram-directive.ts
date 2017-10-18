@@ -155,7 +155,8 @@ export class D3PortHisogram{
 		// Define the div for the tooltip
 		hoverTooltipDiv = d3.select("body").append("div") 
 			.attr("class", "hoverTooltip")
-			.style("opacity", 0);
+			.style("opacity", 0)
+			.style("z-index", 999);
 
 		this.svg = d3.select(element).append('svg')
 			.attr('width', this.width + 50)
@@ -260,7 +261,8 @@ export class D3PortHisogram{
 		});
 
 		//move x-axis left on half the width of the column to to display intervals
-		let bar = this.svg.select(".bars .bar").node().getBBox().width;
+		let bar = this.svg.select(".bars .bar").attr("width");
+
 		this.svg.select(".bars")
 					.attr("transform", "translate("+ Math.round(bar/2) +"," + this.margin.top + ")");
 
