@@ -41,7 +41,9 @@ export class TradeComponent implements OnInit, OnDestroy {
     public disabled = false;
     public maxVal = 0;
     public minVal = 0;
-    public maxDate: any;
+    public minDate = moment().format('YYYY-MM-DD');
+    public maxDate = moment().format('YYYY-MM-DD');
+    public ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
     public ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
     public nTimerId: any;
@@ -183,30 +185,61 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
 
         this.ngSliderIndex = this.maxVal;
-        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-        const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
 
-        this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
-        this.tradeForm.controls['date'].setValue(new Date(selectedDate));
+        const updatedDate = moment(Globals.g_GlobalStatic.startDate);
+        this.minDate = updatedDate.format('YYYY-MM-DD');
+        this.maxDate = updatedDate.add(this.ngSliderIndex, 'day').format('YYYY-MM-DD');
+        //
+        // this.ng_strDate = Globals.convertDate(selectedDate);
+        // this.maxDate = Globals.convertDate(selectedDate);
+        console.log('selected date ', this.maxDate, this.minDate);
+        this.ngDate = moment(this.maxDate).format('YYYY-MM-DD');
+        this.tradeForm.controls['date'].setValue(this.ngDate);
+        // this.minVal = 0;
+        // this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
+        //
+        // this.ngSliderIndex = this.maxVal;
+        // const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        // const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
+        //
+        // this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
+        // this.tradeForm.controls['date'].setValue(new Date(selectedDate));
     }
 
     onInputChange(event: any) {
-        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-        const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
+        const updatedDate = moment(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.add(event.value, 'days');
+
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
-        this.tradeForm.controls['date'].setValue(new Date(selectedDate));
+        this.ngDate = moment(selectedDate).format('YYYY-MM-DD');
 
+        // Update Slider Index for send Event
         this.ngSliderIndex = event.value;
+        this.tradeForm.controls['date'].setValue(this.ngDate);
+        // const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        // const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
+        // this.ng_strDate = Globals.convertDate(selectedDate);
+        // Globals.g_Portfolios.nSliderIndex = event.value;
+        // this.tradeForm.controls['date'].setValue(new Date(selectedDate));
+        //
+        // this.ngSliderIndex = event.value;
     }
 
     onInputDatepicker(event: any) {
         const diffDate = moment(event.value).diff(moment(Globals.g_GlobalStatic.startDate), 'days');
         this.ng_strDate = Globals.convertDate(moment(event.value).format('YYYY-DD-MM'));
-        this.tradeForm.controls['date'].setValue(new Date(event.value));
         Globals.g_Portfolios.nSliderIndex = diffDate;
 
+        // Update Slider Index for send Event
         this.ngSliderIndex = diffDate;
+        this.tradeForm.controls['date'].setValue(moment(event.value).format('YYYY-MM-DD'));
+        // const diffDate = moment(event.value).diff(moment(Globals.g_GlobalStatic.startDate), 'days');
+        // this.ng_strDate = Globals.convertDate(moment(event.value).format('YYYY-DD-MM'));
+        // this.tradeForm.controls['date'].setValue(new Date(event.value));
+        // Globals.g_Portfolios.nSliderIndex = diffDate;
+        //
+        // this.ngSliderIndex = diffDate;
     }
 
     onRefreshTable() {
@@ -230,7 +263,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     onTableReorder(index) {
-        console.log('tbHeader',this.tbHeader);
         const strIconName = this.tbHeader[index].icon;
         for (let i = 0; i < this.tbHeader.length; i ++) {
             this.tbHeader[i].icon = '';

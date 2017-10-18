@@ -55,7 +55,7 @@
                             <input mdInput
                                    placeholder="Choose a date"
                                    formControlName="date"
-                                   [min]="ngDatepicker"
+                                   [min]="minDate"
                                    [max]="maxDate"
                                    [value]="tradeForm.controls['date'].value"
                                    [mdDatepicker]="pickerForm"
@@ -142,7 +142,7 @@
             </md-slider>
             <md-form-field>
                 <input mdInput
-                       [min]="ngDatepicker"
+                       [min]="minDate"
                        [max]="maxDate"
                        [value]="tradeForm.controls['date'].value"
                        [mdDatepicker]="picker"
