@@ -315,6 +315,9 @@ md-slider {
 .mat-background-tile {
     background-color: #fff;
 }
+.mat-card {
+    border-radius: 6px !important;
+}
 .mat-grid-tile, .mat-card {
     overflow: hidden;
     transition: all .6s ease !important;
