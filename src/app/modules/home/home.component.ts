@@ -77,6 +77,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     disabled = false;
     maxVal = 0;
     minVal = 0;
+    maxDate: any;
     ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     ngAllRefresh: number = 0;
     ngFileUploadPath: any;
@@ -95,7 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.nTimerId = setInterval(() => {
             this.checkStart();
         }, 100);
-
+        this.onResize(null);
         this.ngScopeDay91 = '0.0';
         this.ngScopeDay182 = '0.0';
         this.ngScopeDay365 = '0.0';
@@ -157,7 +158,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
         const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
 
-        this.ng_strDate = Globals.convertDate(selectedDate);
+        this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
         this.ngDate = new Date(selectedDate);
     }
 
@@ -738,8 +739,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.log('tranformFunc', this.resizableEl.nativeElement.offs);
     }
 
-    // onResize(event) {
-    //     console.log('Resize', event);
+    onResize(event) {
+        console.log('Resize', event);
         // this.ngWidth = window.innerWidth;
         // if (window.innerWidth > 1280){
         //     this.tile_Col = 3;
@@ -754,5 +755,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         //     this.tile_Tre = 1;
         //     this.tile_Four = 1;
         // }
-    // }
+    }
 }

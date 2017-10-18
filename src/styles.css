@@ -312,8 +312,10 @@ md-slider {
     position: absolute !important;
     z-index: 1000;
 }
-.mat-grid-tile, .mat-card {
+.mat-background-tile {
     background-color: #fff;
+}
+.mat-grid-tile, .mat-card {
     overflow: hidden;
     transition: all .6s ease !important;
     z-index: 1;

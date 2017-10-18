@@ -36,7 +36,7 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile #resizableEl>
+        <md-grid-tile #resizableEl class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">
                     <span>Retorno 91 dias, Riesgo 7 dias</span>
@@ -77,9 +77,14 @@
         <md-form-field>
             <input mdInput
                    [min]="ngDatepicker"
+                   [max]="maxDate"
                    [value]="ngDate"
                    [mdDatepicker]="picker"
-                   placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
+                   placeholder="Choose a date"
+                   (click)="picker.open()"
+                   (dateInput)="onInputDatepicker($event)"
+                   (dateChange)="onInputDatepicker($event)"
+            >
             <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
             <md-datepicker [value]="ngDate" #picker></md-datepicker>
         </md-form-field>

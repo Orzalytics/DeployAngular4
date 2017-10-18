@@ -302,6 +302,7 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
               }
 
             function onMouseOut() {
+                console.log('sdfsdf',);
                 document.getElementById('scatter_tooltip').style.display = 'none';
             }
     }

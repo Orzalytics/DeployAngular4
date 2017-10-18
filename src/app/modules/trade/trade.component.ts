@@ -41,6 +41,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public disabled = false;
     public maxVal = 0;
     public minVal = 0;
+    public maxDate: any;
     public ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
     public nTimerId: any;
@@ -185,7 +186,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
         const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
 
-        this.ng_strDate = Globals.convertDate(selectedDate);
+        this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
         this.tradeForm.controls['date'].setValue(new Date(selectedDate));
     }
 
@@ -229,6 +230,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     onTableReorder(index) {
+        console.log('tbHeader',this.tbHeader);
         const strIconName = this.tbHeader[index].icon;
         for (let i = 0; i < this.tbHeader.length; i ++) {
             this.tbHeader[i].icon = '';
