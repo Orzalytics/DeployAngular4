@@ -43,8 +43,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     public minVal = 0;
     public ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
-    // ngAllRefresh: number = 0;
-    // ngFileUploadPath: any;
     public nTimerId: any;
 
     ngScopeFanData: any;
@@ -144,12 +142,6 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
 
         this.resetForm();
-        // this.tradeForm.controls['pesos'].valueChanges.subscribe((value) => {
-        //     this.calculateUnidades(value);
-        // });
-        // this.tradeForm.controls['unidades'].valueChanges.subscribe((value) => {
-        //     this.calculatePesos(value);
-        // });
     }
 
     ngOnDestroy() {
@@ -197,7 +189,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         Globals.g_Portfolios.nSliderIndex = event.value;
         this.tradeForm.controls['date'].setValue(new Date(selectedDate));
         // this.ngDatepicker = new Date(selectedDate);
-
+        console.log('this.ng_strDate',updatedDate);
         this.ngSliderIndex = event.value;
     }
 

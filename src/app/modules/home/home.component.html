@@ -75,7 +75,11 @@
             [step]="1">
         </md-slider>
         <md-form-field>
-            <input mdInput [value]="ngDate" [mdDatepicker]="picker" placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
+            <input mdInput
+                   [min]="ngDatepicker"
+                   [value]="ngDate"
+                   [mdDatepicker]="picker"
+                   placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
             <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
             <md-datepicker [value]="ngDate" #picker></md-datepicker>
         </md-form-field>

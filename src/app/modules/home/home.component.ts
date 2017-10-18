@@ -82,6 +82,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ngFileUploadPath: any;
     isValid: boolean = false;
     nTimerId: any;
+    public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
     ngDate = new Date(Globals.g_GlobalStatic.startDate);
 
     constructor(private service: ServiceComponent, private observableMedia: ObservableMedia) {
@@ -725,7 +726,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
 
         this.fullscreen = !this.fullscreen;
-        console.log('tranformFunc', this.resizableEl.nativeElement);
+        console.log('tranformFunc', this.resizableEl.nativeElement.offs);
     }
 
     onResize(event) {

@@ -55,6 +55,7 @@
                             <input mdInput
                                    placeholder="Choose a date"
                                    formControlName="date"
+                                   [min]="ngDatepicker"
                                    [value]="tradeForm.controls['date'].value"
                                    [mdDatepicker]="pickerForm"
                                    (dateInput)="onInputDatepicker($event)"
@@ -138,7 +139,9 @@
                        [step]="1">
             </md-slider>
             <md-form-field>
-                <input mdInput [value]="tradeForm.controls['date'].value"
+                <input mdInput
+                       [min]="ngDatepicker"
+                       [value]="tradeForm.controls['date'].value"
                        [mdDatepicker]="picker"
                        placeholder="Choose a date"
                        (dateInput)="onInputDatepicker($event)"
