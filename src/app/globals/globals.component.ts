@@ -18,7 +18,7 @@ export const g_DatabaseInfo = {
 
 export const g_GlobalStatic = {
     startDate : '2013-01-01 00:00:00',
-    arrPortIndex : [999, 3, 5, 6, 7, 8, 9, 60, 103, 113]
+    arrPortIndex : [3, 5, 6, 7, 8, 9, 60, 103, 113]
     // arrPortIndex : [40,48,51,54,59,80,88,104,105,106,126,149,176,179,190]
 };
 
