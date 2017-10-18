@@ -56,8 +56,10 @@
                                    placeholder="Choose a date"
                                    formControlName="date"
                                    [min]="ngDatepicker"
+                                   [max]="maxDate"
                                    [value]="tradeForm.controls['date'].value"
                                    [mdDatepicker]="pickerForm"
+                                   (click)="pickerForm.open()"
                                    (dateInput)="onInputDatepicker($event)"
                                    (dateChange)="onInputDatepicker($event)">
                             <md-datepicker-toggle mdSuffix [for]="pickerForm" style="width: 10px"></md-datepicker-toggle>
@@ -141,9 +143,11 @@
             <md-form-field>
                 <input mdInput
                        [min]="ngDatepicker"
+                       [max]="maxDate"
                        [value]="tradeForm.controls['date'].value"
                        [mdDatepicker]="picker"
                        placeholder="Choose a date"
+                       (click)="picker.open()"
                        (dateInput)="onInputDatepicker($event)"
                        (dateChange)="onInputDatepicker($event)">
                 <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
