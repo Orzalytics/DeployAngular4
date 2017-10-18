@@ -36,7 +36,7 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile #clickEl>
+        <md-grid-tile #resizableEl>
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">
                     <span>Retorno 91 dias, Riesgo 7 dias</span>
@@ -50,7 +50,9 @@
                         <div class="scatter_port" id="scatter_port">p : 1.123456</div>
                         <div class="scatter_x" id="scatter_x">x : 1.123456</div>
                     </div>
-                    <div [SliderIndex]="ngSliderIndex"
+                    <div [fullscreen]="fullscreen"
+                         [resizableEl]="resizableEl"
+                         [SliderIndex]="ngSliderIndex"
                          [RefreshAll]="ngAllRefresh"
                          [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"

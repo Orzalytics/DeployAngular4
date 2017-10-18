@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, DoCheck, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -15,13 +15,14 @@ let includedFunds: Array<any>;
     selector: '[d3Scatter]'
 })
 
-export class D3ScatterPlot implements OnInit, OnChanges {
+export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     private chartElement: any;
     // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
     private height: number;
 
-    @Input('scatterContainer') scatterContainer: any;
+    @Input('fullscreen') fullscreen: any;
+    @Input('resizableEl') resizableEl: any;
     @Input('SliderIndex') SliderIndex: number;
     @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
@@ -34,6 +35,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
     }
 
     ngOnInit() {
+        console.log('resizableEl',this.resizableEl._element.nativeElement);
         x_Day7LossMin = [];
         y_Day91Return = [];
         this.prepareData();
@@ -41,29 +43,29 @@ export class D3ScatterPlot implements OnInit, OnChanges {
         setTimeout(() => {
             this.createChart();
         }, 100);
-        window.onresize = () => {
-            setTimeout(() => {
-                this.createChart();
-            }, 100);
-        };
+    }
+
+    ngDoCheck() {
+        this.createChart();
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log('Test ', this.fullscreen);
         nSliderIndex = this.SliderIndex;
         nPortfolioName = this.PortfolioName;
         x_Day7LossMin = [];
         y_Day91Return = [];
         this.createData();
-        // setTimeout(() => {
+        setTimeout(() => {
             this.createChart();
-        // }, 100)
+        }, 610);
     }
 
     prepareData() {
         portСompositionObj = [];
-        for (let portfolio of this.TableInfo) {
+        for (const portfolio of this.TableInfo) {
             portСompositionObj[portfolio.Portname] = [];
-            for (let port of portfolio.Portarray) {
+            for (const port of portfolio.Portarray) {
                 portСompositionObj[portfolio.Portname].push(port.strFundName);
             }
         }
@@ -81,7 +83,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
         }
         // calculate for portfolio
         for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
-          if (Globals.g_Portfolios.arrDataByPortfolio[i] == undefined) continue;
+          if (Globals.g_Portfolios.arrDataByPortfolio[i] === undefined) continue;
           y_Day91Return.push(Globals.g_Portfolios.arrDataByPortfolio[i].day91Array[this.SliderIndex]);
           let min = 99999;
           for (let j = 0; j <= this.SliderIndex; j ++) {
@@ -90,9 +92,6 @@ export class D3ScatterPlot implements OnInit, OnChanges {
           }
           x_Day7LossMin.push(0-min);
         }
-
-        // console.log(x_Day7LossMin);
-        // console.log(y_Day91Return);
     }
 
     createChart() {
@@ -188,8 +187,8 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             })
             .text( function (d, i) {
                 if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
-                    let portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
-                    if (nPortfolioName == portName) {
+                    const portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                    if (nPortfolioName === portName) {
                         return portName;
                     }
                     else return '';
@@ -207,7 +206,7 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             .style('opacity', function(d, i){
                 const cntFund = Globals.g_DatabaseInfo.ListofPriceFund.length;
                 if (i >= cntFund) {
-                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide == 0) return 0;
+                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide === 0) return 0;
                 }
             return 0.7;
             });
@@ -238,18 +237,18 @@ export class D3ScatterPlot implements OnInit, OnChanges {
                 let yValue = y_Day91Return[i];
                 if (yValue > 0.3) yValue = 0.3;
                 if (yValue < -0.15) yValue = -0.15;
-                return y(yValue); 
+                return y(yValue);
             })
             .attr('clip-path', 'url(#clip)')
             .style('fill', function(d, i){
                 if (portСompositionObj !== undefined) {
                     if ( i < Globals.g_DatabaseInfo.ListofPriceFund.length &&
-                        portСompositionObj[nPortfolioName].indexOf( Globals.g_DatabaseInfo.ListofPriceFund[i].name ) != -1 ) {
+                        portСompositionObj[nPortfolioName].indexOf( Globals.g_DatabaseInfo.ListofPriceFund[i].name ) !== -1 ) {
                         return '#ff5800';
                     }
                     else if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
-                        let portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
-                        if (nPortfolioName == portName) {
+                        const portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                        if (nPortfolioName === portName) {
                             return 'ff0000';
                         }
                         else return '#006e00';
@@ -259,22 +258,22 @@ export class D3ScatterPlot implements OnInit, OnChanges {
             })
             .style('opacity', function(d, i){
                 const cntFund = Globals.g_DatabaseInfo.ListofPriceFund.length;
-                if (i >= cntFund){
-                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide == 0) return 0;
+                if (i >= cntFund) {
+                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide === 0) return 0;
                 }
                 return 0.7;
             })
             .style('display', function(d, i){
                 const cntFund = Globals.g_DatabaseInfo.ListofPriceFund.length;
                 if (i >= cntFund) {
-                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide == 0) return 'none';
+                    if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide === 0) return 'none';
                 }
                 return 'block';
             })
-            .on('mouseover',  function(d, i){onMouseOver(i)})
+            .on('mouseover',  function(d, i){onMouseOver(i);})
             .on('mouseout',  onMouseOut);
 
-            function onMouseOver(index){
+            function onMouseOver(index) {
                 let xData = x_Day7LossMin[index];
                 let yData = y_Day91Return[index];
 
@@ -283,28 +282,28 @@ export class D3ScatterPlot implements OnInit, OnChanges {
                 if (yData > 0.3) yData = 0.3;
                 if (yData < -0.15) yData = -0.15;
 
-                if (index >= Globals.g_DatabaseInfo.ListofPriceFund.length){
-                    if (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].showhide == 0) return;
+                if (index >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
+                    if (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].showhide === 0) return;
                     document.getElementById('scatter_title').innerHTML = Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
                     document.getElementById('scatter_port').innerHTML = (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] > 0)? '+' + Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual';
-                }else{
+                }else {
                     document.getElementById('scatter_title').innerHTML = Globals.g_DatabaseInfo.ListofPriceFund[index].name;
                     document.getElementById('scatter_port').innerHTML = (Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] > 0) ? '+' + Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual';
                 }
-                
+
                 document.getElementById('scatter_x').innerHTML = Globals.toFixedDecimal(xData * 100, 1) + '% caída máxima en 7 días ';
                 document.getElementById('scatter_y').innerHTML = (Globals.toFixedDecimal(yData * 100, 1) >= 0) ? '+'+ Globals.toFixedDecimal(yData * 100, 1) + '% en 91 días' : Globals.toFixedDecimal(yData * 100, 1) + '% en 91 días';
 
                 const tooltip = document.getElementById('scatter_tooltip');
                 const width = widthContainer - margin.right - margin.left;
-                const height = (widthContainer > 650) ? window.innerWidth / 4 : window.innerWidth / 2;
+                // const height = (widthContainer > 650) ? window.innerWidth / 4 : window.innerWidth / 2;
 
                 tooltip.style.left = (x(xData)+310 < width) ? ((x(xData) + 30).toFixed() + 'px') : ((width-310) + 'px');
                 tooltip.style.top = (y(yData)+50).toFixed() + 'px';
                 tooltip.style.display = 'block';
               }
 
-            function onMouseOut(){
+            function onMouseOut() {
                 document.getElementById('scatter_tooltip').style.display = 'none';
             }
     }

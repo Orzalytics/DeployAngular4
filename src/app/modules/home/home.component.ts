@@ -24,7 +24,7 @@ let self: any;
 export class HomeComponent implements OnInit, OnDestroy {
     @ViewChild('selectPortfolio', {read: ElementRef}) selectPortfolio: ElementRef;
 
-    @ViewChild('clickEl', {read: ElementRef}) clickEl: ElementRef;
+    @ViewChild('resizableEl', {read: ElementRef}) resizableEl: ElementRef;
     fullscreen: boolean = false;
 
     public cols: Observable<number>;
@@ -719,16 +719,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     tranformFunc() {
         if(this.fullscreen) {
-            this.clickEl.nativeElement.classList.remove('full-size');
+            this.resizableEl.nativeElement.classList.remove('full-size');
         } else {
-            this.clickEl.nativeElement.classList.add('full-size');
+            this.resizableEl.nativeElement.classList.add('full-size');
         }
 
         this.fullscreen = !this.fullscreen;
-        console.log('tranformFunc', this.fullscreen);
+        console.log('tranformFunc', this.resizableEl.nativeElement);
     }
 
     onResize(event) {
+        console.log('Resize', event);
         // this.ngWidth = window.innerWidth;
         // if (window.innerWidth > 1280){
         //     this.tile_Col = 3;
