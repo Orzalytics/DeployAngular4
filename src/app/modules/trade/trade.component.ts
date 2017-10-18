@@ -9,6 +9,7 @@ import * as MainOpr from './../../mainoperation/mainoperation.component';
 
 // material
 // import {Observable} from 'rxjs/Observable';
+import {CustomValidators} from './CustomValidators';
 
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
@@ -42,8 +43,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     public minVal = 0;
     public ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
-    // ngAllRefresh: number = 0;
-    // ngFileUploadPath: any;
     public nTimerId: any;
 
     ngScopeFanData: any;
@@ -84,6 +83,8 @@ export class TradeComponent implements OnInit, OnDestroy {
         trade: new FormControl('comprar'),
         pesos: new FormControl(null, [
             Validators.required,
+            // CustomValidators.number,
+            // CustomValidators.numberq({max: 12})
         ]),
         unidades: new FormControl(null, [
             Validators.required,
@@ -141,12 +142,6 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
 
         this.resetForm();
-        // this.tradeForm.controls['pesos'].valueChanges.subscribe((value) => {
-        //     this.calculateUnidades(value);
-        // });
-        // this.tradeForm.controls['unidades'].valueChanges.subscribe((value) => {
-        //     this.calculatePesos(value);
-        // });
     }
 
     ngOnDestroy() {
@@ -185,6 +180,13 @@ export class TradeComponent implements OnInit, OnDestroy {
     setSlider() {
         this.minVal = 0;
         this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
+
+        this.ngSliderIndex = this.maxVal;
+        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
+
+        this.ng_strDate = Globals.convertDate(selectedDate);
+        this.tradeForm.controls['date'].setValue(new Date(selectedDate));
     }
 
     onInputChange(event: any) {
@@ -193,7 +195,6 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
         this.tradeForm.controls['date'].setValue(new Date(selectedDate));
-        // this.ngDatepicker = new Date(selectedDate);
 
         this.ngSliderIndex = event.value;
     }

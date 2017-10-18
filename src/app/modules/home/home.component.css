@@ -3,10 +3,14 @@
     margin-top: 30px;
     margin-right: 20px;
 }
+.md-button-conteiner {
+    align-self: flex-end;
+    flex-grow: 4;
+    align-content: flex-end;
+    margin-bottom: 84px;
+    margin-right: 10px;
+}
 .mat-button {
-    position: absolute;
-    bottom: 100px;
-    right: 10px;
     font-size: 24px;
     background-color: #ff6f31;
     color: #fff;
@@ -17,4 +21,22 @@
 }
 .mat-title .mat-display-1 {
     margin-bottom: 0px;
+}
+.full-size {
+    /*transform: translateX(-100px);*/
+    left:0px !important;
+    width: 100% !important;
+    /*height: calc(100vh - 380px) !important;*/
+    /*height: 500px !important;*/
+    z-index: 1000;
+}
+.full-size .mat-card {
+    /*height: calc(100vh - 445px) !important;*/
+}
+.pull-right {
+    float: right;
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+    cursor: pointer;
 }

@@ -1,4 +1,4 @@
-<div *ngIf="isValid" class="md-main-page" cdk-scrollable>
+<div *ngIf="isValid" class="md-main-page">
     <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
         <md-grid-tile>
             <h2 class="title mat-headline">Analizar</h2>
@@ -36,9 +36,13 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile>
+        <md-grid-tile #resizableEl>
             <md-card class="md-card-top md-card-child">
-                <md-card-title id="card-title">Retorno 91 dias, Riesgo 7 dias</md-card-title>
+                <md-card-title id="card-title">
+                    <span>Retorno 91 dias, Riesgo 7 dias</span>
+                    <md-icon (click)="tranformFunc()" class="pull-right">fullscreen</md-icon>
+                    <!--<md-icon *ngIf="fullscreen" (click)="tranformFunc()" class="pull-right">fullscreen_exit</md-icon>-->
+                </md-card-title>
                 <md-card-content>
                     <div class="scatter_tooltip" id="scatter_tooltip">
                         <div class="scatter_title" id="scatter_title">Title1234567889</div>
@@ -46,7 +50,9 @@
                         <div class="scatter_port" id="scatter_port">p : 1.123456</div>
                         <div class="scatter_x" id="scatter_x">x : 1.123456</div>
                     </div>
-                    <div [SliderIndex]="ngSliderIndex"
+                    <div [fullscreen]="fullscreen"
+                         [resizableEl]="resizableEl"
+                         [SliderIndex]="ngSliderIndex"
                          [RefreshAll]="ngAllRefresh"
                          [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"
@@ -57,7 +63,9 @@
         </md-grid-tile>
 
     </md-grid-list>
-    <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
+    <div class="md-button-conteiner">
+        <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
+    </div>
     <md-toolbar class="md-toolbar-bottom">
         <md-slider class="m-slider" (input)="onInputChange($event)"
             [disabled]="disabled"
@@ -67,7 +75,11 @@
             [step]="1">
         </md-slider>
         <md-form-field>
-            <input mdInput [value]="ngDate" [mdDatepicker]="picker" placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
+            <input mdInput
+                   [min]="ngDatepicker"
+                   [value]="ngDate"
+                   [mdDatepicker]="picker"
+                   placeholder="Choose a date" (dateInput)="onInputDatepicker($event)" (dateChange)="onInputDatepicker($event)">
             <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
             <md-datepicker [value]="ngDate" #picker></md-datepicker>
         </md-form-field>
