@@ -17,11 +17,13 @@ let includedFunds: Array<any>;
 
 export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     private chartElement: any;
+    private oldWidth: number;
+
     // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
     private height: number;
 
-    @Input('fullscreen') fullscreen: any;
+    // @Input('fullscreen') fullscreen: any;
     @Input('resizableEl') resizableEl: any;
     @Input('SliderIndex') SliderIndex: number;
     @Input('WindowSize') WindowSize: number;
@@ -45,7 +47,12 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     }
 
     ngDoCheck() {
-        this.createChart();
+        setTimeout(() => {
+            if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
+                this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
+                this.createChart();
+            }
+        }, 600);
     }
 
     ngOnChanges(changes: SimpleChanges) {

@@ -1,4 +1,7 @@
-import { Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation } from '@angular/core';
+import {
+	Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation,
+	DoCheck
+} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -9,7 +12,7 @@ let topChartTooltip: any;
 	selector : '[d3porthisogram]'
 })
 
-export class D3PortHisogram{
+export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 	private margin: any = { top: 17, bottom: 20, left: 20, right: 0};
 	private chart: any;
 	private svg: any;
@@ -27,7 +30,9 @@ export class D3PortHisogram{
 	private histogramData: Array<any>;
 	private lastChanged: Array<any>;
 
+	private oldWidth: number;
 
+	@Input('resizableEl') resizableEl: any;
 	@Input('SliderIndex') SliderIndex : number;
 	@Input('PfName') PfName : string;
 	@Input('WindowSize') WindowSize : number;
@@ -49,6 +54,15 @@ export class D3PortHisogram{
 		this.createData();
 		this.createChart();
 		this.updateChart();
+	}
+
+	ngDoCheck() {
+		setTimeout(() => {
+			if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
+				this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
+				this.updateChart();
+			}
+		}, 1000);
 	}
 
 	ngOnChanges() {
