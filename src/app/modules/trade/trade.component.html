@@ -142,11 +142,12 @@
             </md-slider>
             <md-form-field>
                 <input mdInput
+                       readonly
+                       placeholder="Choose a date"
                        [min]="minDate"
                        [max]="maxDate"
                        [value]="tradeForm.controls['date'].value"
                        [mdDatepicker]="picker"
-                       placeholder="Choose a date"
                        (click)="picker.open()"
                        (dateInput)="onInputDatepicker($event)"
                        (dateChange)="onInputDatepicker($event)">
