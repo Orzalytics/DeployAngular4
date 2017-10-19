@@ -67,20 +67,20 @@ export function onCalculateData(){
 
     ///////////////////////////////////////////////////////////////////
     for (var i = 0; i < Globals.g_GlobalStatic.arrPortIndex.length; i ++){
-    var item = {'name' : '', 'u' : '', 'udate':'', 'ulen' : 0, 'index' : 0, 'dict' : []};
-    item.name = n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias;              
-    item.u = arru[i];
-    item.udate = arrudate[i];
-    item.ulen = item.u.length;
-    item.index = Globals.g_GlobalStatic.arrPortIndex[i];
-    if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1);
-    if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2);
-    if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3);
-    Globals.g_DatabaseInfo.ListofPriceFund[i] = item;
+        var item = {'name' : '', 'u' : '', 'udate':'', 'ulen' : 0, 'index' : 0, 'dict' : []};
+        item.name = n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias;
+        item.u = arru[i];
+        item.udate = arrudate[i];
+        item.ulen = item.u.length;
+        item.index = Globals.g_GlobalStatic.arrPortIndex[i];
+        if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_1);
+        if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_2);
+        if ((n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3 != null) && (n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3 != "")) item.dict.push(n[Globals.g_GlobalStatic.arrPortIndex[i]][0].alias_match_3);
+        Globals.g_DatabaseInfo.ListofPriceFund[i] = item;
 
-    // get last date of the array
-    var tmpDate = new Date(Globals.g_DatabaseInfo.ListofPriceFund[i].udate[Globals.g_DatabaseInfo.ListofPriceFund[i].udate.length - 1]);
-    if (tmpDate.getTime() - maxDate.getTime() > 0) maxDate = tmpDate;
+        // get last date of the array
+        var tmpDate = new Date(Globals.g_DatabaseInfo.ListofPriceFund[i].udate[Globals.g_DatabaseInfo.ListofPriceFund[i].udate.length - 1]);
+        if (tmpDate.getTime() - maxDate.getTime() > 0) maxDate = tmpDate;
     }
 
     // Create longest date array

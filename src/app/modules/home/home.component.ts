@@ -77,14 +77,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     disabled = false;
     maxVal = 0;
     minVal = 0;
-    maxDate: any;
+    minDate = moment().format('YYYY-MM-DD');
+    maxDate = moment().format('YYYY-MM-DD');
     ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
     ngAllRefresh: number = 0;
     ngFileUploadPath: any;
     isValid: boolean = false;
     nTimerId: any;
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
-    ngDate = new Date(Globals.g_GlobalStatic.startDate);
+    ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
 
     constructor(private service: ServiceComponent, private observableMedia: ObservableMedia) {
         self = this;
@@ -92,6 +93,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.log('maxdate', this.maxDate);
         HttpService.getDatabaseInfo();
         this.nTimerId = setInterval(() => {
             this.checkStart();
@@ -155,11 +157,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.ngSliderIndex = this.maxVal;
 
-        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-        const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
-
-        this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
-        this.ngDate = new Date(selectedDate);
+        const updatedDate = moment(Globals.g_GlobalStatic.startDate);
+        this.minDate = updatedDate.format('YYYY-MM-DD');
+        this.maxDate = updatedDate.add(this.ngSliderIndex, 'day').format('YYYY-MM-DD');
+        //
+        // this.ng_strDate = Globals.convertDate(selectedDate);
+        // this.maxDate = Globals.convertDate(selectedDate);
+        console.log('selected date ', this.maxDate, this.minDate);
+        this.ngDate = moment(this.maxDate).format('YYYY-MM-DD');
     }
 
     setEscojePortafolio() {
@@ -227,12 +232,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     onInputChange(event: any) {
-        const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-        const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
+        const updatedDate = moment(Globals.g_GlobalStatic.startDate);
+        const selectedDate = updatedDate.add(event.value, 'days');
 
         this.ng_strDate = Globals.convertDate(selectedDate);
         Globals.g_Portfolios.nSliderIndex = event.value;
-        this.ngDate = new Date(selectedDate);
+        this.ngDate = moment(selectedDate).format('YYYY-MM-DD');
 
         // Update Slider Index for send Event
         this.ngSliderIndex = event.value;

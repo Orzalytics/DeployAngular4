@@ -36,7 +36,7 @@ body {
     background-color: white !important;
     box-shadow: 0 -1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
     height: 64px;
-    z-index: 100;
+    z-index: 1000;
 }
 .mat-input-container {
     font: 400 16px/18px Roboto,"Helvetica Neue",sans-serif;
@@ -314,6 +314,9 @@ md-slider {
 }
 .mat-background-tile {
     background-color: #fff;
+}
+.mat-card {
+    border-radius: 6px !important;
 }
 .mat-grid-tile, .mat-card {
     overflow: hidden;
