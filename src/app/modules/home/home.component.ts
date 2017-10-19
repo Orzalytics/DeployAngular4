@@ -733,15 +733,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         document.getElementById('download').click();
     }
 
-    tranformFunc() {
+    tranformFunc(resizableEl) {
         if(this.fullscreen) {
-            this.resizableEl.nativeElement.classList.remove('full-size');
+            resizableEl._element.nativeElement.classList.remove('full-size');
         } else {
-            this.resizableEl.nativeElement.classList.add('full-size');
+            resizableEl._element.nativeElement.classList.add('full-size');
         }
 
         this.fullscreen = !this.fullscreen;
-        console.log('tranformFunc', this.resizableEl.nativeElement.offs);
     }
 
     onResize(event) {

@@ -18,18 +18,24 @@
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
 
-        <md-grid-tile>
+        <md-grid-tile #resizableElPesos class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
-                <md-card-title class="md-card-chat">Utilidad portafolio en pesos</md-card-title>
+                <md-card-title class="md-card-chat">
+                    <span>Utilidad portafolio en pesos</span>
+                    <md-icon (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen</md-icon>
+                </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex" [RefreshStatus]="ngSecondGraphModel" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3portline></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile>
+        <md-grid-tile #resizableElRetorno class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
-                <md-card-title class="md-card-chat">Retornos de portafolio en 91 días</md-card-title>
+                <md-card-title class="md-card-chat">
+                    <span>Retornos de portafolio en 91 días</span>
+                    <md-icon (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen</md-icon>
+                </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" [DataLength]="maxVal" d3porthisogram></div>
                 </md-card-content>
@@ -40,7 +46,7 @@
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">
                     <span>Retorno 91 dias, Riesgo 7 dias</span>
-                    <md-icon (click)="tranformFunc()" class="pull-right">fullscreen</md-icon>
+                    <md-icon (click)="tranformFunc(resizableEl)" class="pull-right">fullscreen</md-icon>
                     <!--<md-icon *ngIf="fullscreen" (click)="tranformFunc()" class="pull-right">fullscreen_exit</md-icon>-->
                 </md-card-title>
                 <md-card-content>
