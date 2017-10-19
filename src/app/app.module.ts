@@ -75,7 +75,6 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   exports: [
-    MdIconModule,
     // MdSidenavModule
   ],
   providers: [],
