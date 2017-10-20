@@ -100,6 +100,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     onRefreshTable() {
+        console.log('Test',);
         let newObj = null;
         this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
         // this.PortfolioList = this.PortfolioList.map((obj) => {
@@ -165,12 +166,14 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
         HttpService.getBuyResponse(url).subscribe(
             response => {
-                HttpService.getTransactionList().subscribe(
+                console.log('Test',response);
+                HttpService.getPortfolioList().subscribe(
                     response => {
-                        MainOpr.getTransactionData(response);
-                        MainOpr.CalculatePortfolioData();
+                        this.PortfolioList.push(valuesForm);
                         this.onRefreshTable();
                         // this.checkTable();
+
+                        this.resetForm();
 
                         this.disabled = false;
                     });
@@ -182,7 +185,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     //     for (let i = 0; i < this.PortfolioList.length; i ++) {
     //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
     //             const eachArray = [];
-    //             for (let k = 0; k < this.PortfolioList[i].Portarray.length; k ++) {
+    //             for (let k = 0; k < this.PortfolioList.length; k ++) {
     //                 if (this.PortfolioList[i].Portarray[k].nFundIndex == j) eachArray.push(this.PortfolioList[i].Portarray[k]);
     //             }
     //             if (eachArray.length > 0){
@@ -205,16 +208,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     // }
 
     resetForm() {
-        console.log('Reset form',);
-        // this.tradeForm.controls['date'].valueChanges.subscribe(() => {
-        //     this.tradeForm.controls['pesos'].setValue(null);
-        //     this.tradeForm.controls['unidades'].setValue(null);
-        //     this.onRefreshTable();
-        // });
-        // this.tradeForm.controls['fondo'].valueChanges.subscribe(() => {
-        //     this.tradeForm.controls['pesos'].setValue(null);
-        //     this.tradeForm.controls['unidades'].setValue(null);
-        // });
+        this.portfolioForm.reset();
     }
 
 }

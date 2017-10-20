@@ -348,7 +348,8 @@ app.get('/delete/:id', function(req, res){
           writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
 
           writableStream.on("finish", function(){
-            // success injection portfolio data into database
+              res.json("done");
+              // success injection portfolio data into database
           });
 
           csvStream_portfolio.pipe(writableStream);
