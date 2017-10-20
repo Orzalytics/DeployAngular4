@@ -84,14 +84,8 @@ export class TradeComponent implements OnInit, OnDestroy {
         fondo: new FormControl(),
         date: new FormControl(new Date(Globals.g_GlobalStatic.startDate)),
         trade: new FormControl('comprar'),
-        pesos: new FormControl(null, [
-            Validators.required,
-            // CustomValidators.number,
-            // CustomValidators.numberq({max: 12})
-        ]),
-        unidades: new FormControl(null, [
-            Validators.required,
-        ]),
+        pesos: new FormControl(null, Validators.required),
+        unidades: new FormControl(null, Validators.required),
     });
 
     constructor( private route: ActivatedRoute,
@@ -362,18 +356,18 @@ export class TradeComponent implements OnInit, OnDestroy {
             console.log('SELL URL', url);
         }
 
-        // HttpService.getBuyResponse(url).subscribe(
-        //     response => {
-        //         HttpService.getTransactionList().subscribe(
-        //             response => {
-        //                 MainOpr.getTransactionData(response);
-        //                 MainOpr.CalculatePortfolioData();
-        //                 this.onRefreshTable();
-        //                 this.checkTable();
-        //
-        //                 this.disabled = false;
-        //             });
-        //     });
+        HttpService.getBuyResponse(url).subscribe(
+            response => {
+                HttpService.getTransactionList().subscribe(
+                    response => {
+                        MainOpr.getTransactionData(response);
+                        MainOpr.CalculatePortfolioData();
+                        this.onRefreshTable();
+                        this.checkTable();
+
+                        this.disabled = false;
+                    });
+            });
     }
 
     checkTable() {

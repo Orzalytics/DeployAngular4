@@ -18,6 +18,7 @@ let includedFunds: Array<any>;
 export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     private chartElement: any;
     private oldWidth: number;
+    private oldSliderIndex: number;
 
     // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
@@ -50,6 +51,10 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
         setTimeout(() => {
             if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
                 this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
+                this.createChart();
+            }
+            if(this.oldSliderIndex !== this.SliderIndex) {
+                this.oldSliderIndex = this.SliderIndex;
                 this.createChart();
             }
         }, 600);
