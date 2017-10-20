@@ -32,7 +32,7 @@ import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scatter
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
   { path:'trade/:name', component: TradeComponent },
-  { path:'management/:name', component: ManagementComponent },
+  { path:'management', component: ManagementComponent },
   { path:'login', component: LoginComponent }
 ];
 

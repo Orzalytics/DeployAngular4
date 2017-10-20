@@ -28,7 +28,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     private nTimerId: any;
 
     public routeName: any;
-    public fondoList = {};
+    public PortfolioList  = [];
 
     // Portfolio table //
     // values for icon information on table header
@@ -42,17 +42,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     });
 
-    constructor( private route: ActivatedRoute,
-                 private service:ServiceComponent,
+    constructor( private service:ServiceComponent,
                  private observableMedia: ObservableMedia ) {
         self = this;
         HttpService = this.service;
-
-        this.sub = route.params.subscribe(params => {
-            this.routeName = params['name'];
-            // this.ngPortfolioName = params['name'];
-            // this.tradeForm.controls['portfolio'].setValue(params['name']);
-        });
     }
 
     ngOnInit() {
@@ -83,7 +76,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.sub.unsubscribe();
+        // this.sub.unsubscribe();
     }
 
     checkStart() {
@@ -97,25 +90,28 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
                     this.onRefreshTable();
                     this.isValid = true;
+                    console.log('Test ',Globals.g_DatabaseInfo.PortfolioList);
+                    console.log('Test ', Globals.g_Portfolios);
                 });
         }
     }
 
     onRefreshTable() {
-        // const transactions = Globals.g_FundParent.arrAllTransaction;
-        // this.fondoList = {};
-        //
-        // const transactionsByPort = transactions.filter((obj) => {
-        //     return obj.strPortID === this.ngPortfolioName &&
-        //            moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
-        // });
-        // this.fondoList = {
-        //     'PortIndex': 0,
-        //     'PortStatus': 'Show',
-        //     'PortIcon': 'add',
-        //     'Portname': transactionsByPort[0] && transactionsByPort[0].strPortID || [],
-        //     'Portarray': transactionsByPort
-        // };
+        let newObj = null;
+        this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
+        this.PortfolioList = this.PortfolioList.map((obj) => {
+            newObj = Globals.g_Portfolios.arrDataByPortfolio.filter((el) => {
+                return el.portname === obj.portfolio_id;
+            });
+            return {
+                ...obj,
+                valor: newObj[0] && Globals.numberWithCommas(newObj[0].stairArray[Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1]) || 0
+            };
+            // return obj.strPortID === this.ngPortfolioName &&
+            //     moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
+        });
+        console.log('obj   ', this.PortfolioList);
+        console.log('arrDataByPortfolio ', Globals.g_Portfolios.arrDataByPortfolio);
 
         this.tbHeader[0].icon = '';
         this.onTableReorder(0);
