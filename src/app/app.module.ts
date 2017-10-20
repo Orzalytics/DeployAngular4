@@ -7,7 +7,8 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './modules/login/login.component';
 import { HomeComponent } from './modules/home/home.component';
-import {TradeComponent} from './modules/trade/trade.component';
+import { TradeComponent } from './modules/trade/trade.component';
+import { ManagementComponent } from './modules/management/management.component';
 // import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,6 +32,7 @@ import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scatter
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
   { path:'trade/:name', component: TradeComponent },
+  { path:'management/:name', component: ManagementComponent },
   { path:'login', component: LoginComponent }
 ];
 
@@ -40,6 +42,7 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     TradeComponent,
+    ManagementComponent,
     D3ScatterPlot,
     D3FanchartDirective,
     D3FundLine,
