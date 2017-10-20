@@ -7,7 +7,7 @@ import * as MainOpr from './../../mainoperation/mainoperation.component';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
-import {FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 // import { Observable } from 'rxjs/Observable';
 // import {FormControl, FormGroup, Validators} from '@angular/forms';
 
@@ -39,7 +39,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
     ];
 
     public portfolioForm = new FormGroup({
-
+        portfolio_id: new FormControl(null),
+        valor: new FormControl(0),
+        moneda: new FormControl(0),
     });
 
     constructor( private service:ServiceComponent,
