@@ -22,6 +22,7 @@ let self: any;
 })
 export class ManagementComponent implements OnInit, OnDestroy {
     public isValid = false;
+    public disabled = false;
 
     private sub: any;
     public cols: any;
@@ -101,17 +102,17 @@ export class ManagementComponent implements OnInit, OnDestroy {
     onRefreshTable() {
         let newObj = null;
         this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
-        this.PortfolioList = this.PortfolioList.map((obj) => {
-            newObj = Globals.g_Portfolios.arrDataByPortfolio.filter((el) => {
-                return el.portname === obj.portfolio_id;
-            });
-            return {
-                ...obj,
-                valor: newObj[0] && Globals.numberWithCommas(newObj[0].stairArray[Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1]) || 0
-            };
-            // return obj.strPortID === this.ngPortfolioName &&
-            //     moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
-        });
+        // this.PortfolioList = this.PortfolioList.map((obj) => {
+        //     newObj = Globals.g_Portfolios.arrDataByPortfolio.filter((el) => {
+        //         return el.portname === obj.portfolio_id;
+        //     });
+        //     return {
+        //         ...obj,
+        //         valor: newObj[0] && Globals.numberWithCommas(newObj[0].stairArray[Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1]) || 0
+        //     };
+        //     // return obj.strPortID === this.ngPortfolioName &&
+        //     //     moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
+        // });
         console.log('obj   ', this.PortfolioList);
         console.log('arrDataByPortfolio ', Globals.g_Portfolios.arrDataByPortfolio);
 
@@ -154,9 +155,54 @@ export class ManagementComponent implements OnInit, OnDestroy {
         // });
     }
 
-    submitForm() {
+    submitForm(valuesForm) {
+        let url = '/addport';
+
+        url = url + '/' + valuesForm.portfolio_id;
+        url = url + '/' + valuesForm.valor;
+        url = url + '/' + valuesForm.moneda;
+        console.log('BUY URL', url);
+
+        HttpService.getBuyResponse(url).subscribe(
+            response => {
+                HttpService.getTransactionList().subscribe(
+                    response => {
+                        MainOpr.getTransactionData(response);
+                        MainOpr.CalculatePortfolioData();
+                        this.onRefreshTable();
+                        // this.checkTable();
+
+                        this.disabled = false;
+                    });
+            });
 
     }
+
+    // checkTable() {
+    //     for (let i = 0; i < this.PortfolioList.length; i ++) {
+    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
+    //             const eachArray = [];
+    //             for (let k = 0; k < this.PortfolioList[i].Portarray.length; k ++) {
+    //                 if (this.PortfolioList[i].Portarray[k].nFundIndex == j) eachArray.push(this.PortfolioList[i].Portarray[k]);
+    //             }
+    //             if (eachArray.length > 0){
+    //                 for (let k = 0; k < eachArray.length; k ++) {
+    //                     eachArray[k].deletable = false;
+    //                     let sum = 0;
+    //                     for (let n = 0; n < eachArray.length; n ++) {
+    //                         if (k == n) continue;
+    //                         const ItemCnt = eachArray[n].nItemCnt;
+    //                         sum = sum + ItemCnt;
+    //                         if (sum < 0) {
+    //                             eachArray[k].deletable = true;
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     resetForm() {
         console.log('Reset form',);

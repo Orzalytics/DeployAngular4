@@ -1,5 +1,5 @@
 <div *ngIf="isValid" class="md-main-page">
-    <form [formGroup]="portfolioForm" (ngSubmit)="submitForm(portfolioForm)">
+    <form [formGroup]="portfolioForm" (ngSubmit)="submitForm(portfolioForm.value)">
         <md-grid-list cols="1" rowHeight="100px">
             <md-grid-tile>
                 <h2 class="title mat-headline">Manejar Portafolio</h2>
@@ -60,7 +60,7 @@
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2">
                 <md-select cdk-connected-overlay fxFlex="97" formControlName="moneda" class="management-select">
-                    <md-option value="Pesos">Colombian Peso</md-option>
+                    <md-option value="Colombian Peso">Colombian Peso</md-option>
                 </md-select>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="1">
@@ -76,7 +76,7 @@
                 <div>${{eachTransaction.valor}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2">
-                <div>Colombian Peso</div>
+                <div>{{eachTransaction.moneda}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="1">
                 <!--<button md-button (click)="onDelete(eachTransaction)" [disabled]="eachTransaction.deletable"><i class="material-icons">clear</i></button>-->

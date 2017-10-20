@@ -35,7 +35,7 @@ app.post('/buy', function(req, res){
 
     var csvdata_portfolio = [];
     var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver"]})
+    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
       .on("data", function(data){
         csvdata_portfolio.push(data);
       })
@@ -155,7 +155,7 @@ app.get('/fundheader', function(req, res){
 app.get('/userPortList', function(req, res){
   var csvdata = [];
   var stream = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-  csv.fromStream(stream, {headers : ["portfolio_id", "portfolio_name_saver"]})
+  csv.fromStream(stream, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
     .on("data", function(data){
       csvdata.push(data);
     })
@@ -233,7 +233,7 @@ app.get('/delete/:id', function(req, res){
     // console.log("================ Parameters ================");
     var csvdata_portfolio = [];
     var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver"]})
+    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
       .on("data", function(data){
         csvdata_portfolio.push(data);
       })
@@ -314,6 +314,55 @@ app.get('/delete/:id', function(req, res){
             }
             csvStream.end();
           });
+      });
+ });
+
+// save transaction to transaction table in MySQL database
+ app.get('/addport/:portfolio_id/:valor/:moneda', function(req, res){
+
+    // default value of 1 for transaction_portfolio_id and transaction_saver_id
+    var param1 = req.params.portfolio_id;
+    var param2 = req.params.valor;
+    var param3 = req.params.moneda;
+
+    var csvdata_portfolio = [];
+    var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
+    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
+      .on("data", function(data){
+        csvdata_portfolio.push(data);
+      })
+      .on("end", function(){
+        var bIsExist = false;
+        for (var i = 0; i < csvdata_portfolio.length; i ++){
+          if (csvdata_portfolio[i].portfolio_id == param1){
+            bIsExist = true;
+            break;
+          }
+        }
+
+        if (bIsExist == true){
+          // exist
+        }else{
+          csvdata_portfolio.push({"portfolio_id" : param1, "portfolio_name_saver" : param1, valor: param2, moneda: param3});
+          var csvStream_portfolio = csv.createWriteStream({headers: false}),
+          writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
+
+          writableStream.on("finish", function(){
+            // success injection portfolio data into database
+          });
+
+          csvStream_portfolio.pipe(writableStream);
+          for (var i = 0; i < csvdata_portfolio.length; i ++){
+            csvStream_portfolio.write({
+                "portfolio_id" : csvdata_portfolio[i].portfolio_id,
+                "portfolio_name_saver" : csvdata_portfolio[i].portfolio_name_saver,
+                "valor" : csvdata_portfolio[i].valor,
+                "moneda" : csvdata_portfolio[i].moneda
+            });
+          }
+          csvStream_portfolio.end();
+        }
+
       });
  });
 
