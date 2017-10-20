@@ -1,12 +1,10 @@
-import {
-	Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation,
-	DoCheck
-} from '@angular/core';
+import { Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation, DoCheck } from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
 let hoverTooltipDiv: any;
 let topChartTooltip: any;
+let timeout: any;
 
 @Directive({
 	selector : '[d3porthisogram]'
@@ -45,6 +43,7 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 	}
 
 	ngOnInit() {
+		console.log('ngOnInit');
 		this.data = [];
 		this.day91ReturnPortfolio = [];
 		this.portfolioHistogramData = [];
@@ -52,14 +51,17 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		this.data = [];
 		this.lastChanged = [];
 		this.createData();
-		this.createChart();
+        this.createChart();
 		this.updateChart();
+
 	}
 
 	ngDoCheck() {
-		setTimeout(() => {
+		timeout = setTimeout(() => {
 			if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
+				console.log('ngDoCheck setTimeout');
 				this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
+            	this.createChart();
 				this.updateChart();
 			}
 		}, 1000);
@@ -158,19 +160,26 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 	}
 
 	createChart() {
+		const elements = document.querySelectorAll('.d3porthisogram');
+		const tooltips = document.getElementsByClassName('hoverTooltip');
+        for (let i = 0; i < elements.length; i ++) {
+            elements[i].parentNode.removeChild(elements[i]);
+        }
+        for (let j = 0; j < tooltips.length; j ++) {
+            tooltips[j].parentNode.removeChild(tooltips[j]);
+        }
+
 		const element = this.chartElement;
 
-		this.width = window.innerWidth
-		this.height = 250;
-		if (window.innerWidth >= 1280) this.width = window.innerWidth / 100 * 33 - this.margin.left - this.margin.right;
-		else this.width = window.innerWidth - this.margin.left - this.margin.right;
-		this.width = this.width - 16 * 2 - 20;
+        const widthContainer = this.chartElement.parentNode.parentNode.parentNode.clientWidth;
+		this.width = widthContainer - this.margin.right - this.margin.left - 100;
+		this.height = 270 - this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
 		// Define the div for the tooltip
 		hoverTooltipDiv = d3.select("body").append("div") 
 			.attr("class", "hoverTooltip")
 			.style("opacity", 0)
-			.style("z-index", 999);
+			.style("z-index", 9999);
 
 		this.svg = d3.select(element).append('svg')
 			.attr('width', this.width + 50)
