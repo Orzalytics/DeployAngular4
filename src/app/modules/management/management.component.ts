@@ -85,13 +85,15 @@ export class ManagementComponent implements OnInit, OnDestroy {
     checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc) {
             clearInterval(this.nTimerId);
+
+            this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
             MainOpr.onCalculateData();
             HttpService.getTransactionList().subscribe(
                 response => {
                     MainOpr.getTransactionData(response);
                     MainOpr.CalculatePortfolioData();
 
-                    this.onRefreshTable();
+                    this.onRefreshTable(this.PortfolioList);
                     this.isValid = true;
                     console.log('Test ',Globals.g_DatabaseInfo.PortfolioList);
                     console.log('Test ', Globals.g_Portfolios);
@@ -99,10 +101,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    onRefreshTable() {
+    onRefreshTable(portfolioList) {
         console.log('Test',);
         let newObj = null;
-        this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
+        this.PortfolioList = portfolioList;
         // this.PortfolioList = this.PortfolioList.map((obj) => {
         //     newObj = Globals.g_Portfolios.arrDataByPortfolio.filter((el) => {
         //         return el.portname === obj.portfolio_id;
@@ -114,8 +116,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
         //     // return obj.strPortID === this.ngPortfolioName &&
         //     //     moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
         // });
-        console.log('obj   ', this.PortfolioList);
-        console.log('arrDataByPortfolio ', Globals.g_Portfolios.arrDataByPortfolio);
+
+        // console.log('obj   ', this.PortfolioList);
+        // console.log('arrDataByPortfolio ', Globals.g_Portfolios.arrDataByPortfolio);
 
         this.tbHeader[0].icon = '';
         this.onTableReorder(0);
@@ -168,47 +171,28 @@ export class ManagementComponent implements OnInit, OnDestroy {
             response => {
                 console.log('Test',response);
                 HttpService.getPortfolioList().subscribe(
-                    response => {
-                        this.PortfolioList.push(valuesForm);
-                        this.onRefreshTable();
-                        // this.checkTable();
+                    res => {
+                        this.onRefreshTable(res);
 
                         this.resetForm();
-
-                        this.disabled = false;
                     });
             });
 
     }
 
-    // checkTable() {
-    //     for (let i = 0; i < this.PortfolioList.length; i ++) {
-    //         for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
-    //             const eachArray = [];
-    //             for (let k = 0; k < this.PortfolioList.length; k ++) {
-    //                 if (this.PortfolioList[i].Portarray[k].nFundIndex == j) eachArray.push(this.PortfolioList[i].Portarray[k]);
-    //             }
-    //             if (eachArray.length > 0){
-    //                 for (let k = 0; k < eachArray.length; k ++) {
-    //                     eachArray[k].deletable = false;
-    //                     let sum = 0;
-    //                     for (let n = 0; n < eachArray.length; n ++) {
-    //                         if (k == n) continue;
-    //                         const ItemCnt = eachArray[n].nItemCnt;
-    //                         sum = sum + ItemCnt;
-    //                         if (sum < 0) {
-    //                             eachArray[k].deletable = true;
-    //                             break;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    // delete transaction
+    onDelete(portfolio) {
+        HttpService.getDeletePortResponse(portfolio.portfolio_id).subscribe(
+            response => {
+                HttpService.getPortfolioList().subscribe(
+                    res => {
+                        this.onRefreshTable(res);
+                    });
+            }
+        );
+    }
 
     resetForm() {
         this.portfolioForm.reset();
     }
-
 }

@@ -208,6 +208,43 @@ app.get('/delete/:id', function(req, res){
     });
 });
 
+app.get('/deleteport/:id', function(req, res){
+  var portfolio_id = req.params.id;
+  var csvdata = [];
+  var stream = fs.createReadStream(__dirname + "/testdb/portnames.csv");
+  csv.fromStream(stream, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
+    .on("data", function(data){
+      csvdata.push(data);
+    })
+    .on("end", function(){
+      var newdata = [];
+      for (var i = 0; i < csvdata.length; i ++){
+        if (csvdata[i].portfolio_id == portfolio_id){
+          continue;
+        }
+        newdata.push(csvdata[i]);
+      }
+
+      var csvStream = csv.createWriteStream({headers: false}),
+      writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
+
+      writableStream.on("finish", function(){
+        res.json("done");
+      });
+
+      csvStream.pipe(writableStream);
+      for (var i = 0; i < newdata.length; i ++){
+        csvStream.write({
+            "portfolio_id" : newdata[i].portfolio_id,
+            "portfolio_name_saver" : newdata[i].portfolio_name_saver,
+            "valor" : newdata[i].valor,
+            "moneda" : newdata[i].moneda
+        });
+      }
+      csvStream.end();
+    });
+});
+
  // save transaction to transaction table in MySQL database
  app.get('/buy/:fund_id_bought/:units_bought/:fund_id_sold/:units_sold/:date_value_transaction/:portfolio_id/:saver_id/:nowDate', function(req, res){
     
