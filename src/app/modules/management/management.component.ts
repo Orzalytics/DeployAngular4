@@ -7,7 +7,7 @@ import * as MainOpr from './../../mainoperation/mainoperation.component';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 // import { Observable } from 'rxjs/Observable';
 // import {FormControl, FormGroup, Validators} from '@angular/forms';
 
@@ -40,9 +40,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
     ];
 
     public portfolioForm = new FormGroup({
-        portfolio_id: new FormControl(null),
-        valor: new FormControl(0),
-        moneda: new FormControl(0),
+        portfolio_id: new FormControl(null, Validators.required),
+        valor: new FormControl(0, Validators.required),
+        moneda: new FormControl(0, Validators.required),
     });
 
     constructor( private service:ServiceComponent,
@@ -102,24 +102,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     onRefreshTable(portfolioList) {
-        console.log('Test',);
-        let newObj = null;
         this.PortfolioList = portfolioList;
-        // this.PortfolioList = this.PortfolioList.map((obj) => {
-        //     newObj = Globals.g_Portfolios.arrDataByPortfolio.filter((el) => {
-        //         return el.portname === obj.portfolio_id;
-        //     });
-        //     return {
-        //         ...obj,
-        //         valor: newObj[0] && Globals.numberWithCommas(newObj[0].stairArray[Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1]) || 0
-        //     };
-        //     // return obj.strPortID === this.ngPortfolioName &&
-        //     //     moment(obj.tDate).isSameOrBefore(moment(this.tradeForm.controls['date'].value));
-        // });
-
-        // console.log('obj   ', this.PortfolioList);
-        // console.log('arrDataByPortfolio ', Globals.g_Portfolios.arrDataByPortfolio);
-
         this.tbHeader[0].icon = '';
         this.onTableReorder(0);
     }
@@ -160,6 +143,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     submitForm(valuesForm) {
+        if (this.portfolioForm.valid === false) return false;
+
         let url = '/addport';
 
         url = url + '/' + valuesForm.portfolio_id;

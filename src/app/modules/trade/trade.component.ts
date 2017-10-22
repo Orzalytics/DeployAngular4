@@ -357,7 +357,6 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     resetForm() {
-        console.log('Reset form',);
         this.tradeForm.controls['date'].valueChanges.subscribe(() => {
             this.tradeForm.controls['pesos'].setValue(null);
             this.tradeForm.controls['unidades'].setValue(null);
