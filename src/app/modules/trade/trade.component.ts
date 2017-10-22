@@ -45,7 +45,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public maxDate = moment().format('YYYY-MM-DD');
     public ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
     public ng_strDate = Globals.convertDate(Globals.g_GlobalStatic.startDate);
-    public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
+    // public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
     public nTimerId: any;
 
     ngScopeFanData: any;
@@ -63,7 +63,13 @@ export class TradeComponent implements OnInit, OnDestroy {
     ];
 
     tableInfo = [];
-    tableStore = {};
+    // tableStore = {};
+
+    // escoje fondo //
+    public ngScopeDay91: any;
+    public ngScopeDay182: any;
+    public ngScopeDay365: any;
+    public ngScopeYear: any;
 
     // my refactoring;
     private routeName: string;
@@ -71,6 +77,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
     public isValid: boolean = false;
     public cols:  Observable<number>;
+    public colsValue:  Observable<number>;
 
     public ngPortfolioName: string;
     public ngFondoName: string;
@@ -80,7 +87,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public fondoList: any;
 
     public tradeForm = new FormGroup({
-        portfolio: new FormControl('test'),
+        portfolio: new FormControl(null),
         fondo: new FormControl(),
         date: new FormControl(new Date(Globals.g_GlobalStatic.startDate)),
         trade: new FormControl('comprar'),
@@ -108,23 +115,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         }, 100);
 
         // this.isValid = true;
-        const grid = new Map([
-            ['xs', 1],
-            ['sm', 1],
-            ['md', 1],
-            ['lg', 3],
-            ['xl', 3]
-        ]);
-        let start: number;
-        grid.forEach((cols, mqAlias) => {
-            if (this.observableMedia.isActive(mqAlias)) {
-                start = cols;
-            }
-        });
-        this.cols = this.observableMedia.asObservable()
-            .map(change => grid.get(change.mqAlias))
-            .startWith(start);
-
+        this.onResizeWindow();
         // Rerender graph after changes portfolio or fondo
         this.tradeForm.controls['portfolio'].valueChanges.subscribe((value) => {
             this.ngPortfolioName = value;
@@ -145,6 +136,44 @@ export class TradeComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
     }
 
+    onResizeWindow() {
+        const grid = new Map([
+            ['xs', 1],
+            ['sm', 1],
+            ['md', 1],
+            ['lg', 3],
+            ['xl', 3]
+        ]);
+        let start: number;
+        grid.forEach((cols, mqAlias) => {
+            if (this.observableMedia.isActive(mqAlias)) {
+                start = cols;
+            }
+        });
+        this.cols = this.observableMedia.asObservable()
+            .map(change => grid.get(change.mqAlias))
+            .startWith(start);
+
+
+        const gridValue = new Map([
+            ['xs', 1],
+            ['sm', 2],
+            ['md', 4],
+            ['lg', 4],
+            ['xl', 4]
+        ]);
+        let startValue: number;
+        gridValue.forEach((cols, mqAlias) => {
+            if (this.observableMedia.isActive(mqAlias)) {
+                startValue = cols;
+            }
+        });
+        this.colsValue = this.observableMedia.asObservable()
+            .map(change => gridValue.get(change.mqAlias))
+            .startWith(startValue);
+
+    }
+
     checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc) {
             clearInterval(this.nTimerId);
@@ -158,10 +187,6 @@ export class TradeComponent implements OnInit, OnDestroy {
                     this.onRefreshTable();
                     this.isValid = true;
 
-
-
-
-
                     // Set portfolio list with transform array
                     this.portfolioList = Globals.g_Portfolios.arrDataByPortfolio.map((obj) => {
                         return { ...obj, name: obj.portname};
@@ -170,6 +195,8 @@ export class TradeComponent implements OnInit, OnDestroy {
                     this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
                     this.ngFondoName = this.fondosList[0]['name'];
                     this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
+
+                    this.setEscojeFondo();
                 });
         }
     }
@@ -218,6 +245,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         // this.tradeForm.controls['date'].setValue(new Date(selectedDate));
         //
         // this.ngSliderIndex = event.value;
+        this.setEscojeFondo();
     }
 
     onInputDatepicker(event: any) {
@@ -234,6 +262,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         // Globals.g_Portfolios.nSliderIndex = diffDate;
         //
         // this.ngSliderIndex = diffDate;
+        this.setEscojeFondo();
     }
 
     onRefreshTable() {
@@ -291,6 +320,26 @@ export class TradeComponent implements OnInit, OnDestroy {
         });
     }
 
+    setEscojeFondo() {
+        const indexFondosValue = this.fondosList.findIndex((obj) => {
+            return obj.name === this.ngFondoName;
+        });
+
+        console.log('day91_return', indexFondosValue, Globals.g_FundParent.arrAllReturns.day91_return[indexFondosValue]);
+        const day91 = Globals.g_FundParent.arrAllReturns.day91_return[indexFondosValue][this.ngSliderIndex]*100;
+        const day182 = Globals.g_FundParent.arrAllReturns.day182_return[indexFondosValue][this.ngSliderIndex]*100;
+        const day365 = Globals.g_FundParent.arrAllReturns.day365_return[indexFondosValue][this.ngSliderIndex]*100;
+        const year = Globals.g_FundParent.arrAllReturns.newstart_return[indexFondosValue][this.ngSliderIndex] * 1;
+        this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
+        this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
+        this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
+        this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
+        if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
+        if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
+        if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
+        if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
+    }
+
     calculateUnidades(value) {
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
@@ -318,10 +367,6 @@ export class TradeComponent implements OnInit, OnDestroy {
             this.tradeForm.controls['pesos'].setValue(null);
             this.tradeForm.controls['unidades'].setValue(null);
         });
-    }
-
-    formChange() {
-        console.log('Change form',);
     }
 
     onBuy(valuesForm) {
@@ -359,8 +404,8 @@ export class TradeComponent implements OnInit, OnDestroy {
         HttpService.getBuyResponse(url).subscribe(
             response => {
                 HttpService.getTransactionList().subscribe(
-                    response => {
-                        MainOpr.getTransactionData(response);
+                    res => {
+                        MainOpr.getTransactionData(res);
                         MainOpr.CalculatePortfolioData();
                         this.onRefreshTable();
                         this.checkTable();
@@ -368,6 +413,26 @@ export class TradeComponent implements OnInit, OnDestroy {
                         this.disabled = false;
                     });
             });
+    }
+
+    // delete transaction
+    onDelete(transaction) {
+        if (transaction.nFundIndex > -1) {
+            HttpService.getDeleteResponse(transaction.id).subscribe(
+                response => {
+                    HttpService.getTransactionList().subscribe(
+                        res => {
+                            MainOpr.getTransactionData(res);
+                            MainOpr.CalculatePortfolioData();
+                            this.onRefreshTable();
+                            this.checkTable();
+
+                            this.disabled = false;
+                        });
+                }
+            );
+            this.tableInfo = [];
+        }
     }
 
     checkTable() {
