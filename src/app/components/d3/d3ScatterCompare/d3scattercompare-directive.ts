@@ -50,9 +50,10 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
         this.day91ReturnPortfolio = [];
         this.crossFundPortfolioScatterData = [];
         this.FondIndex = 1; // HARDCODE !!! REMOVE !!!
-
         this.createData();
-        this.createChart();
+        setTimeout(() => {
+            this.createChart();
+        }, 100);
     }
 
     createData() {
@@ -100,6 +101,7 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
             .attr('transform', 'translate(0, 0)')
             .attr('class', 'data-scattercompare');
 
+        console.log('Sketter ', this.width, this.height);
         // setup variables
         const y = d3.scaleLinear()
                 .domain([-0.15, 0.3])
