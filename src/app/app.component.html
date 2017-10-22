@@ -11,17 +11,18 @@
     <span>Orza&nbsp;&nbsp;</span>
     <img src="./WhiteonTransparent.png" class="logo-img-lg">
 </md-toolbar>
+
 <md-sidenav-container class="container">
     <md-sidenav #sidenav class="sidenav">
         <md-nav-list>
             <md-list-item [routerLink]="['/']">Analizar Portafolio</md-list-item>
-            <md-list-item>Comprar/vender Fondos</md-list-item>
+            <md-list-item [routerLink]="['/trade/accionescolombia']">Comprar/vender Fondos</md-list-item>
             <md-list-item [routerLink]="['/management']">Manejar Portafolio</md-list-item>
             <md-list-item>Orza</md-list-item>
         </md-nav-list>
     </md-sidenav>
-
 </md-sidenav-container>
+
 <div class="container-scrolling">
     <router-outlet></router-outlet>
 </div>

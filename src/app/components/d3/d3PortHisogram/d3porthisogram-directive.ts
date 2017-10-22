@@ -31,19 +31,18 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 	private oldWidth: number;
 
 	@Input('resizableEl') resizableEl: any;
-	@Input('SliderIndex') SliderIndex : number;
-	@Input('PfName') PfName : string;
-	@Input('WindowSize') WindowSize : number;
-	@Input('SliderDisable') SliderDisable : any;
-	@Input('RefreshStatus') RefreshStatus : any;
-	@Input('DataLength') DataLength : number;
+	@Input('SliderIndex') SliderIndex: number;
+	@Input('PfName') PfName: string;
+	@Input('WindowSize') WindowSize: number;
+	@Input('SliderDisable') SliderDisable: any;
+	@Input('RefreshStatus') RefreshStatus: any;
+	@Input('DataLength') DataLength: number;
 
-	constructor (private el : ElementRef) {
+	constructor (private el: ElementRef) {
 		this.chartElement = el.nativeElement;
 	}
 
 	ngOnInit() {
-		console.log('ngOnInit');
 		this.data = [];
 		this.day91ReturnPortfolio = [];
 		this.portfolioHistogramData = [];
@@ -51,15 +50,15 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		this.data = [];
 		this.lastChanged = [];
 		this.createData();
-        this.createChart();
-		this.updateChart();
-
+		setTimeout(() => {
+			this.createChart();
+			this.updateChart();
+		}, 100);
 	}
 
 	ngDoCheck() {
 		timeout = setTimeout(() => {
 			if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
-				console.log('ngDoCheck setTimeout');
 				this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
             	this.createChart();
 				this.updateChart();
@@ -75,7 +74,9 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		this.lastChanged = [];
 		this.createData();
 		if (this.chart) {
-			this.updateChart();
+			setTimeout(() => {
+				this.updateChart();
+			}, 100);
 		}
 	}
 

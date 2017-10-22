@@ -95,16 +95,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('maxdate', this.maxDate);
         HttpService.getDatabaseInfo();
         this.nTimerId = setInterval(() => {
             this.checkStart();
         }, 100);
-        this.onResize(null);
-        this.ngScopeDay91 = '0.0';
-        this.ngScopeDay182 = '0.0';
-        this.ngScopeDay365 = '0.0';
-        this.ngScopeYear = '0.0';
 
         const grid = new Map([
             ['xs', 1],
@@ -134,7 +128,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (Globals.g_DatabaseInfo.bIsStartCalc){
             clearInterval(this.nTimerId);
             this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
-            console.log('PortfolioList', this.PortfolioList);
             MainOpr.onCalculateData();
             HttpService.getTransactionList().subscribe(
                 response => {
@@ -747,23 +740,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
 
         this.fullscreen = !this.fullscreen;
-    }
-
-    onResize(event) {
-        console.log('Resize', event);
-        // this.ngWidth = window.innerWidth;
-        // if (window.innerWidth > 1280){
-        //     this.tile_Col = 3;
-        //     this.tile_One = 1;
-        //     this.tile_Two = 1;
-        //     this.tile_Tre = 1;
-        //     this.tile_Four = 1;
-        // }else{
-        //     this.tile_Col = 1;
-        //     this.tile_One = 1;
-        //     this.tile_Two = 1;
-        //     this.tile_Tre = 1;
-        //     this.tile_Four = 1;
-        // }
     }
 }

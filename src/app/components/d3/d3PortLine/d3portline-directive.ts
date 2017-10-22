@@ -53,7 +53,9 @@ export class D3PortLine implements OnInit, OnChanges, DoCheck {
         x_Data = [];
         y_Data = [];
         this.createData();
-        this.createChart();
+        setTimeout(() => {
+            this.createChart();
+        });
     }
 
     createData() {
