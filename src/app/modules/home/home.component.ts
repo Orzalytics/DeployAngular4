@@ -27,6 +27,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     @ViewChild('resizableEl', {read: ElementRef}) resizableEl: ElementRef;
     fullscreen: boolean = false;
 
+    public PortfolioList = [];
+
     public cols: Observable<number>;
     width: number;
     ngPortIndex: number = -1;
@@ -131,6 +133,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc){
             clearInterval(this.nTimerId);
+            this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
+            console.log('PortfolioList', this.PortfolioList);
             MainOpr.onCalculateData();
             HttpService.getTransactionList().subscribe(
                 response => {
@@ -160,10 +164,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         const updatedDate = moment(Globals.g_GlobalStatic.startDate);
         this.minDate = updatedDate.format('YYYY-MM-DD');
         this.maxDate = updatedDate.add(this.ngSliderIndex, 'day').format('YYYY-MM-DD');
-        //
+
         // this.ng_strDate = Globals.convertDate(selectedDate);
         // this.maxDate = Globals.convertDate(selectedDate);
-        console.log('selected date ', this.maxDate, this.minDate);
         this.ngDate = moment(this.maxDate).format('YYYY-MM-DD');
     }
 
@@ -175,8 +178,11 @@ export class HomeComponent implements OnInit, OnDestroy {
             let GoL = 0;
 
             for (let i = 0; i <= this.ngSliderIndex; i ++) {
-                if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
-                if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i]) Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
+                if (Max < Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i])
+                    Max = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
+
+                if (Min > Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i])
+                    Min = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[i];
             }
             if (VoP > 0) GoL = Globals.g_Portfolios.arrDataByPortfolio[this.ngPortIndex].portArray[this.ngSliderIndex] / VoP * 100;
 

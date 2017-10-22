@@ -27,7 +27,7 @@ let self: any;
   providers: [ServiceComponent]
 })
 export class TradeComponent implements OnInit, OnDestroy {
-    ngPortIndex: number = -1;
+    public PortfolioList = [];
 
     // Chart Input Values //
     // ngPortfolioName: any;
@@ -82,7 +82,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public ngPortfolioName: string;
     public ngFondoName: string;
 
-    public portfolioList = [];
+    // public portfolioList = [];
     public fondosList = [];
     public fondoList: any;
 
@@ -177,6 +177,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc) {
             clearInterval(this.nTimerId);
+
             MainOpr.onCalculateData();
             HttpService.getTransactionList().subscribe(
                 response => {
@@ -188,8 +189,8 @@ export class TradeComponent implements OnInit, OnDestroy {
                     this.isValid = true;
 
                     // Set portfolio list with transform array
-                    this.portfolioList = Globals.g_Portfolios.arrDataByPortfolio.map((obj) => {
-                        return { ...obj, name: obj.portname};
+                    this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList.map((obj) => {
+                        return { ...obj, name: obj.portfolio_id};
                     });
                     // Set fondos list
                     this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
@@ -325,7 +326,6 @@ export class TradeComponent implements OnInit, OnDestroy {
             return obj.name === this.ngFondoName;
         });
 
-        console.log('day91_return', indexFondosValue, Globals.g_FundParent.arrAllReturns.day91_return[indexFondosValue]);
         const day91 = Globals.g_FundParent.arrAllReturns.day91_return[indexFondosValue][this.ngSliderIndex]*100;
         const day182 = Globals.g_FundParent.arrAllReturns.day182_return[indexFondosValue][this.ngSliderIndex]*100;
         const day365 = Globals.g_FundParent.arrAllReturns.day365_return[indexFondosValue][this.ngSliderIndex]*100;

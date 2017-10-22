@@ -7,7 +7,7 @@
                        [style.width]="width + 'px'"
                        [(ngModel)]="ngPortfolioName"
                        (ngModelChange)="onPfnameChanged()" #selectPortfolio>
-                <md-option *ngFor="let eachObj of tableInfo" [value]="eachObj.Portname">{{eachObj.Portname}}</md-option>
+                <md-option *ngFor="let eachObj of PortfolioList" [value]="eachObj.portfolio_id">{{eachObj.portfolio_id}}</md-option>
             </md-select>
         </md-grid-tile>
     </md-grid-list>
