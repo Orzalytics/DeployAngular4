@@ -253,6 +253,7 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
             .style('fill', function(d, i){
                 if (portСompositionObj !== undefined) {
                     if ( i < Globals.g_DatabaseInfo.ListofPriceFund.length &&
+                        portСompositionObj[nPortfolioName] &&
                         portСompositionObj[nPortfolioName].indexOf( Globals.g_DatabaseInfo.ListofPriceFund[i].name ) !== -1 ) {
                         return '#ff5800';
                     }
@@ -314,7 +315,6 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
               }
 
             function onMouseOut() {
-                console.log('sdfsdf',);
                 document.getElementById('scatter_tooltip').style.display = 'none';
             }
     }

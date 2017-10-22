@@ -131,14 +131,15 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		this.histogramData.push({label:" ", value:0});
 		//data calculation for tooltips (the value of each column in percent)
 		let histogramSumm = 0;
-		for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
-			this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
-			if (i === this.lastChanged[this.SliderIndex])
-				this.histogramData[i].lastChanged = 1;
-			else
-				this.histogramData[i].lastChanged = 0;
-			histogramSumm += this.portfolioHistogramData[this.SliderIndex][i];
-		}
+		if (this.portfolioHistogramData[this.SliderIndex])
+			for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
+				this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
+				if (i === this.lastChanged[this.SliderIndex])
+					this.histogramData[i].lastChanged = 1;
+				else
+					this.histogramData[i].lastChanged = 0;
+				histogramSumm += this.portfolioHistogramData[this.SliderIndex][i];
+			}
 
 		let percentageSumm = 0;
 		let maxValue = 0;
