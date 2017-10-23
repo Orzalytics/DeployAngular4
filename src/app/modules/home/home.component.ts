@@ -89,7 +89,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
     ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
 
-    constructor(private service: ServiceComponent, private observableMedia: ObservableMedia) {
+    constructor( private service: ServiceComponent,
+                 private observableMedia: ObservableMedia ) {
         self = this;
         HttpService = this.service;
     }

@@ -26,8 +26,7 @@
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
-                    <div [resizableEl]="resizableElPesos"
-                         [SliderIndex]="ngSliderIndex"
+                    <div [SliderIndex]="ngSliderIndex"
                          [RefreshStatus]="ngSecondGraphModel"
                          [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
@@ -44,8 +43,7 @@
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
-                    <div [resizableEl]="resizableElRetorno"
-                         [SliderIndex]="ngSliderIndex"
+                    <div [SliderIndex]="ngSliderIndex"
                          [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
                          [WindowSize]="ngWidth"
@@ -68,8 +66,7 @@
                         <div class="scatter_port" id="scatter_port"></div>
                         <div class="scatter_x" id="scatter_x"></div>
                     </div>
-                    <div [resizableEl]="resizableEl"
-                         [SliderIndex]="ngSliderIndex"
+                    <div [SliderIndex]="ngSliderIndex"
                          [RefreshAll]="ngAllRefresh"
                          [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"
