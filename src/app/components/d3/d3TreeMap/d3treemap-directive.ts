@@ -18,7 +18,6 @@ export class D3TreeMap implements OnInit, OnDestroy, OnChanges {
 
     @Input('SliderIndex') SliderIndex: number;
     @Input('PfName') PfName: string;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
 
     constructor (private el: ElementRef,

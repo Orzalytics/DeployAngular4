@@ -15,7 +15,6 @@ export class D3FanchartDirective implements OnInit, OnDestroy, OnChanges {
 
     @Input('SliderIndex') SliderIndex: number;
     @Input('Data') Data: any;
-    @Input('WindowSize') WindowSize: number;
 
     constructor( private el: ElementRef,
                  private resizeService: ResizeService ) {

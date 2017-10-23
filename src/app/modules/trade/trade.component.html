@@ -24,7 +24,6 @@
                         <div [SliderIndex]="ngSliderIndex"
                              [SliderDisable]="disabled"
                              [PfName]="ngPortfolioName"
-                             [WindowSize]="ngWidth"
                              d3treemap></div>
                     </md-card-content>
                 </md-card>
@@ -35,7 +34,6 @@
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
                              [Data]="ngScopeFanData"
-                             [WindowSize]="ngWidth"
                              d3fanchart></div>
                     </md-card-content>
                 </md-card>
@@ -45,10 +43,8 @@
                     <md-card-title id="card-title">Retornos 91 días portafolio y fondo</md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
-                             [RefreshAll]="ngAllRefresh"
                              [SliderDisable]="disabled"
                              [PfName]="ngPortfolioName"
-                             [WindowSize]="ngWidth"
                              d3ScatterCompare></div>
                     </md-card-content>
                 </md-card>

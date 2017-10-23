@@ -23,7 +23,6 @@ export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
 
     @Input('scatterContainer') scatterContainer: any;
     @Input('SliderIndex') SliderIndex: number;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshAll') RefreshAll: any;
 
@@ -103,7 +102,6 @@ export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
             .attr('transform', 'translate(0, 0)')
             .attr('class', 'data-scattercompare');
 
-        console.log('Sketter ', this.width, this.height);
         // setup variables
         const y = d3.scaleLinear()
                 .domain([-0.15, 0.3])

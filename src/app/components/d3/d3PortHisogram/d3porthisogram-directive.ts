@@ -34,7 +34,6 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 
 	@Input('SliderIndex') SliderIndex: number;
 	@Input('PfName') PfName: string;
-	@Input('WindowSize') WindowSize: number;
 	@Input('SliderDisable') SliderDisable: any;
 	@Input('RefreshStatus') RefreshStatus: any;
 	@Input('DataLength') DataLength: number;

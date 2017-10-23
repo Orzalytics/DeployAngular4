@@ -211,10 +211,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         const updatedDate = moment(Globals.g_GlobalStatic.startDate);
         this.minDate = updatedDate.format('YYYY-MM-DD');
         this.maxDate = updatedDate.add(this.ngSliderIndex, 'day').format('YYYY-MM-DD');
-        //
+
         // this.ng_strDate = Globals.convertDate(selectedDate);
         // this.maxDate = Globals.convertDate(selectedDate);
-        console.log('selected date ', this.maxDate, this.minDate);
         this.ngDate = moment(this.maxDate).format('YYYY-MM-DD');
         this.tradeForm.controls['date'].setValue(this.ngDate);
         // this.minVal = 0;

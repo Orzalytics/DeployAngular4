@@ -23,9 +23,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
     private height: number;
 
     @Input('SliderIndex') SliderIndex: number;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
-    @Input('RefreshAll') RefreshAll: any;
     @Input('PortfolioName') PortfolioName: any;
     @Input('TableInfo') TableInfo: any;
 

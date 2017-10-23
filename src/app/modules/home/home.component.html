@@ -30,7 +30,7 @@
                          [RefreshStatus]="ngSecondGraphModel"
                          [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
-                         [WindowSize]="ngWidth" d3portline></div>
+                         d3portline></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
@@ -46,8 +46,8 @@
                     <div [SliderIndex]="ngSliderIndex"
                          [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
-                         [WindowSize]="ngWidth"
-                         [DataLength]="maxVal" d3porthisogram></div>
+                         [DataLength]="maxVal"
+                         d3porthisogram></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
@@ -67,11 +67,10 @@
                         <div class="scatter_x" id="scatter_x"></div>
                     </div>
                     <div [SliderIndex]="ngSliderIndex"
-                         [RefreshAll]="ngAllRefresh"
                          [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"
                          [TableInfo]="tableInfo"
-                         [WindowSize]="ngWidth" d3Scatter></div>
+                         d3Scatter></div>
                 </md-card-content>
             </md-card>
         </md-grid-tile>
