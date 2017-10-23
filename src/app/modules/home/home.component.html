@@ -27,9 +27,6 @@
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
-                         [RefreshStatus]="ngSecondGraphModel"
-                         [SliderDisable]="disabled"
-                         [PfName]="ngPortfolioName"
                          d3portline></div>
                 </md-card-content>
             </md-card>
@@ -45,7 +42,6 @@
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
-                         [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
                          [DataLength]="maxVal"
                          d3porthisogram></div>
@@ -68,7 +64,6 @@
                         <div class="scatter_x" id="scatter_x"></div>
                     </div>
                     <div [SliderIndex]="ngSliderIndex"
-                         [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"
                          [TableInfo]="tableInfo"
                          d3Scatter></div>
@@ -81,7 +76,6 @@
     </div>
     <md-toolbar class="md-toolbar-bottom">
         <md-slider class="m-slider" (input)="onInputChange($event)"
-            [disabled]="disabled"
             [max]="maxVal"
             [min]="minVal"
             [value]="ngSliderIndex"

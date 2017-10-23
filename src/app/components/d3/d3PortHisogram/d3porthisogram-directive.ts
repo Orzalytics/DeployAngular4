@@ -1,14 +1,10 @@
-import {
-    Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation, DoCheck,
-    OnDestroy
-} from '@angular/core';
+import { Directive, OnInit, OnChanges, ElementRef, Input, OnDestroy } from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
-import {ResizeService} from "../../../service/resize.service";
+import { ResizeService } from '../../../service/resize.service';
 
 let hoverTooltipDiv: any;
 let topChartTooltip: any;
-let timeout: any;
 
 @Directive({
 	selector : '[d3porthisogram]'
@@ -34,8 +30,6 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 
 	@Input('SliderIndex') SliderIndex: number;
 	@Input('PfName') PfName: string;
-	@Input('SliderDisable') SliderDisable: any;
-	@Input('RefreshStatus') RefreshStatus: any;
 	@Input('DataLength') DataLength: number;
 
 	constructor ( private el: ElementRef,
@@ -127,7 +121,7 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 		this.histogramData.push({label:" ", value:0});
 		//data calculation for tooltips (the value of each column in percent)
 		let histogramSumm = 0;
-		if (this.portfolioHistogramData[this.SliderIndex])
+        if (this.portfolioHistogramData[this.SliderIndex])
 			for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
 				this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
 				if (i === this.lastChanged[this.SliderIndex])
@@ -240,9 +234,9 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 				hoverTooltipDiv.transition()
 					.duration(200)
 					.style("opacity", .9);
-				hoverTooltipDiv.html(d.percentage + "%")  
+				hoverTooltipDiv.html(d.percentage + "%")
 					.style("left", (d3.event.pageX-20) + "px")
-					.style("top", (d3.event.pageY-30) + "px");  
+					.style("top", (d3.event.pageY-30) + "px");
 				})
 			.on("mouseout", function(d) {
 				hoverTooltipDiv.transition()

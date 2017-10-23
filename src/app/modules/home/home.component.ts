@@ -218,7 +218,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         // this.ngScopeTranPrice = 0;
 
         for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
-            console.log('this.ngSelFondosValue', this.ngSelFondosValue);
             if (this.ngPortfolioName === Globals.g_Portfolios.arrDataByPortfolio[i].portname){
                 let sum = 0;
                 for (let j = 0; j <= this.ngSliderIndex; j ++) {
