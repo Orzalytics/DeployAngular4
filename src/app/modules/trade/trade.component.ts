@@ -11,6 +11,8 @@ import { ObservableMedia } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+
 let HttpService: any;
 let self: any;
 
@@ -30,6 +32,13 @@ let self: any;
 })
 export class TradeComponent implements OnInit, OnDestroy {
     public PortfolioList = [];
+
+    public numberMask = createNumberMask({
+        prefix: '',
+        suffix: '',
+        allowDecimal: true,
+        decimalLimit: 6
+    });
 
     // Chart Input Values //
     ngSelFondosValue: any;
@@ -344,7 +353,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
         });
-        const Unidades = value / Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex];
+        const Unidades = value.replace(/,/g, '') / Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex];
         this.tradeForm.controls['unidades'].setValue(Globals.toFixedDecimal(Unidades, 6));
     }
 
@@ -352,7 +361,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
         });
-        const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex] * value * 10000) / 10000;
+        const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex] * value.replace(/,/g, '') * 10000) / 10000;
         this.tradeForm.controls['pesos'].setValue(Globals.toFixedDecimal(Pesos, 6));
     }
 
@@ -379,9 +388,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         if(valuesForm.trade === 'comprar') {
             // buy item
             url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
-            url = url + '/' + valuesForm.unidades;
+            url = url + '/' + valuesForm.unidades.toString().replace(/,/g, '');
             url = url + '/' + 999;
-            url = url + '/' + valuesForm.pesos;
+            url = url + '/' + valuesForm.pesos.toString().replace(/,/g, '');
             url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
             url = url + '/' + valuesForm.portfolio;
             url = url + '/' + 'deploy_user';
@@ -390,9 +399,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         } else {
             // sell item
             url = url + '/' + 999;
-            url = url + '/' + Math.abs(valuesForm.unidades);
+            url = url + '/' + Math.abs(valuesForm.toString().unidades.replace(/,/g, ''));
             url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
-            url = url + '/' + Math.abs(valuesForm.pesos);
+            url = url + '/' + Math.abs(valuesForm.pesos.toString().replace(/,/g, ''));
             url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
             url = url + '/' + valuesForm.portfolio;
             url = url + '/' + 'deploy_user';

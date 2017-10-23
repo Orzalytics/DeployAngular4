@@ -107,8 +107,8 @@
                     <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
                         <md-input-container fxFlex="97">
                             <input mdInput
-                                   type="number"
-                                   min="0"
+                                   type="text"
+                                   [textMask]="{mask: numberMask}"
                                    placeholder="Pesos"
                                    formControlName="pesos"
                                    (change)="calculateUnidades(tradeForm.controls['pesos'].value)">
@@ -117,7 +117,7 @@
                     <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
                         <md-input-container fxFlex="97">
                             <input mdInput
-                                   type="number"
+                                   [textMask]="{mask: numberMask}"
                                    placeholder="Unidades"
                                    formControlName="unidades"
                                    (change)="calculatePesos(tradeForm.controls['unidades'].value)">
