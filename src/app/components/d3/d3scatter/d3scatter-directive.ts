@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnInit, DoCheck, SimpleChanges, OnDestroy} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
