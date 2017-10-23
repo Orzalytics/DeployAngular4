@@ -121,6 +121,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                 return obj.name === value;
             });
             this.ngScopeFanData = MainOpr.calculateFanChartData(indexValue);
+            this.setEscojeFondo();
         });
 
         this.resetForm();
