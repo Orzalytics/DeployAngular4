@@ -66,7 +66,6 @@ export class TradeComponent implements OnInit, OnDestroy {
 
     // my refactoring;
     public fullscreen: boolean = false;
-    private routeName: string;
     private sub: any;
 
     public isValid: boolean = false;
@@ -89,17 +88,10 @@ export class TradeComponent implements OnInit, OnDestroy {
         unidades: new FormControl(null, Validators.required),
     });
 
-    constructor( private route: ActivatedRoute,
-                 private service:ServiceComponent,
+    constructor( private service:ServiceComponent,
                  private observableMedia: ObservableMedia ) {
         self = this;
         HttpService = this.service;
-
-        this.sub = route.params.subscribe(params => {
-            this.routeName = params['name'];
-            this.ngPortfolioName = params['name'];
-            this.tradeForm.controls['portfolio'].setValue(params['name']);
-        });
     }
 
     ngOnInit() {
@@ -127,7 +119,9 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.sub.unsubscribe();
+        if (this.nTimerId) {
+            clearInterval(this.nTimerId);
+        }
     }
 
     onResizeWindow() {
@@ -171,6 +165,8 @@ export class TradeComponent implements OnInit, OnDestroy {
     checkStart() {
         if (Globals.g_DatabaseInfo.bIsStartCalc) {
             clearInterval(this.nTimerId);
+            this.ngPortfolioName = Globals.g_DatabaseInfo.PortfolioList[0].portfolio_id;
+            this.tradeForm.controls['portfolio'].setValue(this.ngPortfolioName);
 
             MainOpr.onCalculateData();
             HttpService.getTransactionList().subscribe(
