@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, DoCheck, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -25,7 +25,6 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
     private height: number;
 
     @Input('SliderIndex') SliderIndex: number;
-    @Input('SliderDisable') SliderDisable: any;
     @Input('PortfolioName') PortfolioName: any;
     @Input('TableInfo') TableInfo: any;
     @Input('NotMovedToTooltip') NotMovedToTooltip: any;

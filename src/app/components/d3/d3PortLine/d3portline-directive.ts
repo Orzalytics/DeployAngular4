@@ -1,7 +1,7 @@
-import {Directive, DoCheck, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
-import {ResizeService} from "../../../service/resize.service";
+import { ResizeService } from '../../../service/resize.service';
 
 let x_Data: any;
 let y_Data: any;
@@ -13,12 +13,9 @@ let nSliderIndex: number;
 })
 
 export class D3PortLine implements OnInit, OnDestroy, OnChanges {
-    private chartElement: any;
-
     @Input('SliderIndex') SliderIndex: number;
-    @Input('PfName') PfName: string;
-    @Input('SliderDisable') SliderDisable: any;
-    @Input('RefreshStatus') RefreshStatus: any;
+
+    private chartElement: any;
 
     constructor ( private el: ElementRef,
                   private resizeService: ResizeService ) {

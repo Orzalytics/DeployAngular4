@@ -324,15 +324,15 @@ export class TradeComponent implements OnInit, OnDestroy {
         const day365 = Globals.g_FundParent.arrAllReturns.day365_return[indexFondosValue][this.ngSliderIndex]*100;
         const year = Globals.g_FundParent.arrAllReturns.newstart_return[indexFondosValue][this.ngSliderIndex] * 1;
 
-        this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
-        this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
-        this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
-        this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
+        this.ngScopeDay91 = (day91 !== undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
+        this.ngScopeDay182 = (day182 !== undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
+        this.ngScopeDay365 = (day365 !== undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
+        this.ngScopeYear = (year !== undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
 
-        if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
-        if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
-        if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
-        if (this.ngScopeYear > 0) this.ngScopeYear = '+'+this.ngScopeYear;
+        if (this.ngScopeDay91 > 0) { this.ngScopeDay91 = '+'+this.ngScopeDay91; }
+        if (this.ngScopeDay182 > 0) { this.ngScopeDay182 = '+'+this.ngScopeDay182; }
+        if (this.ngScopeDay365 > 0) { this.ngScopeDay365 = '+'+this.ngScopeDay365; }
+        if (this.ngScopeYear > 0) { this.ngScopeYear = '+'+this.ngScopeYear; }
     }
 
     calculateUnidades(value) {
@@ -364,7 +364,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     }
 
     onBuy(valuesForm) {
-        if (this.tradeForm.valid === false) return false;
+        if (this.tradeForm.valid === false) { return false; }
 
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
@@ -434,14 +434,14 @@ export class TradeComponent implements OnInit, OnDestroy {
             for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
                 const eachArray = [];
                 for (let k = 0; k < this.tableInfo[i].Portarray.length; k ++) {
-                    if (this.tableInfo[i].Portarray[k].nFundIndex == j) eachArray.push(this.tableInfo[i].Portarray[k]);
+                    if (this.tableInfo[i].Portarray[k].nFundIndex === j) { eachArray.push(this.tableInfo[i].Portarray[k]); }
                 }
-                if (eachArray.length > 0){
+                if (eachArray.length > 0) {
                     for (let k = 0; k < eachArray.length; k ++) {
                         eachArray[k].deletable = false;
                         let sum = 0;
                         for (let n = 0; n < eachArray.length; n ++) {
-                            if (k == n) continue;
+                            if (k === n) { continue; }
                             const ItemCnt = eachArray[n].nItemCnt;
                             sum = sum + ItemCnt;
                             if (sum < 0) {

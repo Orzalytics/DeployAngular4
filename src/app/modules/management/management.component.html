@@ -6,32 +6,6 @@
             </md-grid-tile>
         </md-grid-list>
 
-        <!--<md-grid-list cols="9" rowHeight="85px">-->
-            <!--<md-grid-tile class="md-table-body-back" [colspan]="4">-->
-                <!--<md-input-container fxFlex="97">-->
-                    <!--<input mdInput-->
-                           <!--placeholder="Nombre Porafolio"-->
-                           <!--formControlName="portfolio_id"/>-->
-                <!--</md-input-container>-->
-            <!--</md-grid-tile>-->
-            <!--<md-grid-tile class="md-table-body-back" [colspan]="2" >-->
-                <!--<md-input-container fxFlex="97">-->
-                    <!--<input mdInput-->
-                           <!--type="number"-->
-                           <!--placeholder="Valor Meta"-->
-                           <!--formControlName="valor"/>-->
-                <!--</md-input-container>-->
-            <!--</md-grid-tile>-->
-            <!--<md-grid-tile class="md-table-body-back" [colspan]="2">-->
-                <!--<md-select cdk-connected-overlay fxFlex="97" formControlName="moneda" class="management-select">-->
-                    <!--<md-option value="Pesos">Colombian Peso</md-option>-->
-                <!--</md-select>-->
-            <!--</md-grid-tile>-->
-            <!--<md-grid-tile class="md-table-body-back" [colspan]="1">-->
-                <!--<button md-mini-fab><i class="material-icons">check</i></button>-->
-            <!--</md-grid-tile>-->
-        <!--</md-grid-list>-->
-
         <md-grid-list class="md-table-header" cols="9" rowHeight="45px">
             <md-grid-tile class="md-table-back" (click)="onTableReorder(i)" [colspan]="i === 0 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
                 <div>{{eachHeader.title}}</div>
@@ -46,7 +20,7 @@
             <md-grid-tile class="md-table-body-back" [colspan]="4">
                 <md-input-container fxFlex="97">
                     <input mdInput
-                           placeholder="Nombre Porafolio"
+                           placeholder="Nombre Portafolio"
                            formControlName="portfolio_id"/>
                 </md-input-container>
             </md-grid-tile>

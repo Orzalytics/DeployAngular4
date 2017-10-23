@@ -27,9 +27,6 @@
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
-                         [RefreshStatus]="ngSecondGraphModel"
-                         [SliderDisable]="disabled"
-                         [PfName]="ngPortfolioName"
                          d3portline></div>
                 </md-card-content>
             </md-card>
@@ -39,12 +36,12 @@
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
                     <span>Retornos de portafolio en 91 días</span>
+                    <span>Retorno portafolio 91 días</span>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen</md-icon>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
-                         [SliderDisable]="disabled"
                          [PfName]="ngPortfolioName"
                          [DataLength]="maxVal"
                          d3porthisogram></div>
@@ -55,7 +52,7 @@
         <md-grid-tile #resizableEl class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">
-                    <span>Retorno 91 dias, Riesgo 7 dias</span>
+                    <span>Retorno 91 días, Riesgo 7 días</span>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableEl)" class="pull-right">fullscreen</md-icon>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableEl)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
@@ -69,7 +66,6 @@
                         <div class="scatter_x" id="scatter_x"></div>
                     </div>
                     <div [SliderIndex]="ngSliderIndex"
-                         [SliderDisable]="disabled"
                          [PortfolioName]="ngPortfolioName"
                          [TableInfo]="tableInfo"
                          [NotMovedToTooltip]="notMovedToTooltip"
@@ -78,12 +74,11 @@
             </md-card>
         </md-grid-tile>
     </md-grid-list>
-    <div class="md-button-conteiner">
+    <div class="md-button-conteiner" fxHide>
         <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
     </div>
     <md-toolbar class="md-toolbar-bottom">
         <md-slider class="m-slider" (input)="onInputChange($event)"
-            [disabled]="disabled"
             [max]="maxVal"
             [min]="minVal"
             [value]="ngSliderIndex"

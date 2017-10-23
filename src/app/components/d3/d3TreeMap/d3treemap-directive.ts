@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -14,14 +14,13 @@ let strPfName: string;
 })
 
 export class D3TreeMap implements OnInit, OnDestroy, OnChanges {
+    @Input('SliderIndex') SliderIndex: number;
+    @Input('PfName') PfName: string;
+
     private chartElement: any;
     private width: number;
     private height: number;
     private margin: any = { top: 17, bottom: 20, left: 20, right: 0};
-
-    @Input('SliderIndex') SliderIndex: number;
-    @Input('PfName') PfName: string;
-    @Input('SliderDisable') SliderDisable: any;
 
     constructor (private el: ElementRef,
                  private resizeService: ResizeService ) {

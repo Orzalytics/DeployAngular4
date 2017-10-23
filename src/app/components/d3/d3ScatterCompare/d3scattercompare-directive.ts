@@ -1,8 +1,8 @@
-import {Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
-import {ResizeService} from '../../../service/resize.service';
+import { ResizeService } from '../../../service/resize.service';
 
 let chartData: Array<any>;
 
@@ -11,6 +11,11 @@ let chartData: Array<any>;
 })
 
 export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
+    @Input('PfName') PfName: string;
+    @Input('SliderIndex') SliderIndex: number;
+    @Input('fondoSelected') fondoSelected: any;
+    @Input('fondosList') fondosList: any;
+
     private chartElement: any;
     private width: number;
     private height: number;
@@ -18,15 +23,6 @@ export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
     private crossFundPortfolioScatterData: Array<any>;
     private FondIndex: number;
 
-    @Input('PfName') PfName : string;
-
-    @Input('scatterContainer') scatterContainer: any;
-    @Input('SliderIndex') SliderIndex: number;
-    @Input('SliderDisable') SliderDisable: any;
-    @Input('RefreshAll') RefreshAll: any;
-
-    @Input('fondoSelected') fondoSelected: any;
-    @Input('fondosList') fondosList: any;
     constructor (private el: ElementRef,
                  private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
