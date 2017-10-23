@@ -1,13 +1,15 @@
-import {Directive, ElementRef, Input, SimpleChanges} from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import * as d3 from 'd3';
 
-var nSliderIndex : number;
+import { ResizeService } from '../../../service/resize.service';
+
+let nSliderIndex: number;
 
 @Directive({
     selector: '[d3fanchart]'
 })
 
-export class D3FanchartDirective {
+export class D3FanchartDirective implements OnInit, OnDestroy, OnChanges {
     private chartElement: any;
     private margin: any = {top: 20, bottom: 20, left: 20, right: 20};
 
@@ -15,13 +17,20 @@ export class D3FanchartDirective {
     @Input('Data') Data: any;
     @Input('WindowSize') WindowSize: number;
 
-    constructor(private el: ElementRef) {
+    constructor( private el: ElementRef,
+                 private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
     }
 
     ngOnInit() {
         const parsedData = this.createData(this.Data);
-        this.createChart(parsedData);
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
+            this.createChart(parsedData);
+        });
+    }
+
+    ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -151,33 +160,33 @@ export class D3FanchartDirective {
             .attr('clip-path', 'url(#rect-clip)');
 
         var verticalLine = svg.append('line')
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 0)
-            .attr("y2", svgHeight - 20)
-            .attr("stroke", "black")
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', svgHeight - 20)
+            .attr('stroke', 'black')
             .attr('class', 'verticalLine')
             .style('stroke-width', 2)
-            .attr("transform", function () {
+            .attr('transform', function () {
                 var xPosition = x(data[nSliderIndex].date);
-                return "translate(" + xPosition + ",0)";
+                return 'translate(' + xPosition + ',0)';
             });
 
         var toolTipValue = svg.append('text')
-            .text(function(d) { return d3.format("$0,.06f")(data[nSliderIndex].fundPrice); })
+            .text(function(d) { return d3.format('$0,.06f')(data[nSliderIndex].fundPrice); })
             .attr('text-anchor', 'start')
             .attr('class', 'line_extoolTipValue')
             .attr('dy', '20')
             .attr('dx', '8');
         
-        toolTipValue.attr("transform", function () {
+        toolTipValue.attr('transform', function () {
             var xPosition = x(data[nSliderIndex].date);
             var node: SVGTSpanElement = <SVGTSpanElement>toolTipValue.node(); 
             var thisWidth = node.getComputedTextLength();
             if (thisWidth + xPosition + 20 > chartWidth){
               xPosition = xPosition - thisWidth - 15;
             }
-            return "translate(" + xPosition + ",0)";
+            return 'translate(' + xPosition + ',0)';
         });
     }
 }

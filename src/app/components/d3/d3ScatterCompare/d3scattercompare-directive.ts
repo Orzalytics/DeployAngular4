@@ -1,24 +1,25 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
-import { ObservableMedia } from '@angular/flex-layout';
 
-var chartData: Array<any>;
+import {ResizeService} from '../../../service/resize.service';
+
+let chartData: Array<any>;
 
 @Directive({
     selector: '[d3ScatterCompare]'
 })
 
-export class D3ScatterPlotCompare implements OnInit, OnChanges {
+export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
     private chartElement: any;
-    // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
+
     private width: number;
     private height: number;
     private day91ReturnPortfolio: Array<any>;
     private crossFundPortfolioScatterData: Array<any>;
 
-    @Input('PfName') PfName : string;
-    @Input('FondIndex') FondIndex : number;
+    @Input('PfName') PfName: string;
+    @Input('FondIndex') FondIndex: number;
 
     @Input('scatterContainer') scatterContainer: any;
     @Input('SliderIndex') SliderIndex: number;
@@ -26,7 +27,8 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshAll') RefreshAll: any;
 
-    constructor (private el: ElementRef, private observableMedia: ObservableMedia) {
+    constructor (private el: ElementRef,
+                 private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
     }
 
@@ -36,14 +38,13 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
         this.FondIndex = 1; // HARDCODE !!! REMOVE !!!
 
         this.createData();
-        setTimeout(() => {
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
             this.createChart();
-        }, 100);
-        window.onresize = () => {
-            setTimeout(() => {
-                this.createChart();
-            }, 100);
-        };
+        });
+    }
+
+    ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -51,9 +52,10 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
         this.crossFundPortfolioScatterData = [];
         this.FondIndex = 1; // HARDCODE !!! REMOVE !!!
         this.createData();
+
         setTimeout(() => {
             this.createChart();
-        }, 100);
+        });
     }
 
     createData() {
@@ -63,7 +65,7 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
             }
         }
 
-        let selectedFundReturn = Globals.g_FundParent.arrAllReturns.day91_return[this.FondIndex];
+        const selectedFundReturn = Globals.g_FundParent.arrAllReturns.day91_return[this.FondIndex];
         if (this.day91ReturnPortfolio && selectedFundReturn) {
             for (let i = 0; i < selectedFundReturn.length; i+=7) {
                 if (this.day91ReturnPortfolio.length && this.day91ReturnPortfolio[i] !== 0) {
@@ -76,7 +78,7 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
         }
 
         if (this.crossFundPortfolioScatterData && this.crossFundPortfolioScatterData.length) {
-            let index = Math.floor(this.SliderIndex/7);
+            const index = Math.floor(this.SliderIndex/7);
             chartData = this.crossFundPortfolioScatterData.slice(0, index+1);
         }
     }
@@ -146,7 +148,7 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
                 }
                 return y(yValue);
             })
-            .style('fill', "rgb(0, 116, 0)")
+            .style('fill', 'rgb(0, 116, 0)')
             .style('opacity', 0.4);
 
         svg.select('.x_axis .tick').style('display', 'none');

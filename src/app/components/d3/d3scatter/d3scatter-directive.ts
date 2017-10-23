@@ -1,7 +1,8 @@
 import {Directive, ElementRef, Input, OnChanges, DoCheck, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
-import {ResizeService} from "../../../service/resize.service";
+
+import { ResizeService } from '../../../service/resize.service';
 
 let y_Day91Return: any;
 let x_Day7LossMin: any;
@@ -10,7 +11,6 @@ let nSliderIndex: number;
 let nPortfolioName: string;
 
 let portСompositionObj: Array<any>;
-let includedFunds: Array<any>;
 
 @Directive({
     selector: '[d3Scatter]'
