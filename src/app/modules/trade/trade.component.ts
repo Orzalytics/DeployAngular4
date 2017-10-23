@@ -152,9 +152,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         const gridValue = new Map([
             ['xs', 1],
             ['sm', 2],
-            ['md', 4],
-            ['lg', 4],
-            ['xl', 4]
+            ['md', 5],
+            ['lg', 5],
+            ['xl', 5]
         ]);
         let startValue: number;
         gridValue.forEach((cols, mqAlias) => {

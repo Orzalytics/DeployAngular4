@@ -6,6 +6,9 @@
 .md-main-page form {
     margin-bottom: 100px;
 }
+.mat-title .mat-display-1 {
+    margin-bottom: 0px;
+}
 .full-size {
     left:0px !important;
     width: 100% !important;

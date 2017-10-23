@@ -64,17 +64,17 @@
         </md-grid-list>
 
         <md-grid-list [cols]="colsValue | async" rowHeight="60px" style="margin-bottom:10px;">
-            <md-grid-tile>
-                <div>{{ngScopeDay91}}% en 91 días</div>
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay91}}%&nbsp;</span> en 91 días
             </md-grid-tile>
-            <md-grid-tile>
-                <div>{{ngScopeDay182}}% en 182 días</div>
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay182}}%&nbsp;</span> en 182 días
             </md-grid-tile>
-            <md-grid-tile>
-                <div>{{ngScopeDay365}}% en 365 días</div>
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay365}}%&nbsp;</span> en 365 días
             </md-grid-tile>
-            <md-grid-tile>
-                <div>{{ngScopeYear}}% desde inicio, tasa periodo o anual</div>
+            <md-grid-tile class="mat-title" [colspan]="2">
+                <span class="mat-display-1">{{ngScopeYear}}%&nbsp;</span> desde inicio, tasa periodo o anual
             </md-grid-tile>
         </md-grid-list>
 
