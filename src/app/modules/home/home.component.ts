@@ -4,7 +4,7 @@ import { ServiceComponent } from '../../service/service.component';
 import * as Globals from '../../globals/globals.component';
 import * as MainOpr from '../../mainoperation/mainoperation.component';
 
-import {trigger, style, animate, transition, state} from '@angular/animations';
+import { trigger, style, animate, transition, state } from '@angular/animations';
 
 // flex-layout
 import { ObservableMedia } from '@angular/flex-layout';
@@ -22,24 +22,20 @@ let self: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   providers: [ServiceComponent],
-    animations: [
-        trigger('enterAnimation', [
-            state('false', style({
-                zIndex: 1,
-            })),
-            state('true',   style({
-                zIndex: 1000,
-            })),
-            transition('0 => 1', animate('10ms ease')),
-            transition('1 => 0', animate('600ms ease', style({zIndex: 1000})))
-        ])
-    ],
+  animations: [
+    trigger('enterAnimation', [
+      state('false', style({ zIndex: 1 })),
+      state('true', style({ zIndex: 900 })),
+      transition('0 => 1', animate('10ms ease')),
+      transition('1 => 0', animate('600ms ease', style({ zIndex: 900 })))
+    ])
+  ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
     @ViewChild('selectPortfolio', {read: ElementRef}) selectPortfolio: ElementRef;
     @ViewChild('resizableEl', {read: ElementRef}) resizableEl: ElementRef;
 
-    public fullscreen: boolean = false;
+    public fullscreen: Array<boolean> = [false, false, false];
 
     public PortfolioList = [];
 
@@ -358,14 +354,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.onInitGraphData();
     }
 
-    tranformFunc(resizableEl) {
-        if(this.fullscreen) {
+    tranformFunc(resizableEl, index) {
+        if(this.fullscreen[index]) {
             resizableEl._element.nativeElement.classList.remove('full-size');
         } else {
             resizableEl._element.nativeElement.classList.add('full-size');
         }
 
-        this.fullscreen = !this.fullscreen;
+        this.fullscreen[index] = !this.fullscreen[index];
     }
 
     // onUnidadesChange() {
