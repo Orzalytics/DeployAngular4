@@ -1,6 +1,10 @@
-import { Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation, DoCheck } from '@angular/core';
+import {
+    Directive, Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation, DoCheck,
+    OnDestroy
+} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
+import {ResizeService} from "../../../service/resize.service";
 
 let hoverTooltipDiv: any;
 let topChartTooltip: any;
@@ -10,7 +14,7 @@ let timeout: any;
 	selector : '[d3porthisogram]'
 })
 
-export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
+export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 	private margin: any = { top: 17, bottom: 20, left: 20, right: 0};
 	private chart: any;
 	private svg: any;
@@ -28,17 +32,14 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 	private histogramData: Array<any>;
 	private lastChanged: Array<any>;
 
-	private oldWidth: number;
-
-	@Input('resizableEl') resizableEl: any;
 	@Input('SliderIndex') SliderIndex: number;
 	@Input('PfName') PfName: string;
-	@Input('WindowSize') WindowSize: number;
 	@Input('SliderDisable') SliderDisable: any;
 	@Input('RefreshStatus') RefreshStatus: any;
 	@Input('DataLength') DataLength: number;
 
-	constructor (private el: ElementRef) {
+	constructor ( private el: ElementRef,
+                  private resizeService: ResizeService ) {
 		this.chartElement = el.nativeElement;
 	}
 
@@ -50,21 +51,15 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		this.data = [];
 		this.lastChanged = [];
 		this.createData();
-		setTimeout(() => {
-			this.createChart();
-			this.updateChart();
-		}, 100);
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
+            this.createChart();
+            this.updateChart();
+        });
 	}
 
-	ngDoCheck() {
-		timeout = setTimeout(() => {
-			if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
-				this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
-            	this.createChart();
-				this.updateChart();
-			}
-		}, 1000);
-	}
+	ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
+    }
 
 	ngOnChanges() {
 		this.day91ReturnPortfolio = [];
@@ -76,7 +71,7 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 		if (this.chart) {
 			setTimeout(() => {
 				this.updateChart();
-			}, 100);
+			});
 		}
 	}
 

@@ -1,6 +1,8 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
+
+import { ResizeService } from '../../../service/resize.service';
 
 let listofTreeMap: any;
 
@@ -11,7 +13,7 @@ let strPfName: string;
     selector : '[d3treemap]'
 })
 
-export class D3TreeMap implements OnInit, OnChanges {
+export class D3TreeMap implements OnInit, OnDestroy, OnChanges {
     private chartElement: any;
     private width: number;
     private height: number;
@@ -19,18 +21,22 @@ export class D3TreeMap implements OnInit, OnChanges {
 
     @Input('SliderIndex') SliderIndex: number;
     @Input('PfName') PfName: string;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
 
-    constructor (private el: ElementRef) {
+    constructor (private el: ElementRef,
+                 private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
     }
 
     ngOnInit() {
         this.createData();
-        setTimeout(() => {
-            this.createChart()
-        }, 100);
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
+            this.createChart();
+        });
+    }
+
+    ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
     }
 
     ngOnChanges(changes: SimpleChanges) {

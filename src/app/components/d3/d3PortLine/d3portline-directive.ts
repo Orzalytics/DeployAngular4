@@ -1,6 +1,7 @@
-import {Directive, DoCheck, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, DoCheck, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
+import {ResizeService} from "../../../service/resize.service";
 
 let x_Data: any;
 let y_Data: any;
@@ -11,21 +12,16 @@ let nSliderIndex: number;
     selector : '[d3portline]'
 })
 
-export class D3PortLine implements OnInit, OnChanges, DoCheck {
+export class D3PortLine implements OnInit, OnDestroy, OnChanges {
     private chartElement: any;
-    private oldWidth: number;
 
-    // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
-
-    // @Input('fullscreen') fullscreen: any;
-    @Input('resizableEl') resizableEl: any;
     @Input('SliderIndex') SliderIndex: number;
     @Input('PfName') PfName: string;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshStatus') RefreshStatus: any;
 
-    constructor (private el: ElementRef) {
+    constructor ( private el: ElementRef,
+                  private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
     }
 
@@ -33,18 +29,13 @@ export class D3PortLine implements OnInit, OnChanges, DoCheck {
         x_Data = [];
         y_Data = [];
         this.createData();
-        setTimeout(() => {
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
             this.createChart();
-        }, 100);
+        });
     }
 
-    ngDoCheck() {
-        setTimeout(() => {
-            if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
-                this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
-                this.createChart();
-            }
-        }, 1000);
+    ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
     }
 
     ngOnChanges(changes: SimpleChanges) {

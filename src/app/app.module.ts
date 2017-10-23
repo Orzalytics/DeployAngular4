@@ -1,22 +1,26 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpModule } from '@angular/http';
-
-import { AppComponent } from './app.component';
-import { LoginComponent } from './modules/login/login.component';
-import { HomeComponent } from './modules/home/home.component';
-import { TradeComponent } from './modules/trade/trade.component';
-import { ManagementComponent } from './modules/management/management.component';
-// import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MdButtonModule, MdCardModule, MdMenuModule, MdToolbarModule, MdIconModule, MdInputModule, MdSliderModule,
   MdGridListModule, MdSelectModule, MdDatepickerModule, MdNativeDateModule, MdSidenavModule, MdListModule
 } from '@angular/material';
-import { ServiceComponent } from './service/service.component';
+
+// Services
+import { ResizeService } from './service/resize.service';
+
+// Components
+import { AppComponent } from './app.component';
+import { LoginComponent } from './modules/login/login.component';
+import { HomeComponent } from './modules/home/home.component';
+import { TradeComponent } from './modules/trade/trade.component';
+import { ManagementComponent } from './modules/management/management.component';
+
+// import { ServiceComponent } from './service/service.component';
 
 // Directives
 import { D3ScatterPlot } from './components/d3/d3scatter/d3scatter-directive';
@@ -24,9 +28,8 @@ import { D3FanchartDirective } from './components/d3/d3FanChart/d3fanchart-direc
 import { D3FundLine } from './components/d3/d3FundLine/d3fundline-directive';
 import { D3PortLine } from './components/d3/d3PortLine/d3portline-directive';
 import { D3TreeMap } from './components/d3/d3TreeMap/d3treemap-directive';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import { D3PortHisogram } from './components/d3/d3PortHisogram/d3porthisogram-directive';
-import {CustomSelectComponent} from './components/CustomSelectField/custom.select.field';
+import { CustomSelectComponent } from './components/CustomSelectField/custom.select.field';
 import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scattercompare-directive';
 
 const appRoutes: Routes = [
@@ -77,10 +80,7 @@ const appRoutes: Routes = [
 
     RouterModule.forRoot(appRoutes)
   ],
-  exports: [
-    // MdSidenavModule
-  ],
-  providers: [],
+  providers: [ResizeService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })

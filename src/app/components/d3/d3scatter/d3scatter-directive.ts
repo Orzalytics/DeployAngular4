@@ -1,6 +1,8 @@
-import {Directive, ElementRef, Input, OnChanges, DoCheck, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, DoCheck, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
+
+import { ResizeService } from '../../../service/resize.service';
 
 let y_Day91Return: any;
 let x_Day7LossMin: any;
@@ -9,32 +11,25 @@ let nSliderIndex: number;
 let nPortfolioName: string;
 
 let portСompositionObj: Array<any>;
-let includedFunds: Array<any>;
 
 @Directive({
     selector: '[d3Scatter]'
 })
 
-export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
+export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
     private chartElement: any;
-    private oldWidth: number;
-    private oldSliderIndex: number;
     private ticks: number;
 
-    // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
     private height: number;
 
-    // @Input('fullscreen') fullscreen: any;
-    @Input('resizableEl') resizableEl: any;
     @Input('SliderIndex') SliderIndex: number;
-    @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
-    @Input('RefreshAll') RefreshAll: any;
     @Input('PortfolioName') PortfolioName: any;
     @Input('TableInfo') TableInfo: any;
 
-    constructor (private el: ElementRef) {
+    constructor ( private el: ElementRef,
+                  private resizeService: ResizeService ) {
         this.chartElement = el.nativeElement;
     }
 
@@ -43,22 +38,13 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
         y_Day91Return = [];
         this.prepareData();
         this.createData();
-        setTimeout(() => {
+        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
             this.createChart();
-        }, 100);
+        });
     }
 
-    ngDoCheck() {
-        setTimeout(() => {
-            if(this.resizableEl._element.nativeElement.offsetWidth !== this.oldWidth) {
-                this.oldWidth = this.resizableEl._element.nativeElement.offsetWidth;
-                this.createChart();
-            }
-            if(this.oldSliderIndex !== this.SliderIndex) {
-                this.oldSliderIndex = this.SliderIndex;
-                this.createChart();
-            }
-        }, 600);
+    ngOnDestroy() {
+        this.resizeService.removeResizeEventListener(this.el.nativeElement);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -69,7 +55,7 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
         this.createData();
         setTimeout(() => {
             this.createChart();
-        }, 610);
+        });
     }
 
     prepareData() {

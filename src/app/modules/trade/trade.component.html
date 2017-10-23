@@ -21,7 +21,10 @@
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">Composición portafolio</md-card-title>
                     <md-card-content>
-                        <div [SliderIndex]="ngSliderIndex" [SliderDisable]="disabled" [PfName]="ngPortfolioName" [WindowSize]="ngWidth" d3treemap></div>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [SliderDisable]="disabled"
+                             [PfName]="ngPortfolioName"
+                             d3treemap></div>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
@@ -29,7 +32,9 @@
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">Precio unidad</md-card-title>
                     <md-card-content>
-                        <div [SliderIndex]="ngSliderIndex" [Data]="ngScopeFanData" [WindowSize]="ngWidth" d3fanchart></div>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [Data]="ngScopeFanData"
+                             d3fanchart></div>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
@@ -38,14 +43,9 @@
                     <md-card-title id="card-title">Retornos 91 días portafolio y fondo</md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
-                             [RefreshAll]="ngAllRefresh"
-                             [SliderDisable]="disabled"
                              [PfName]="ngPortfolioName"
-                             [WindowSize]="ngWidth"
-
                              [fondoSelected]="tradeForm.controls['fondo'].value"
                              [fondosList]="fondosList"
-
                              d3ScatterCompare></div>
                     </md-card-content>
                 </md-card>
