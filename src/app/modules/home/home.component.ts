@@ -4,6 +4,8 @@ import { ServiceComponent } from '../../service/service.component';
 import * as Globals from '../../globals/globals.component';
 import * as MainOpr from '../../mainoperation/mainoperation.component';
 
+import {trigger, style, animate, transition, state} from '@angular/animations';
+
 // flex-layout
 import { ObservableMedia } from '@angular/flex-layout';
 
@@ -19,11 +21,33 @@ let self: any;
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  providers: [ServiceComponent]
+  providers: [ServiceComponent],
+    animations: [
+        trigger('enterAnimation', [
+            state('false', style({
+                zIndex: 1,
+            })),
+            state('true',   style({
+                zIndex: 1000,
+            })),
+            transition('0 => 1', animate('10ms ease')),
+            transition('1 => 0', animate('600ms ease', style({zIndex: 1000})))
+
+            // transition(':enter', [
+            //     style({width: 'auto'}),
+            //     animate('600ms', style({width: '100%', zIndex: 1000}))
+            // ]),
+            // transition(':leave', [
+            //     style({transform: 'translateX(0)', opacity: 1}),
+            //     animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
+            // ])
+        ])
+    ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
     @ViewChild('selectPortfolio', {read: ElementRef}) selectPortfolio: ElementRef;
     @ViewChild('resizableEl', {read: ElementRef}) resizableEl: ElementRef;
+    show:boolean = false;
 
     public fullscreen: boolean = false;
 
@@ -74,6 +98,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     // ];
 
     // tableStore = [];
+    public state = 'inactive';
 
     // Slider //
     public ngSliderIndex = 0;
@@ -351,6 +376,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
 
         this.fullscreen = !this.fullscreen;
+    }
+
+    tranformFunc2(resizableEl: ElementRef) {
+        this.state = this.state === 'active' ? 'inactive' : 'active';
+        this.fullscreen = !this.fullscreen;
+        console.log('Animate ', this.state);
+        // if(this.fullscreen) {
+        //     resizableEl._element.nativeElement.classList.remove('full-size');
+        // } else {
+        //     resizableEl._element.nativeElement.classList.add('full-size');
+        // }
+        //
+        // this.fullscreen = !this.fullscreen;
     }
 
     // onUnidadesChange() {
