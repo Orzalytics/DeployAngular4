@@ -10,11 +10,11 @@ let nSliderIndex: number;
 })
 
 export class D3FanchartDirective implements OnInit, OnDestroy, OnChanges {
-    private chartElement: any;
-    private margin: any = {top: 20, bottom: 20, left: 20, right: 20};
-
     @Input('SliderIndex') SliderIndex: number;
     @Input('Data') Data: any;
+
+    private chartElement: any;
+    private margin: any = {top: 20, bottom: 20, left: 20, right: 20};
 
     constructor( private el: ElementRef,
                  private resizeService: ResizeService ) {
