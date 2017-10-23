@@ -50,13 +50,26 @@ export class D3FanchartDirective {
             elements[i].parentNode.removeChild(elements[i]);
         }
 
-        let svgWidth = window.innerWidth;
-        const svgHeight = 190;
-        const margin = {top: 0, right: 10, bottom: 20, left: 30};
-        if (window.innerWidth >= 1280) svgWidth = window.innerWidth / 100 * 25 - margin.left - margin.right;
-        else svgWidth = window.innerWidth - margin.left - margin.right;
-        const chartWidth = svgWidth - margin.left - margin.right;
-        const chartHeight = svgHeight - margin.top - margin.bottom;
+        // let svgWidth = window.innerWidth;
+        // const svgHeight = 190;
+        const margin = {top: 0, right: 10, bottom: 20, left: 10};
+        // if (window.innerWidth >= 1280) svgWidth = window.innerWidth / 100 * 25 - margin.left - margin.right;
+        // else svgWidth = window.innerWidth - margin.left - margin.right;
+        // const chartWidth = svgWidth - margin.left - margin.right;
+        // const chartHeight = svgHeight - margin.top - margin.bottom;
+        const element = this.chartElement;
+
+        const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
+        const chartWidth = widthContainer - margin.right - margin.left - 50;
+        const chartHeight = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
+
+        let worstScenario: number = 0;
+        data.forEach( (val: any, index, array) => {
+            if ( (worstScenario === 0 && val.worstScenario !== 0) ||
+                 (val.worstScenario !== 0 && val.worstScenario < worstScenario) ) {
+                worstScenario = val.worstScenario;
+            }
+        });
 
         const x: any = d3
             .scaleTime()
@@ -67,7 +80,7 @@ export class D3FanchartDirective {
             .scaleLinear()
             .range([chartHeight, 0])
             .domain([
-                d3.min(data, (d: any) => d.worstScenario),
+                Math.floor(worstScenario),
                 d3.max(data, (d: any) => d.bestScenario)
             ]);
 
@@ -86,10 +99,10 @@ export class D3FanchartDirective {
             .select(this.chartElement)
             .append('svg')
             .attr('class', SVG_CLASSNAME)
-            .attr('width', svgWidth)
-            .attr('height', svgHeight)
+            .attr('width', chartWidth)
+            .attr('height', chartHeight)
             .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .attr('transform', 'translate(0,' + margin.top + ')');
 
         // const axes = svg.append('g')
         //     .attr('clip-path', 'url(#axes-clip)');
@@ -154,7 +167,7 @@ export class D3FanchartDirective {
             .attr("x1", 0)
             .attr("y1", 0)
             .attr("x2", 0)
-            .attr("y2", svgHeight - 20)
+            .attr("y2", chartHeight)
             .attr("stroke", "black")
             .attr('class', 'verticalLine')
             .style('stroke-width', 2)

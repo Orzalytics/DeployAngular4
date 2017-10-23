@@ -11,20 +11,22 @@ var chartData: Array<any>;
 
 export class D3ScatterPlotCompare implements OnInit, OnChanges {
     private chartElement: any;
-    // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
     private height: number;
     private day91ReturnPortfolio: Array<any>;
     private crossFundPortfolioScatterData: Array<any>;
+    private FondIndex: number;
 
     @Input('PfName') PfName : string;
-    @Input('FondIndex') FondIndex : number;
 
     @Input('scatterContainer') scatterContainer: any;
     @Input('SliderIndex') SliderIndex: number;
     @Input('WindowSize') WindowSize: number;
     @Input('SliderDisable') SliderDisable: any;
     @Input('RefreshAll') RefreshAll: any;
+
+    @Input('fondoSelected') fondoSelected: any;
+    @Input('fondosList') fondosList: any;
 
     constructor (private el: ElementRef, private observableMedia: ObservableMedia) {
         this.chartElement = el.nativeElement;
@@ -33,8 +35,6 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
     ngOnInit() {
         this.day91ReturnPortfolio = [];
         this.crossFundPortfolioScatterData = [];
-        this.FondIndex = 1; // HARDCODE !!! REMOVE !!!
-
         this.createData();
         setTimeout(() => {
             this.createChart();
@@ -49,7 +49,6 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         this.day91ReturnPortfolio = [];
         this.crossFundPortfolioScatterData = [];
-        this.FondIndex = 1; // HARDCODE !!! REMOVE !!!
         this.createData();
         setTimeout(() => {
             this.createChart();
@@ -57,6 +56,13 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
     }
 
     createData() {
+        for (var i = 0; i < this.fondosList.length; ++i) {
+            if (this.fondosList[i].name === this.fondoSelected) {
+                this.FondIndex = i;
+                break;
+            }
+        }
+
         for (let i = 0; i < Globals.g_Portfolios.arrDataByPortfolio.length; i ++) {
             if (Globals.g_Portfolios.arrDataByPortfolio[i].portname === this.PfName) {
                 this.day91ReturnPortfolio = Globals.g_Portfolios.arrDataByPortfolio[i].day91Array;
@@ -101,7 +107,6 @@ export class D3ScatterPlotCompare implements OnInit, OnChanges {
             .attr('transform', 'translate(0, 0)')
             .attr('class', 'data-scattercompare');
 
-        console.log('Sketter ', this.width, this.height);
         // setup variables
         const y = d3.scaleLinear()
                 .domain([-0.15, 0.3])

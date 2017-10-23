@@ -13,6 +13,9 @@ let strPfName: string;
 
 export class D3TreeMap implements OnInit, OnChanges {
     private chartElement: any;
+    private width: number;
+    private height: number;
+    private margin: any = { top: 17, bottom: 20, left: 20, right: 0};
 
     @Input('SliderIndex') SliderIndex: number;
     @Input('PfName') PfName: string;
@@ -25,7 +28,9 @@ export class D3TreeMap implements OnInit, OnChanges {
 
     ngOnInit() {
         this.createData();
-        this.createChart();
+        setTimeout(() => {
+            this.createChart()
+        }, 100);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -62,35 +67,42 @@ export class D3TreeMap implements OnInit, OnChanges {
         }
 
         if (listofTreeMap.children.length > 0) {
-            let width = window.innerWidth;
-            let height = 500;
-            const margin = {top: 20, right: 40, bottom: 40, left: 40};
+            // let width = window.innerWidth;
+            // let height = 500;
+            // const margin = {top: 20, right: 40, bottom: 40, left: 40};
 
-            if (width >= 1280) {
-                // document.getElementById('tree_house').style.height = '160px';
-                width = width / 100 * 25;
-                height = 150;
-            }else if ((width < 1280) && (width >= 900)) {
-                // document.getElementById('tree_house').style.height = '300px';
-                height = 150;
-            }else if ((width < 900) && (width >= 600)) {
-                // document.getElementById('tree_house').style.height = '200px';
-                height = 150;
-            }else {
-                // document.getElementById('tree_house').style.height = '150px';
-                height = 130;
-            }
-            width = width - margin.right - margin.left;
+            // if (width >= 1280) {
+            //     // document.getElementById('tree_house').style.height = '160px';
+            //     width = width / 100 * 25;
+            //     height = 150;
+            // }else if ((width < 1280) && (width >= 900)) {
+            //     // document.getElementById('tree_house').style.height = '300px';
+            //     height = 150;
+            // }else if ((width < 900) && (width >= 600)) {
+            //     // document.getElementById('tree_house').style.height = '200px';
+            //     height = 150;
+            // }else {
+            //     // document.getElementById('tree_house').style.height = '150px';
+            //     height = 130;
+            // }
+            // width = width - margin.right - margin.left;
+
+        const element = this.chartElement;
+
+        const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
+        this.width = widthContainer - this.margin.right - this.margin.left - 50;
+        this.height = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
+
             // creating a div to contain line charts.
             const color = d3.scaleOrdinal().range(d3.schemeCategory20c);
 
-            const treemap = d3.treemap().size([width, height]);
+            const treemap = d3.treemap().size([this.width, this.height]);
 
             const div = d3.select(this.chartElement).append('div')
                 .attr('class', 'treemap')
                 .style('position', 'relative')
-                .style('width', (width) + 'px')
-                .style('height', (height) + 'px')
+                .style('width', (this.width) + 'px')
+                .style('height', (this.height) + 'px')
                 .style('left', '0px')
                 .style('top', '0px')
                 .style('background', 'rgb(49, 130, 189)');

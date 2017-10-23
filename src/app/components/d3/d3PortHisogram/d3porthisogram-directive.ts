@@ -173,9 +173,9 @@ export class D3PortHisogram implements OnInit, OnChanges, DoCheck {
 
 		const element = this.chartElement;
 
-        const widthContainer = this.chartElement.parentNode.parentNode.parentNode.clientWidth;
+        const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
 		this.width = widthContainer - this.margin.right - this.margin.left - 100;
-		this.height = 270 - this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
+		this.height = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
 		// Define the div for the tooltip
 		hoverTooltipDiv = d3.select("body").append("div") 

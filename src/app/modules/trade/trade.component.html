@@ -41,7 +41,12 @@
                              [RefreshAll]="ngAllRefresh"
                              [SliderDisable]="disabled"
                              [PfName]="ngPortfolioName"
-                             [WindowSize]="ngWidth" d3ScatterCompare></div>
+                             [WindowSize]="ngWidth"
+
+                             [fondoSelected]="tradeForm.controls['fondo'].value"
+                             [fondosList]="fondosList"
+
+                             d3ScatterCompare></div>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>

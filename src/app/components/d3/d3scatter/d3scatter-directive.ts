@@ -19,6 +19,7 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
     private chartElement: any;
     private oldWidth: number;
     private oldSliderIndex: number;
+    private ticks: number;
 
     // private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
     private width: number;
@@ -119,6 +120,9 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
         const height = this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
         this.height = 296 - this.chartElement.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
+        if (this.width < 400) this.ticks = 5;
+        else this.ticks = 12;
+
         const svg = d3.select(element).append('svg')
             .attr('width', this.width)
             .attr('height', this.height)
@@ -140,7 +144,7 @@ export class D3ScatterPlot implements OnInit, OnChanges, DoCheck {
         g.append('g')
             .attr('class', 'x_axis')
             .attr('transform', 'translate(0 , ' + (this.height - margin.top) + ')')
-            .call(d3.axisBottom(x));
+            .call(d3.axisBottom(x).ticks(this.ticks));
 
         g.append('g')
             .attr('class', 'y_axis')
