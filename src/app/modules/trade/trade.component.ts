@@ -1,21 +1,14 @@
 import { compact } from 'lodash';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
 import * as Globals from './../../globals/globals.component';
 import * as MainOpr from './../../mainoperation/mainoperation.component';
-
-// flex-layout
-// import { ObservableMedia } from '@angular/flex-layout';
-
-// material
-// import {Observable} from 'rxjs/Observable';
-import {CustomValidators} from './CustomValidators';
 
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 let HttpService: any;
 let self: any;
@@ -329,10 +322,12 @@ export class TradeComponent implements OnInit, OnDestroy {
         const day182 = Globals.g_FundParent.arrAllReturns.day182_return[indexFondosValue][this.ngSliderIndex]*100;
         const day365 = Globals.g_FundParent.arrAllReturns.day365_return[indexFondosValue][this.ngSliderIndex]*100;
         const year = Globals.g_FundParent.arrAllReturns.newstart_return[indexFondosValue][this.ngSliderIndex] * 1;
+
         this.ngScopeDay91 = (day91 != undefined) ? Globals.numberWithCommas(day91.toFixed(1)) : 0;
         this.ngScopeDay182 = (day182 != undefined) ? Globals.numberWithCommas(day182.toFixed(1)) : 0;
         this.ngScopeDay365 = (day365 != undefined) ? Globals.numberWithCommas(day365.toFixed(1)) : 0;
         this.ngScopeYear = (year != undefined) ? Globals.numberWithCommas(year.toFixed(1)) : 0;
+
         if (this.ngScopeDay91 > 0) this.ngScopeDay91 = '+'+this.ngScopeDay91;
         if (this.ngScopeDay182 > 0) this.ngScopeDay182 = '+'+this.ngScopeDay182;
         if (this.ngScopeDay365 > 0) this.ngScopeDay365 = '+'+this.ngScopeDay365;
