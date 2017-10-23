@@ -65,6 +65,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public ngScopeYear: any;
 
     // my refactoring;
+    public fullscreen: boolean = false;
     private routeName: string;
     private sub: any;
 
@@ -452,5 +453,15 @@ export class TradeComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    tranformFunc(resizableEl) {
+        if(this.fullscreen) {
+            resizableEl._element.nativeElement.classList.remove('full-size');
+        } else {
+            resizableEl._element.nativeElement.classList.add('full-size');
+        }
+
+        this.fullscreen = !this.fullscreen;
     }
 }

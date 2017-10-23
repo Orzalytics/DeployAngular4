@@ -23,15 +23,9 @@
     margin-bottom: 0px;
 }
 .full-size {
-    /*transform: translateX(-100px);*/
     left:0px !important;
     width: 100% !important;
-    /*height: calc(100vh - 380px) !important;*/
-    /*height: 500px !important;*/
     z-index: 1000;
-}
-.full-size .mat-card {
-    /*height: calc(100vh - 445px) !important;*/
 }
 .pull-right {
     float: right;

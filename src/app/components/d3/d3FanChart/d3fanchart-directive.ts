@@ -35,7 +35,9 @@ export class D3FanchartDirective implements OnInit, OnDestroy, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         nSliderIndex = this.SliderIndex;
         const parsedData = this.createData(this.Data);
-        this.createChart(parsedData);
+        setTimeout(() => {
+            this.createChart(parsedData);
+        });
     }
 
     createData(rawData = []) {
