@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges, OnDestroy} from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, OnInit, DoCheck, SimpleChanges, OnDestroy} from '@angular/core';
 import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
@@ -9,6 +9,7 @@ let x_Day7LossMin: any;
 
 let nSliderIndex: number;
 let nPortfolioName: string;
+let nNotMovedToTooltip: boolean;
 
 let portСompositionObj: Array<any>;
 
@@ -16,7 +17,7 @@ let portСompositionObj: Array<any>;
     selector: '[d3Scatter]'
 })
 
-export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
+export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
     private chartElement: any;
     private ticks: number;
 
@@ -26,6 +27,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
     @Input('SliderIndex') SliderIndex: number;
     @Input('PortfolioName') PortfolioName: any;
     @Input('TableInfo') TableInfo: any;
+    @Input('NotMovedToTooltip') NotMovedToTooltip: any;
 
     constructor ( private el: ElementRef,
                   private resizeService: ResizeService ) {
@@ -40,6 +42,10 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
         this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
             this.createChart();
         });
+    }
+
+    ngDoCheck() {
+        nNotMovedToTooltip = this.NotMovedToTooltip;
     }
 
     ngOnDestroy() {
@@ -276,6 +282,8 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
             function onMouseOver(index) {
                 let xData = x_Day7LossMin[index];
                 let yData = y_Day91Return[index];
+                let scatterTitle = '';
+                let scatterPort = '';
 
                 if (xData > 0.25) xData = 0.25;
                 if (xData < 0) xData = 0;
@@ -284,12 +292,15 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
 
                 if (index >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
                     if (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].showhide === 0) return;
-                    document.getElementById('scatter_title').innerHTML = Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
-                    document.getElementById('scatter_port').innerHTML = (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] > 0)? '+' + Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual';
+                    scatterTitle = Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
+                    scatterPort = (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] > 0)? '+' + Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual';
                 }else {
-                    document.getElementById('scatter_title').innerHTML = Globals.g_DatabaseInfo.ListofPriceFund[index].name;
-                    document.getElementById('scatter_port').innerHTML = (Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] > 0) ? '+' + Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual';
+                    scatterTitle = Globals.g_DatabaseInfo.ListofPriceFund[index].name;
+                    scatterPort = (Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] > 0) ? '+' + Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual';
                 }
+
+                document.getElementById('scatter_title').innerHTML = scatterTitle;
+                document.getElementById('scatter_port').innerHTML = scatterPort;
 
                 document.getElementById('scatter_x').innerHTML = Globals.toFixedDecimal(xData * 100, 1) + '% caída máxima en 7 días ';
                 document.getElementById('scatter_y').innerHTML = (Globals.toFixedDecimal(yData * 100, 1) >= 0) ? '+'+ Globals.toFixedDecimal(yData * 100, 1) + '% en 91 días' : Globals.toFixedDecimal(yData * 100, 1) + '% en 91 días';
@@ -301,10 +312,17 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges {
                 tooltip.style.left = (x(xData)+310 < width) ? ((x(xData) + 30).toFixed() + 'px') : ((width-310) + 'px');
                 tooltip.style.top = (y(yData)+50).toFixed() + 'px';
                 tooltip.style.display = 'block';
+                tooltip.setAttribute('title', scatterTitle);
               }
 
             function onMouseOut() {
-                document.getElementById('scatter_tooltip').style.display = 'none';
+                setTimeout(() => {
+                    if (nNotMovedToTooltip) {
+                        let title = document.getElementById('scatter_tooltip').getAttribute("title");
+                        // if (title = ) {}
+                        document.getElementById('scatter_tooltip').style.display = 'none';
+                    }
+                }, 500);
             }
     }
 }

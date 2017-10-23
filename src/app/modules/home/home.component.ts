@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     //     {index : 5, title : 'precio unidad', icon : ''},
     //     {index : 6, title : 'total pesos', icon : ''},
     // ];
-
+    notMovedToTooltip: boolean = true;
     // tableStore = [];
     public state = 'inactive';
 
@@ -497,6 +497,15 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this.tableInfo.push(eachObj);
             }
         }
+    }
+
+    toltipMouseLeave() {
+        this.notMovedToTooltip = true;
+        document.getElementById('scatter_tooltip').style.display = 'none';
+    }
+
+    toltipMouseEnter() {
+        this.notMovedToTooltip = false;
     }
 
     // onShowHide(index, bIsDraw) {
