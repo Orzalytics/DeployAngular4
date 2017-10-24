@@ -1,25 +1,24 @@
 import { Directive, ElementRef, Input, SimpleChanges } from '@angular/core';
-import * as Globals from '../globals/globals.component';
+import * as Globals from '../../../globals/globals.component';
 import * as d3 from 'd3';
 
 var x_Data : any;
 var y_Data : any;
 
 var nSliderIndex : number;
+var nFundIndex : number;
 
 @Directive({
-    selector : '[d3portline]'    
+    selector : '[d3fundline]'    
 })
 
-export class D3PortLine {
+export class D3FundLine {
     private chartElement : any;
     private margin: any = { top: 20, bottom: 20, left: 20, right: 20};
 
     @Input('SliderIndex') SliderIndex : number;
-    @Input('PfName') PfName : string;
-    @Input('WindowSize') WindowSize : number;
-    @Input('SliderDisable') SliderDisable : any;
-    @Input('RefreshStatus') RefreshStatus : any;    
+    @Input('FondosValue') FondosValue : number;
+    @Input('WindowSize') WindowSize : number;    
 
     constructor (private el : ElementRef) {
         this.chartElement = el.nativeElement;
@@ -33,6 +32,7 @@ export class D3PortLine {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        nFundIndex = this.FondosValue;
         nSliderIndex = this.SliderIndex;
 
         x_Data = [];
@@ -42,13 +42,12 @@ export class D3PortLine {
     }
 
     createData(){
-        // portfolio array
-        x_Data = Globals.g_DatabaseInfo.ListofPriceFund[0].udate;
-        y_Data = Globals.g_AllStatus.arrPortfolioData;
+        x_Data = Globals.g_DatabaseInfo.ListofPriceFund[nFundIndex].udate;
+        y_Data = Globals.g_DatabaseInfo.ListofPriceFund[nFundIndex].u;
     }
 
     createChart(){
-        var elements = document.querySelectorAll('.data-port');
+        var elements = document.querySelectorAll('.data-graph');
         for (var i = 0; i < elements.length; i ++){
             elements[i].parentNode.removeChild(elements[i]);
         }
@@ -59,7 +58,7 @@ export class D3PortLine {
         var width = window.innerWidth;
         var height = 150;
         var margin = {top: 20, right: 11, bottom: 20, left: 10};
-        if (window.innerWidth >= 1280) width = window.innerWidth / 100 * 50 - margin.left - margin.right;
+        if (window.innerWidth >= 1280) width = window.innerWidth / 100 * 25 - margin.left - margin.right;
         else width = window.innerWidth - margin.left - margin.right;
 
         width = width - 16 * 2 - 20; // card content
@@ -69,7 +68,7 @@ export class D3PortLine {
         var svg = div.append('svg:svg')
             .attr('width', width)
             .attr('height',	height)
-            .attr('class', 'data-port');
+            .attr('class', 'data-graph');
 
         var xStart = d3.extent(y_Data)[0];
         var xEnd = d3.extent(y_Data)[1];
@@ -102,7 +101,7 @@ export class D3PortLine {
             .attr("x2", 0)
             .attr("y2", height - 8)
             .attr("stroke", "black")
-            .attr('class', 'verticalLine')
+            .attr('class', 'line_exvline')
             .style('stroke-width', 2)
             .attr("transform", function () {
                 var xPosition = x(x_Data[nSliderIndex]);
@@ -110,9 +109,9 @@ export class D3PortLine {
             });
 
         var toolTipValue = svg.append('text')
-            .text(function(d) { return d3.format("$0,.02f")(y_Data[nSliderIndex]); })
+            .text(function(d) { return d3.format("$0,.06f")(y_Data[nSliderIndex]); })
             .attr('text-anchor', 'start')
-            .attr('class', 'toolTipValue')
+            .attr('class', 'line_extoolTipValue')
             .attr('dy', '20')
             .attr('dx', '8');
         

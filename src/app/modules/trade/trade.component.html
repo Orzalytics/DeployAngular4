@@ -1,0 +1,191 @@
+<div *ngIf="isValid" class="md-main-page">
+    <form [formGroup]="tradeForm" (ngSubmit)="onBuy(tradeForm.value)">
+        <md-grid-list cols="3" rowHeight="100px">
+            <md-grid-tile>
+                <app-custom-select-field [field]="tradeForm.controls['portfolio']"
+                                         [dataSelected]="tradeForm.controls['portfolio'].value"
+                                         [dataList]="PortfolioList"></app-custom-select-field>
+            </md-grid-tile>
+            <md-grid-tile>
+                <h2 class="title mat-headline">Comprar / vender</h2>
+            </md-grid-tile>
+            <md-grid-tile>
+                <app-custom-select-field [field]="tradeForm.controls['fondo']"
+                                         [dataSelected]="tradeForm.controls['fondo'].value"
+                                         [dataList]="fondosList"></app-custom-select-field>
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
+            <md-grid-tile #resizableElTreemap [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
+                <md-card class="md-card-top md-card-child">
+                    <md-card-title class="md-card-chat">
+                        <span>Composición portafolio</span>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElTreemap, 0)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElTreemap, 0)" class="pull-right">fullscreen_exit</md-icon>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [PfName]="ngPortfolioName"
+                             d3treemap></div>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile #resizableElFanchart [@enterAnimation]="fullscreen[1]" class="mat-background-tile">
+                <md-card class="md-card-top md-card-child">
+                    <md-card-title class="md-card-chat">
+                        <span>Precio unidad</span>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElFanchart, 1)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElFanchart, 1)" class="pull-right">fullscreen_exit</md-icon>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [Data]="ngScopeFanData"
+                             d3fanchart></div>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile #resizableElScatter [@enterAnimation]="fullscreen[2]" class="mat-background-tile">
+                <md-card class="md-card-top md-card-child">
+                    <md-card-title id="card-title">
+                        <span>Retornos 91 días portafolio y fondo</span>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElScatter, 2)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElScatter, 2)" class="pull-right">fullscreen_exit</md-icon>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [PfName]="ngPortfolioName"
+                             [fondoSelected]="tradeForm.controls['fondo'].value"
+                             [fondosList]="fondosList"
+                             d3ScatterCompare></div>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-grid-list [cols]="colsValue | async" rowHeight="60px" style="margin-bottom:10px;">
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay91}}%&nbsp;</span> en 91 días
+            </md-grid-tile>
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay182}}%&nbsp;</span> en 182 días
+            </md-grid-tile>
+            <md-grid-tile class="mat-title">
+                <span class="mat-display-1">{{ngScopeDay365}}%&nbsp;</span> en 365 días
+            </md-grid-tile>
+            <md-grid-tile class="mat-title" [colspan]="2">
+                <span class="mat-display-1">{{ngScopeYear}}%&nbsp;</span> desde inicio, tasa periodo o anual
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-card class="md-card-top">
+            <md-card-content>
+                <div fxLayout="row" fxLayoutWrap>
+                    <div fxFlex="25" fxFlex.sm="50" fxFlex.xs="50">
+                        <md-form-field fxFlex="97">
+                            <input mdInput
+                                   placeholder="Choose a date"
+                                   formControlName="date"
+                                   readonly
+                                   [min]="minDate"
+                                   [max]="maxDate"
+                                   [value]="tradeForm.controls['date'].value"
+                                   [mdDatepicker]="pickerForm"
+                                   (click)="pickerForm.open()"
+                                   (dateInput)="onInputDatepicker($event)"
+                                   (dateChange)="onInputDatepicker($event)">
+                            <md-datepicker-toggle mdSuffix [for]="pickerForm" style="width: 10px"></md-datepicker-toggle>
+                            <md-datepicker [value]="tradeForm.controls['date'].value" #pickerForm></md-datepicker>
+                        </md-form-field>
+                    </div>
+                    <div fxFlex="auto" fxFlex.sm="50" fxFlex.xs="50">
+                        <md-select cdk-connected-overlay fxFlex="97" formControlName="trade">
+                            <md-option value="comprar">Comprar</md-option>
+                            <md-option value="vender">Vender</md-option>
+                        </md-select>
+                    </div>
+                    <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
+                        <md-input-container fxFlex="97">
+                            <input mdInput
+                                   type="text"
+                                   [textMask]="{mask: numberMask}"
+                                   placeholder="Pesos"
+                                   formControlName="pesos"
+                                   (change)="calculateUnidades(tradeForm.controls['pesos'].value)">
+                        </md-input-container>
+                    </div>
+                    <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
+                        <md-input-container fxFlex="97">
+                            <input mdInput
+                                   [textMask]="{mask: numberMask}"
+                                   placeholder="Unidades"
+                                   formControlName="unidades"
+                                   (change)="calculatePesos(tradeForm.controls['unidades'].value)">
+                        </md-input-container>
+                    </div>
+                    <div fxFlex="none" fxFlex.sm="none" fxFlex.xs="none" [style.textAlign]="'right'">
+                        <button md-mini-fab><i class="material-icons">check</i></button>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+
+        <md-grid-list class="md-table-header" cols="15" rowHeight="45px">
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(i)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
+                <div>{{eachHeader.title}}</div>
+                <i class="material-icons">{{eachHeader.icon}}</i>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-back" [colspan]="1">
+                <div>borrar</div>
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-grid-list cols="15" rowHeight="45px" *ngFor="let eachTransaction of fondoList.Portarray">
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>{{eachTransaction.tDate}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="4">
+                <div>{{eachTransaction.strFundName}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>{{eachTransaction.strBoS}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>{{eachTransaction.str_nItemCnt}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>${{eachTransaction.str_fItemValue}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2">
+                <div>${{eachTransaction.str_fTotal}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="1">
+                <button md-button (click)="onDelete(eachTransaction)" [disabled]="eachTransaction.deletable"><i class="material-icons">clear</i></button>
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-toolbar class="md-toolbar-bottom">
+            <md-slider class="m-slider" (input)="onInputChange($event)"
+                       [disabled]="disabled"
+                       [max]="maxVal"
+                       [min]="minVal"
+                       [value]="ngSliderIndex"
+                       [step]="1">
+            </md-slider>
+            <md-form-field [style.marginTop]="'15px'">
+                <input mdInput
+                       readonly
+                       placeholder="Choose a date"
+                       [min]="minDate"
+                       [max]="maxDate"
+                       [value]="tradeForm.controls['date'].value"
+                       [mdDatepicker]="picker"
+                       (click)="picker.open()"
+                       (dateInput)="onInputDatepicker($event)"
+                       (dateChange)="onInputDatepicker($event)">
+                <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
+                <md-datepicker [value]="tradeForm.controls['date'].value" #picker></md-datepicker>
+            </md-form-field>
+        </md-toolbar>
+    </form>
+</div>

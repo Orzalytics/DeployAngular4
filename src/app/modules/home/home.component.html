@@ -1,0 +1,103 @@
+<div *ngIf="isValid" class="md-main-page">
+    <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
+        <md-grid-tile>
+            <h2 class="title mat-headline">Analizar</h2>
+            <md-select placeholder=""
+                       cdk-connected-overlay
+                       [style.width]="width + 'px'"
+                       [(ngModel)]="ngPortfolioName"
+                       (ngModelChange)="onPfnameChanged()" #selectPortfolio>
+                <md-option *ngFor="let eachObj of PortfolioList" [value]="eachObj.portfolio_id">{{eachObj.portfolio_id}}</md-option>
+            </md-select>
+        </md-grid-tile>
+    </md-grid-list>
+
+    <md-grid-list [cols]="2" rowHeight="40px" class="mat-title custom-analizar">
+        <md-grid-tile md-colspan-gt-sm="4"><span class="mat-display-1">${{ngScopeVoP}}&nbsp;</span> valor actual</md-grid-tile>
+        <md-grid-tile><span class="mat-display-1">{{ngScopeRate}}%&nbsp;</span> cambio desde el inicio</md-grid-tile>
+    </md-grid-list>
+
+    <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
+        <md-grid-tile #resizableElPesos [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">
+                    <span>Utilidad portafolio en pesos</span>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen_exit</md-icon>
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PfName]="ngPortfolioName"
+                         d3portline></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+
+        <md-grid-tile #resizableElRetorno [@enterAnimation]="fullscreen[1]" class="mat-background-tile">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title class="md-card-chat">
+                    <span>Retorno portafolio 91 días</span>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[1]" (click)="tranformFunc(resizableElRetorno, 1)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[1]" (click)="tranformFunc(resizableElRetorno, 1)" class="pull-right">fullscreen_exit</md-icon>
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PfName]="ngPortfolioName"
+                         [DataLength]="maxVal"
+                         d3porthisogram></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+
+        <md-grid-tile #resizableEl [@enterAnimation]="fullscreen[2]" class="mat-background-tile">
+            <md-card class="md-card-top md-card-child">
+                <md-card-title id="card-title">
+                    <span>Retorno 91 días, Riesgo 7 días</span>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[2]" (click)="tranformFunc(resizableEl, 2)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[2]" (click)="tranformFunc(resizableEl, 2)" class="pull-right">fullscreen_exit</md-icon>
+                </md-card-title>
+                <md-card-content>
+                    <div class="scatter_tooltip" id="scatter_tooltip"
+                        (mouseleave)="toltipMouseLeave()"
+                        (mouseenter)="toltipMouseEnter()">
+                        <div class="scatter_title" id="scatter_title"></div>
+                        <div class="scatter_y" id="scatter_y"></div>
+                        <div class="scatter_port" id="scatter_port"></div>
+                        <div class="scatter_x" id="scatter_x"></div>
+                    </div>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PortfolioName]="ngPortfolioName"
+                         [TableInfo]="tableInfo"
+                         [NotMovedToTooltip]="notMovedToTooltip"
+                         d3Scatter></div>
+                </md-card-content>
+            </md-card>
+        </md-grid-tile>
+    </md-grid-list>
+    <div class="md-button-conteiner" fxHide>
+        <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
+    </div>
+    <md-toolbar class="md-toolbar-bottom">
+        <md-slider class="m-slider" (input)="onInputChange($event)"
+            [max]="maxVal"
+            [min]="minVal"
+            [value]="ngSliderIndex"
+            [step]="1">
+        </md-slider>
+        <md-form-field [style.marginTop]="'15px'">
+            <input mdInput
+                   readonly
+                   [min]="minDate"
+                   [max]="maxDate"
+                   [value]="ngDate"
+                   [mdDatepicker]="picker"
+                   placeholder="Choose a date"
+                   (click)="picker.open()"
+                   (dateInput)="onInputDatepicker($event)"
+                   (dateChange)="onInputDatepicker($event)"
+            >
+            <md-datepicker-toggle mdSuffix [for]="picker" style="width: 10px"></md-datepicker-toggle>
+            <md-datepicker [value]="ngDate" #picker></md-datepicker>
+        </md-form-field>
+    </md-toolbar>
+</div>

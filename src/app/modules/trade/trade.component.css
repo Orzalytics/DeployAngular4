@@ -1,0 +1,23 @@
+.title {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+    margin-top: 30px;
+    margin-right: 20px;
+}
+.md-main-page form {
+    margin-bottom: 100px;
+}
+.mat-title .mat-display-1 {
+    margin-bottom: 0px;
+}
+.full-size {
+    left:0px !important;
+    width: 100% !important;
+    z-index: 1000;
+}
+.pull-right {
+    float: right;
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+    cursor: pointer;
+}

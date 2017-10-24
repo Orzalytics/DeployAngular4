@@ -1,0 +1,44 @@
+.title {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+    margin-top: 30px;
+    margin-right: 20px;
+}
+.md-button-conteiner {
+    align-self: flex-end;
+    flex-grow: 4;
+    align-content: flex-end;
+    margin-bottom: 84px;
+    margin-right: 10px;
+}
+.mat-button {
+    font-size: 24px;
+    background-color: #ff6f31;
+    color: #fff;
+    font-weight: 400;
+}
+.md-input-portfolio {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+.mat-title .mat-display-1 {
+    margin-bottom: 0px;
+}
+.full-size {
+    left:0px !important;
+    width: 100% !important;
+}
+.pull-right {
+    float: right;
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+    cursor: pointer;
+}
+/*.mat-grid-list .mat-grid-tile:first-child {*/
+    /*z-index: 3;*/
+/*}*/
+/*.mat-grid-list .mat-grid-tile {*/
+    /*z-index: 2;*/
+/*}*/
+/*.mat-grid-list .mat-grid-tile:last-child {*/
+    /*z-index: 1;*/
+/*}*/

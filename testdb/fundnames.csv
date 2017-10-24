@@ -1,0 +1,16 @@
+999,Cash COP,null,null,null
+40,RF.GloModera,modera,null,null
+48,RV.GloAgresi,agresi,null,null
+51,RF.GloConser,conser,null,null
+54,RF.ColLiquid,liquidez col,liquidezcol,null
+59,RV.ColIsagen,isagen,null,null
+80,RV.ColAccion,acciones col,accionescol,null
+88,RV.GloPetrol,petroleo,glopetrol,null
+104,RF.GloRFija,fija global,fijaglobal,glorfija
+105,RV.USA,acciones usa,accionesusa,
+106,RV.Europa,europa,null,null
+126,RV.ColEcopet,ecopet,null,null
+149,RF.USALiquid,liquidez usa,liquidezusa,usaliquid
+176,RV.ColBancol,bancol,null,null
+179,RV.Global,acciones global,accionesglobal,
+190,RV.GloTecn,tecn,null,null

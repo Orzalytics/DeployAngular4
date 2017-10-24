@@ -1,0 +1,9 @@
+<md-select cdk-connected-overlay
+           class="custom-analizar"
+           [style.width]="width + 'px'"
+           [(ngModel)]="dataSelected"
+           [formControl]="field">
+    <md-option *ngFor="let eachObj of dataList" [value]="eachObj.name">
+        {{eachObj.name}}
+    </md-option>
+</md-select>

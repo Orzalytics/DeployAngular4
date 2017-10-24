@@ -1,10 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
+html {
+    height: 100%;
+    min-height: 100%;
+    position: relative;
+}
 body {
     margin: 0;
+    height: 100%;
+    min-height: 100%;
+    position: relative;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
-
+.mat-drawer-opened {
+    width: 100%;
+}
+.mat-drawer-opened + .container-scrolling {
+    height: calc(100vh - 100px);
+    overflow: hidden;
+}
 .md-spacer {
     flex: 1 1 auto;
 }
@@ -22,8 +37,11 @@ body {
     background-color: white !important;
     box-shadow: 0 -1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
     height: 64px;
+    z-index: 500;
 }
-
+.mat-input-container {
+    font: 400 16px/18px Roboto,"Helvetica Neue",sans-serif;
+}
 md-slider {
     width: 100%;
 }
@@ -71,7 +89,10 @@ md-slider {
 }
 
 .md-main-page{
-    margin-bottom: 100px;
+    /*margin-bottom: 100px;*/
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 128px);
 }
 
 .md-card-top{
@@ -88,7 +109,7 @@ md-slider {
 
 .md-card-child{
     width: 100%;
-    height: 215px !important;
+    height: 315px !important;
 }
 .md-card-child div{
     font-size: 16px;
@@ -192,3 +213,131 @@ md-slider {
 .md-table-body-back-left div{
     margin-left: 40px;
 }
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    fill: #000;
+    font-size: 10px;
+}
+
+.axis .tick line {
+    stroke: rgba(0, 0, 0, 0.1);
+}
+
+.area {
+    stroke-width: 1;
+}
+
+.area.outer,
+.legend .outer {
+    fill: rgba(63, 255, 0, 0.8);
+    stroke: rgba(255, 0, 33, 0.8);
+}
+
+.area.inner,
+.legend .inner {
+    fill: rgba(255, 127, 0, 0.8);
+    stroke: rgba(255, 127, 0, 0.8);
+}
+
+.median-line,
+.legend .median-line {
+    fill: none;
+    stroke: #000;
+    stroke-width: 3;
+}
+
+.legend .legend-bg {
+    fill: rgba(0, 0, 0, 0.5);
+    stroke: rgba(0, 0, 0, 0.5);
+}
+
+.marker.client .marker-bg,
+.marker.client path {
+    fill: rgba(255, 127, 0, 0.8);
+    stroke: rgba(255, 127, 0, 0.8);
+    stroke-width: 3;
+}
+
+.marker.server .marker-bg,
+.marker.server path {
+    fill: rgba(0, 153, 51, 0.8);
+    stroke: rgba(0, 153, 51, 0.8);
+    stroke-width: 3;
+}
+
+.marker path {
+    fill: none;
+}
+
+.legend text,
+.marker text {
+    fill: #fff;
+    font-weight: bold;
+}
+
+.marker text {
+    text-anchor: middle;
+}
+
+/*
+.d3porthisogram .d3-chart {
+  width: 100%;
+  height: 400px;
+}
+
+.d3porthisogram .d3-chart .axis path,
+.d3porthisogram .d3-chart .axis line {
+  stroke: #999;
+}
+
+.d3porthisogram .d3-chart .axis text {
+  fill: #999;
+}
+*/
+
+.d3porthisogram .axis.axis-y {
+    display: none;
+}
+.custom-analizar .mat-select-value-text {
+    font-size: 24px;
+}
+.mat-drawer-container {
+    background-color: transparent;
+    position: absolute !important;
+    z-index: 1000;
+}
+.mat-background-tile {
+    background-color: #fff;
+}
+.mat-card {
+    border-radius: 6px !important;
+}
+.mat-grid-tile, .mat-card {
+    overflow: hidden;
+    transition: all .6s ease !important;
+    z-index: 1;
+}
+.mat-card-content svg {
+    transition: width .6s ease;
+}
+
+div.hoverTooltip {
+    position: absolute;
+    text-align: center;
+    width: 30px;
+    height: 15px;
+    padding: 4px;
+    font: 12px sans-serif;
+    background-color: white;
+    border : 1px solid #ff6f31;
+    border-radius: 5px;
+    pointer-events: none;
+}
+

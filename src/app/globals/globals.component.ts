@@ -2,6 +2,11 @@
 
 'use strict'
 
+export const urlHeader = {
+    production: 'http://orza.clockwisesoftware.com/api',
+    development: 'http://localhost:9051'
+};
+
 export const g_DatabaseInfo = {
     bIsStartCalc : false,
     FundHeader : [],
@@ -12,8 +17,10 @@ export const g_DatabaseInfo = {
 };
 
 export const g_GlobalStatic = {
-    startDate : '2013-01-01 00:00:00',
+    startDate : '2015-01-01 00:00:00',
     arrPortIndex : [40,48,51,54,59,80,88,104,105,106,126,149,176,179,190]
+    // arrPortIndex : [999, 3, 5, 6, 7, 8, 9, 60, 103, 113]
+    // arrPortIndex : [40,48,51,54,59,80,88,104,105,106,126,149,176,179,190]
 };
 
 export const g_FundParent = {
@@ -42,8 +49,14 @@ export const g_AllStatus = {
     arrStaircaseData : []
 }
 
-export function convertDate(paramDate){
-    var date = new Date(paramDate);   
+export function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+export function convertDate(paramDate) {
+    var date = new Date(paramDate);
     var month = (date.getMonth()+1 < 10) ? '0'+(date.getMonth()+1) : (date.getMonth()+1);
     var day = (date.getDate()<10) ? '0'+date.getDate() : date.getDate();
     var strDate = date.getFullYear() + '-' + month + '-' + day;

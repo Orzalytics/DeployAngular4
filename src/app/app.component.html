@@ -1,5 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <md-toolbar class="md-toolbar-tools">
+    <div class="sidenav-content">
+        <button md-button type="button" (click)="sidenav.open()">
+            <i class="material-icons">menu</i>
+        </button>
+    </div>
     <i class="material-icons">face</i>
     <span>&nbsp;&nbsp;Deploy Version</span>
     <span class="md-spacer"></span>
@@ -7,5 +12,18 @@
     <img src="./WhiteonTransparent.png" class="logo-img-lg">
 </md-toolbar>
 
-<router-outlet></router-outlet>
+<md-sidenav-container class="container">
+    <md-sidenav #sidenav class="sidenav">
+        <md-nav-list>
+            <md-list-item [routerLink]="['/']">Analizar Portafolio</md-list-item>
+            <md-list-item [routerLink]="['/trade']">Comprar/vender Fondos</md-list-item>
+            <md-list-item [routerLink]="['/management']">Manejar Portafolio</md-list-item>
+            <md-list-item>Orza</md-list-item>
+        </md-nav-list>
+    </md-sidenav>
+</md-sidenav-container>
+
+<div class="container-scrolling">
+    <router-outlet></router-outlet>
+</div>
 
