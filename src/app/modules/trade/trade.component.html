@@ -17,12 +17,12 @@
         </md-grid-list>
 
         <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
-            <md-grid-tile #resizableElTreemap class="mat-background-tile">
+            <md-grid-tile #resizableElTreemap [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">
                         <span>Composición portafolio</span>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElTreemap)" class="pull-right">fullscreen</md-icon>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElTreemap)" class="pull-right">fullscreen_exit</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElTreemap, 0)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElTreemap, 0)" class="pull-right">fullscreen_exit</md-icon>
                     </md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
@@ -31,12 +31,12 @@
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
-            <md-grid-tile #resizableElFanchart class="mat-background-tile">
+            <md-grid-tile #resizableElFanchart [@enterAnimation]="fullscreen[1]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">
                         <span>Precio unidad</span>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElFanchart)" class="pull-right">fullscreen</md-icon>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElFanchart)" class="pull-right">fullscreen_exit</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElFanchart, 1)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElFanchart, 1)" class="pull-right">fullscreen_exit</md-icon>
                     </md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
@@ -45,12 +45,12 @@
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
-            <md-grid-tile #resizableElScatter class="mat-background-tile">
+            <md-grid-tile #resizableElScatter [@enterAnimation]="fullscreen[2]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title id="card-title">
                         <span>Retornos 91 días portafolio y fondo</span>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElScatter)" class="pull-right">fullscreen</md-icon>
-                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElScatter)" class="pull-right">fullscreen_exit</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElScatter, 2)" class="pull-right">fullscreen</md-icon>
+                        <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElScatter, 2)" class="pull-right">fullscreen_exit</md-icon>
                     </md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
@@ -107,8 +107,8 @@
                     <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
                         <md-input-container fxFlex="97">
                             <input mdInput
-                                   type="number"
-                                   max="10"
+                                   type="text"
+                                   [textMask]="{mask: numberMask}"
                                    placeholder="Pesos"
                                    formControlName="pesos"
                                    (change)="calculateUnidades(tradeForm.controls['pesos'].value)">
@@ -117,7 +117,7 @@
                     <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
                         <md-input-container fxFlex="97">
                             <input mdInput
-                                   type="number"
+                                   [textMask]="{mask: numberMask}"
                                    placeholder="Unidades"
                                    formControlName="unidades"
                                    (change)="calculatePesos(tradeForm.controls['unidades'].value)">

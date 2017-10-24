@@ -18,14 +18,12 @@
     </md-grid-list>
 
     <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
-        <md-grid-tile #resizableElPesos [@enterAnimation]="fullscreen" class="mat-background-tile">
+        <md-grid-tile #resizableElPesos [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
                     <span>Utilidad portafolio en pesos</span>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen</md-icon>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen_exit</md-icon>
-                    <!--<md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen</md-icon>-->
-                    <!--<md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElPesos)" class="pull-right">fullscreen_exit</md-icon>-->
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
@@ -35,12 +33,12 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile #resizableElRetorno class="mat-background-tile">
+        <md-grid-tile #resizableElRetorno [@enterAnimation]="fullscreen[1]" class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
                     <span>Retorno portafolio 91 días</span>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen</md-icon>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableElRetorno)" class="pull-right">fullscreen_exit</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[1]" (click)="tranformFunc(resizableElRetorno, 1)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[1]" (click)="tranformFunc(resizableElRetorno, 1)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
@@ -51,12 +49,12 @@
             </md-card>
         </md-grid-tile>
 
-        <md-grid-tile #resizableEl class="mat-background-tile">
+        <md-grid-tile #resizableEl [@enterAnimation]="fullscreen[2]" class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title id="card-title">
                     <span>Retorno 91 días, Riesgo 7 días</span>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen" (click)="tranformFunc(resizableEl)" class="pull-right">fullscreen</md-icon>
-                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen" (click)="tranformFunc(resizableEl)" class="pull-right">fullscreen_exit</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[2]" (click)="tranformFunc(resizableEl, 2)" class="pull-right">fullscreen</md-icon>
+                    <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[2]" (click)="tranformFunc(resizableEl, 2)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
                 <md-card-content>
                     <div class="scatter_tooltip" id="scatter_tooltip"

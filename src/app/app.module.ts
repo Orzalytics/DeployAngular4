@@ -31,6 +31,7 @@ import { D3TreeMap } from './components/d3/d3TreeMap/d3treemap-directive';
 import { D3PortHisogram } from './components/d3/d3PortHisogram/d3porthisogram-directive';
 import { CustomSelectComponent } from './components/CustomSelectField/custom.select.field';
 import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scattercompare-directive';
+import {TextMaskModule} from "angular2-text-mask";
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
+    TextMaskModule,
     FlexLayoutModule,
 
     BrowserAnimationsModule,

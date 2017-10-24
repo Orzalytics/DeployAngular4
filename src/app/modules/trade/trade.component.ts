@@ -1,14 +1,17 @@
 import { compact } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
+import { trigger, style, animate, transition, state } from '@angular/animations';
+
 import * as Globals from './../../globals/globals.component';
 import * as MainOpr from './../../mainoperation/mainoperation.component';
 
 import * as moment from 'moment';
-import { ActivatedRoute } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 let HttpService: any;
 let self: any;
@@ -17,13 +20,27 @@ let self: any;
   selector: 'app-trade',
   templateUrl: './trade.component.html',
   styleUrls: ['./trade.component.css'],
-  providers: [ServiceComponent]
+  providers: [ ServiceComponent ],
+  animations: [
+    trigger('enterAnimation', [
+      state('false', style({ zIndex: 1 })),
+      state('true', style({ zIndex: 900 })),
+      transition('0 => 1', animate('10ms ease')),
+      transition('1 => 0', animate('600ms ease', style({ zIndex: 900 })))
+    ])
+  ],
 })
 export class TradeComponent implements OnInit, OnDestroy {
     public PortfolioList = [];
 
+    public numberMask = createNumberMask({
+        prefix: '',
+        suffix: '',
+        allowDecimal: true,
+        decimalLimit: 6
+    });
+
     // Chart Input Values //
-    // ngPortfolioName: any;
     ngSelFondosValue: any;
     ngWidth: any;
     fondos: any;
@@ -65,7 +82,7 @@ export class TradeComponent implements OnInit, OnDestroy {
     public ngScopeYear: any;
 
     // my refactoring;
-    public fullscreen: boolean = false;
+    public fullscreen: Array<boolean> = [false, false, false];
     private sub: any;
 
     public isValid: boolean = false;
@@ -113,6 +130,7 @@ export class TradeComponent implements OnInit, OnDestroy {
                 return obj.name === value;
             });
             this.ngScopeFanData = MainOpr.calculateFanChartData(indexValue);
+            this.setEscojeFondo();
         });
 
         this.resetForm();
@@ -335,7 +353,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
         });
-        const Unidades = value / Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex];
+        const Unidades = value.replace(/,/g, '') / Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex];
         this.tradeForm.controls['unidades'].setValue(Globals.toFixedDecimal(Unidades, 6));
     }
 
@@ -343,7 +361,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         const indexFondosValue = this.fondosList.findIndex((obj) => {
             return obj.name === this.ngFondoName;
         });
-        const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex] * value * 10000) / 10000;
+        const Pesos = Math.floor(Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].u[this.ngSliderIndex] * value.replace(/,/g, '') * 10000) / 10000;
         this.tradeForm.controls['pesos'].setValue(Globals.toFixedDecimal(Pesos, 6));
     }
 
@@ -370,9 +388,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         if(valuesForm.trade === 'comprar') {
             // buy item
             url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
-            url = url + '/' + valuesForm.unidades;
+            url = url + '/' + valuesForm.unidades.toString().replace(/,/g, '');
             url = url + '/' + 999;
-            url = url + '/' + valuesForm.pesos;
+            url = url + '/' + valuesForm.pesos.toString().replace(/,/g, '');
             url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
             url = url + '/' + valuesForm.portfolio;
             url = url + '/' + 'deploy_user';
@@ -381,9 +399,9 @@ export class TradeComponent implements OnInit, OnDestroy {
         } else {
             // sell item
             url = url + '/' + 999;
-            url = url + '/' + Math.abs(valuesForm.unidades);
+            url = url + '/' + Math.abs(valuesForm.toString().unidades.replace(/,/g, ''));
             url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
-            url = url + '/' + Math.abs(valuesForm.pesos);
+            url = url + '/' + Math.abs(valuesForm.pesos.toString().replace(/,/g, ''));
             url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
             url = url + '/' + valuesForm.portfolio;
             url = url + '/' + 'deploy_user';
@@ -451,13 +469,13 @@ export class TradeComponent implements OnInit, OnDestroy {
         }
     }
 
-    tranformFunc(resizableEl) {
-        if(this.fullscreen) {
+    tranformFunc(resizableEl, index) {
+        if(this.fullscreen[index]) {
             resizableEl._element.nativeElement.classList.remove('full-size');
         } else {
             resizableEl._element.nativeElement.classList.add('full-size');
         }
 
-        this.fullscreen = !this.fullscreen;
+        this.fullscreen[index] = !this.fullscreen[index];
     }
 }
