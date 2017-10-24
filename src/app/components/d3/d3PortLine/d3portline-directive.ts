@@ -14,6 +14,7 @@ let nSliderIndex: number;
 
 export class D3PortLine implements OnInit, OnDestroy, OnChanges {
     @Input('SliderIndex') SliderIndex: number;
+    @Input('PfName') PfName: string;
 
     private chartElement: any;
 
