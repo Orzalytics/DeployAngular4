@@ -1,16 +1,59 @@
-999,Cash COP,null,null,null
-40,RF.GloModera,modera,null,null
-48,RV.GloAgresi,agresi,null,null
-51,RF.GloConser,conser,null,null
-54,RF.ColLiquid,liquidez col,liquidezcol,null
-59,RV.ColIsagen,isagen,null,null
-80,RV.ColAccion,acciones col,accionescol,null
-88,RV.GloPetrol,petroleo,glopetrol,null
-104,RF.GloRFija,fija global,fijaglobal,glorfija
-105,RV.USA,acciones usa,accionesusa,
-106,RV.Europa,europa,null,null
-126,RV.ColEcopet,ecopet,null,null
-149,RF.USALiquid,liquidez usa,liquidezusa,usaliquid
-176,RV.ColBancol,bancol,null,null
-179,RV.Global,acciones global,accionesglobal,
-190,RV.GloTecn,tecn,null,null
+999,Cash COP,Cash COP,Cash COP,Cash COP
+101,Acc. Celsia,,,
+102,Acc. Cementos Argos,,,
+103,Acc. Colombia Pesos,,,
+104,Acc. Ecopetrol,,,
+105,Acc. EXITO,,,
+106,Acc. Internacionales Dolar,,,
+107,Acc. Internacionales Pesos,,,
+108,Acc. ISA,,,
+109,Acc. Nutresa,,,
+110,Alt. Acc. Bancolombia,,,
+111,Alt. Acc. USA,,,
+112,Alt. Especial Arquimed,,,
+113,Alt. Especial FECEN,,,
+114,Alt. Especial Progresivo,,,
+115,Alt. Especial Progreso,,,
+116,Alt. Especial SMURFITKAPPA,,,
+117,Alt. Porvenir Liquidez,,,
+118,Alt. R. F. 3 Anhos,,,
+119,Cerrado Recursos Naturales,,,
+120,Cerrado Recursos Naturales II,,,
+121,Diversificado Basico,,,
+122,Diversificado Conservador,,,
+123,Diversificado Dinamico,,,
+124,Diversificado Extremo,,,
+125,Efectivo Colombia Pesos,,,
+126,E.S.M. Estudio - Evolucion Educativa,,,
+127,E.S.M. Estudio 2016,,,
+128,E.S.M. Estudio 2022,,,
+129,E.S.M. Negocio Propio,,,
+130,E.S.M. Retiro Largo Plazo,,,
+131,E.S.M. Retiro Mediano Plazo,,,
+132,Especial Premium Riesgo Alto,,,
+133,Especial Premium Riesgo Bajo,,,
+134,Especial Premium Riesgo Medio,,,
+135,Estra. Inmobiliarias 2016,,,
+136,Estra. Inmobiliarias 2017,,,
+137,FIMPRO,,,
+138,Inmoval I,,,
+139,Largo Plazo 2022,,,
+140,Largo Plazo 2023,,,
+141,Liquidez CM,,,
+142,Multigestion I,,,
+143,Nota Convertible CITIGROUP,,,
+144,R. F. 2018,,,
+145,R. F. 2020,,,
+146,R. F. 2022,,,
+147,R. F. 3 Anhos II,,,
+148,R. F. 3 Anhos III,,,
+149,R. F. 70 meses,,,
+150,R. F. Alto Valor,,,
+151,R. F. Colombia Pesos,,,
+152,R. F. Internacional Dolar,,,
+153,R. V. Davivienda,,,
+154,R. V. Grupo Argos,,,
+155,R. V. Grupo Sura,,,
+156,Titu. Estra. Inmobiliarias,,,
+157,Titu. Estra. Inmobiliarias 2do tramo,,,
+158,Transitoria Porvenir,,,
