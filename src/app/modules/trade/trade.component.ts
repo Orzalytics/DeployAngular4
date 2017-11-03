@@ -399,7 +399,7 @@ export class TradeComponent implements OnInit, OnDestroy {
         } else {
             // sell item
             url = url + '/' + 999;
-            url = url + '/' + Math.abs(valuesForm.toString().unidades.replace(/,/g, ''));
+            url = url + '/' + Math.abs(valuesForm.unidades.toString().replace(/,/g, ''));
             url = url + '/' + Globals.g_DatabaseInfo.ListofPriceFund[indexFondosValue].index;
             url = url + '/' + Math.abs(valuesForm.pesos.toString().replace(/,/g, ''));
             url = url + '/' + moment(valuesForm.date).format('YYYY-MM-DD');
