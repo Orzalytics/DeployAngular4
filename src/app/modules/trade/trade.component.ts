@@ -87,7 +87,9 @@ export class TradeComponent implements OnInit, OnDestroy {
 
     public isValid: boolean = false;
     public cols:  Observable<number>;
+    public cols_2:  Observable<number>;
     public colsValue:  Observable<number>;
+    public tabelCols:  Observable<number>;
 
     public ngPortfolioName: string;
     public ngFondoName: string;
@@ -160,13 +162,48 @@ export class TradeComponent implements OnInit, OnDestroy {
             .map(change => grid.get(change.mqAlias))
             .startWith(start);
 
+        const grid_2 = new Map([
+            ['xs', 1],
+            ['sm', 1],
+            ['md', 2],
+            ['lg', 2],
+            ['xl', 2]
+        ]);
+        let start_2: number;
+        grid_2.forEach((cols, mqAlias) => {
+            console.log(cols, mqAlias);
+            if (this.observableMedia.isActive(mqAlias)) {
+                start_2 = cols;
+            }
+        });
+        this.cols_2 = this.observableMedia.asObservable()
+            .map(change => grid_2.get(change.mqAlias))
+            .startWith(start_2);
+
+        const tabelGrid = new Map([
+            ['xs', 10],
+            ['sm', 10],
+            ['md', 13],
+            ['lg', 15],
+            ['xl', 15]
+        ]);
+        let tabelStart: number;
+        tabelGrid.forEach((cols, mqAlias) => {
+            console.log(cols, mqAlias);
+            if (this.observableMedia.isActive(mqAlias)) {
+                tabelStart = cols;
+            }
+        });
+        this.tabelCols = this.observableMedia.asObservable()
+            .map(change => tabelGrid.get(change.mqAlias))
+            .startWith(tabelStart);
 
         const gridValue = new Map([
             ['xs', 1],
             ['sm', 2],
-            ['md', 5],
-            ['lg', 5],
-            ['xl', 5]
+            ['md', 4],
+            ['lg', 4],
+            ['xl', 4]
         ]);
         let startValue: number;
         gridValue.forEach((cols, mqAlias) => {

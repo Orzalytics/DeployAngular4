@@ -39,7 +39,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     public PortfolioList = [];
 
-    public cols: Observable<number>;
+    public cols_1: Observable<number>;
+    public cols_2: Observable<number>;
     public width: number;
     public ngPortIndex: number = -1;
 
@@ -113,28 +114,51 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.checkStart();
         }, 100);
 
-        const grid = new Map([
-            ['xs', 1],
-            ['sm', 1],
-            ['md', 1],
-            ['lg', 3],
-            ['xl', 3]
-        ]);
-        let start: number;
-        grid.forEach((cols, mqAlias) => {
-            if (this.observableMedia.isActive(mqAlias)) {
-                start = cols;
-            }
-        });
-        this.cols = this.observableMedia.asObservable()
-            .map(change => grid.get(change.mqAlias))
-            .startWith(start);
+        this.onResizeWindow();
     }
 
     ngOnDestroy() {
         if (this.nTimerId) {
             clearInterval(this.nTimerId);
         }
+    }
+
+    onResizeWindow() {
+        const grid_1 = new Map([
+            ['xs', 1],
+            ['sm', 1],
+            ['md', 1],
+            ['lg', 3],
+            ['xl', 3]
+        ]);
+        let start_1: number;
+        grid_1.forEach((cols, mqAlias) => {
+            console.log(cols, mqAlias);
+            if (this.observableMedia.isActive(mqAlias)) {
+                start_1 = cols;
+            }
+        });
+        this.cols_1 = this.observableMedia.asObservable()
+            .map(change => grid_1.get(change.mqAlias))
+            .startWith(start_1);
+
+        const grid_2 = new Map([
+            ['xs', 1],
+            ['sm', 1],
+            ['md', 2],
+            ['lg', 2],
+            ['xl', 2]
+        ]);
+        let start_2: number;
+        grid_2.forEach((cols, mqAlias) => {
+            console.log(cols, mqAlias);
+            if (this.observableMedia.isActive(mqAlias)) {
+                start_2 = cols;
+            }
+        });
+        this.cols_2 = this.observableMedia.asObservable()
+            .map(change => grid_2.get(change.mqAlias))
+            .startWith(start_2);
     }
 
     checkStart() {
