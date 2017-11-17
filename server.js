@@ -1,412 +1,281 @@
 (function() {
-  var fs = require('fs');
-  var express = require('express');
-  var http = require('http');
-  var mysql = require('mysql');
-  var bodyParser = require('body-parser');
-  var parseXlsx = require('xlsx');
-  var csv = require('fast-csv');
-  var app = express();
+	var fs = require('fs');
+	var express = require('express');
+	var http = require('http');
+	var mysql = require('mysql');
+	var bodyParser = require('body-parser');
+	var parseXlsx = require('xlsx');
+	var csv = require('fast-csv');
+	var app = express();
 
-app.set('port', process.env.PORT || 9051);
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-app.use(bodyParser.json());
+	app.set('port', process.env.PORT || 9051);
+	app.use(function(req, res, next) {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		next();
+	});
+	app.use(bodyParser.json());
 
-app.post('/getExcel', function(req, res){
-  var csvdata = [];
-  
-  csv.fromString(req.body.user, {headers: true})
-    .on("data", function(data){
-        csvdata.push(data);
-    })
-    .on("end", function(){
-        res.json(csvdata);
-    });
-});
-app.post('/buy', function(req, res){
-  var pObject = req.body.user;
-  if (pObject.length > 0){
-    var portfolio_ID = pObject[0].portfolio_id;
-    var strDate = pObject[0].nowDate;
+	var pool = mysql.createPool({
+		host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
+		user: 'JCGutierrez2017',
+		port: '3306',
+		password: 'HryvniaUcr4n14',
+		multipleStatements: true
+	});
 
-    var csvdata_portfolio = [];
-    var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
-      .on("data", function(data){
-        csvdata_portfolio.push(data);
-      })
-      .on("end", function(){
-        var bIsExist = false;
-        for (var i = 0; i < csvdata_portfolio.length; i ++){
-          if (csvdata_portfolio[i].portfolio_id == portfolio_ID){
-            bIsExist = true;
-            break;
-          }
-        }
+	pool.getConnection(function(err,connection){
+		if(err){
+			process.env['msg'] = 'unable to connect to RDS -' + err;
+		 return;
+		};
 
-        if (bIsExist == true){
-          // exist
-        }else{
-          csvdata_portfolio.push({"portfolio_id" : portfolio_ID, "portfolio_name_saver" : portfolio_ID});
-          var csvStream_portfolio = csv.createWriteStream({headers: false}),
-          writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
+		// '/ret1'
+		app.get('/fundheader', function(req, res){
+			var sqlLine1 = "select fund_id_alias_fund, alias, alias_match_1, alias_match_2, alias_match_3 from OrzaDevDB.alias_fund";
+			connection.query(sqlLine1, function(err,fundnames){
+				if(err) throw err;
+				res.json(fundnames);
+			});
+		});
 
-          writableStream.on("finish", function(){
-            // success injection portfolio data into database
-          });
+		// '/ret'
+		app.get('/ret/:sDate', function(req, res){
+			var startDate = req.params.sDate;
+			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevDB.price_fund as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
+			connection.query(sqlLine,function(err,rows){
+				if(err) throw err;
+				res.json(rows);
+			});
+		});
 
-          csvStream_portfolio.pipe(writableStream);      
-          for (var i = 0; i < csvdata_portfolio.length; i ++){
-            csvStream_portfolio.write({"portfolio_id" : csvdata_portfolio[i].portfolio_id, "portfolio_name_saver" : csvdata_portfolio[i].portfolio_name_saver});
-          }
-          csvStream_portfolio.end();
-        }
+		// '/userInfo'
+		app.get('/userPortList', function(req, res){
+			var sqlLine = "select portfolio_id, portfolio_name_saver from OrzaDevDB.portfolio";
+			connection.query(sqlLine,function(err,portnames){
+				if(err) throw err;
+				res.json(portnames);
+			});
+		});
 
-        var csvdata_transaction = [];
-        var stream_transaction = fs.createReadStream(__dirname + "/testdb/transaction.csv");
-        csv.fromStream(stream_transaction, {headers : ["transaction_id", "transaction_portfolio_id", "transaction_saver_id", "fund_id_bought", "units_bought", "fund_id_sold", "units_sold", "date_value_transaction"]})
-          .on("data", function(data){
-            csvdata_transaction.push(data);
-          })
-          .on("end", function(){
-            // read transaction data successfully
-            var nWriteCnt = 0;
-            for (var n = 0; n < pObject.length; n ++){
-              var param1 = pObject[n].portfolio_id;
-              var param2 = pObject[n].saver_id;
-              var param3 = pObject[n].fund_id_bought;
-              var param4 = pObject[n].units_bought;
-              var param5 = pObject[n].fund_id_sold;
-              var param6 = pObject[n].units_sold;
-              var param7 = pObject[n].date_value_transaction;
+		app.get('/transaction/:portid', function(req, res){
+			var portfolio_id = req.params.portid;
+			var sqlLine;
+			if (portfolio_id == "all"){
+				sqlLine = "select * from OrzaDevDB.transaction";
+			}else{
+				sqlLine = "select * from OrzaDevDB.transaction where transaction_portfolio_id = '" + portfolio_id + "'";
+			}
+			connection.query(sqlLine,function(err,transactions){
+				if(err) throw err;
+				res.json(transactions);
+			});
+		});
 
-              // console.log("================ Parameters ================");
-              // console.log(param1);
-              // console.log(param2);
-              // console.log(param3);
-              // console.log(param4);
-              // console.log(param5);
-              // console.log(param6);
-              // console.log(param7);
-              // console.log("================ Parameters ================");
+		app.post('/buy', function(req, res){
+			console.log('BUY');
+			var pObject = req.body.user;
+			if (pObject.length > 0){
+				var portfolio_ID = pObject[0].portfolio_id;
+				var strDate = pObject[0].nowDate;
+				var sqlPortfolio = "select portfolio_id from OrzaDevDB.portfolio where portfolio_id = '" + portfolio_ID + "'";
+				connection.query(sqlPortfolio, function(err, portID){
+					if (err) throw err;
+					// res.json(portID);
+					if (portID.length > 0){
+						// same portfolio id is existed
+						var sqlLine = "insert into OrzaDevDB.transaction " +
+								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
+								" values ";
+						var sqlValues = "";
 
-              for (var i = 1; i < 99999; i ++){
-                var bIsFound = false;
-                for (var j = 0; j < csvdata_transaction.length; j ++){
-                  if (csvdata_transaction[j].transaction_id * 1 == i){
-                    bIsFound = true;
-                    break;
-                  }
-                }
-                if (bIsFound == false){
-                  csvdata_transaction.push({"transaction_id" : csvdata_transaction.length, "transaction_portfolio_id" : param1, "transaction_saver_id" : param2, "fund_id_bought" : param3, "units_bought" : param4, "fund_id_sold" : param5, "units_sold" : param6, "date_value_transaction" : param7});
-                  break;
-                }
-              }
-            }
+						for (var i = 0; i < pObject.length; i ++){
+							var param1 = pObject[i].portfolio_id;
+							var param2 = pObject[i].saver_id;
+							var param3 = pObject[i].fund_id_bought;
+							var param4 = pObject[i].units_bought;
+							var param5 = pObject[i].fund_id_sold;
+							var param6 = pObject[i].units_sold;
+							var param7 = pObject[i].date_value_transaction;
+							var param8 = pObject[i].nowDate;
+							sqlValues += "('"+param1+"'" + ',' + param2  + ',' + param3  + ',' + param4  + ',' + param5  + ',' + param6  + ',' + "'" + param7 + "')";
+							if (i != pObject.length - 1) sqlValues += ",";
+						}
+						sqlLine += sqlValues;
+						connection.query(sqlLine, function(err, exData){
+							if(err) throw err;
+							// res.json(exData);
+						});
+					}
+					else{
+						// there isn't same portfolio id on portfolio table
+						var sqlLine = "insert into OrzaDevDB.portfolio " +
+						"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
+						" values (";
+						var sqlValues = "'"+portfolio_ID+"'" + ',' + "'"+portfolio_ID+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+strDate+"'";
+						sqlLine = sqlLine + sqlValues + ")";
+						connection.query(sqlLine, function(err, portdata){
+							var sqlLine = "insert into OrzaDevDB.transaction " +
+								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
+								" values ";
+							var sqlValues = "";
 
-            var csvStream = csv.createWriteStream({headers: false}),
-            writableStream = fs.createWriteStream(__dirname + "/testdb/transaction.csv");
+							for (var i = 0; i < pObject.length; i ++){
+								var param1 = pObject[i].portfolio_id;
+								var param2 = pObject[i].saver_id;
+								var param3 = pObject[i].fund_id_bought;
+								var param4 = pObject[i].units_bought;
+								var param5 = pObject[i].fund_id_sold;
+								var param6 = pObject[i].units_sold;
+								var param7 = pObject[i].date_value_transaction;
+								var param8 = pObject[i].nowDate;
+								sqlValues += "('"+param1+"'" + ',' + param2  + ',' + param3  + ',' + param4  + ',' + param5  + ',' + param6  + ',' + "'" + param7 + "')";
+								if (i != pObject.length - 1) sqlValues += ",";
+							}
+							sqlLine += sqlValues;
+							connection.query(sqlLine, function(err, exData){
+								if(err) throw err;
+								res.json(exData);
+							});
+						})
+					}
+				});
+			}
+		})
 
-            writableStream.on("finish", function(){
-              res.json("done");
-            });
+		// save transaction to transaction table in MySQL database
+		app.get('/buy/:fund_id_bought/:units_bought/:fund_id_sold/:units_sold/:date_value_transaction/:portfolio_id/:saver_id/:nowDate', function(req, res){
+			// default value of 1 for transaction_portfolio_id and transaction_saver_id 
+			var param1 = req.params.portfolio_id;
+			var param2 = req.params.saver_id;
+			var param3 = req.params.fund_id_bought;
+			var param4 = req.params.units_bought;
+			var param5 = req.params.fund_id_sold;
+			var param6 = req.params.units_sold;
+			var param7 = req.params.date_value_transaction;
+			var param8 = req.params.nowDate;
 
-            csvStream.pipe(writableStream);      
-            for (var i = 0; i < csvdata_transaction.length; i ++){
-              csvStream.write({"transaction_id" : csvdata_transaction[i].transaction_id, "transaction_portfolio_id" : csvdata_transaction[i].transaction_portfolio_id, "transaction_saver_id" : csvdata_transaction[i].transaction_saver_id, "fund_id_bought" : csvdata_transaction[i].fund_id_bought, "units_bought" : csvdata_transaction[i].units_bought, "fund_id_sold" : csvdata_transaction[i].fund_id_sold, "units_sold" : csvdata_transaction[i].units_sold, "date_value_transaction" : csvdata_transaction[i].date_value_transaction});
-            }
-            csvStream.end();
-          });
-      });
-  }
-})
+			// check portfolio_id from portfolio table of database
+			var sqlPortfolio = "select portfolio_id from OrzaDevDB.portfolio where portfolio_id = '" + param1 + "'";
+			connection.query(sqlPortfolio, function(err, portID){
+				if (err) throw err;
+				// res.json(portID);
+				if (portID.length > 0){
+					// same portfolio id is existed
+				}
+				else{
+					// there isn't same portfolio id on portfolio table
+					var sqlLine = "insert into OrzaDevDB.portfolio " +
+					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
+					" values (";
+					var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+param8+"'";
+					sqlLine = sqlLine + sqlValues + ")";
+					connection.query(sqlLine, function(err, portdata){
+						// console.log("success injected into portfolio");
+					})
+				}
 
-// get returns from MySQL database
-app.get('/ret/:sDate', function(req, res){
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/fundinformation.csv");
-  csv.fromStream(stream, {headers : ["pr_fund_id", "fund_id_pr_fund","pr_fund", "date_value_pr_fund"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      res.json(csvdata);
-    });
-});
+				// variables to insert transaction if no other transaction for that fund on that date 
+				var sqlLine = "insert into OrzaDevDB.transaction " +
+				"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
+				" values (";
+				var sqlValues = "'"+param1+"'" + ',' + param2  + ',' + param3  + ',' + param4  + ',' + param5  + ',' + param6  + ',' + "'" + param7 + "'";
+				sqlLine = sqlLine + sqlValues + ")";
 
-// get fund ids and names from MySQL database
-app.get('/fundheader', function(req, res){
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/fundnames.csv");
-  csv.fromStream(stream, {headers : ["fund_id_alias_fund", "alias", "alias_match_1", "alias_match_2", "alias_match_3"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      res.json(csvdata);
-    });
-});
+				// variable to look for previous transactions if there is already a transaction for that fund on that date
+				var beforeReq = "select * from OrzaDevDB.transaction ";
+				beforeReq = beforeReq + "where fund_id_bought = " + param3;
+				beforeReq = beforeReq + " and fund_id_sold = " + param5;
+				beforeReq = beforeReq + " and date_value_transaction = '" + param7 + "'";
+				beforeReq = beforeReq + " and transaction_portfolio_id = " + "'"+param1+"'";
+				beforeReq = beforeReq + " and transaction_saver_id = " + "'"+param2+"'";
 
-app.get('/userPortList', function(req, res){
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-  csv.fromStream(stream, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      res.json(csvdata);
-    });
-});
+				// console.log(beforeReq);
+				// if between insert and update of transaction
+				connection.query(beforeReq, function(err, portdata){
+					if(err) throw err;
+					if (portdata.length > 0){
 
-app.get('/transaction/:portid', function(req, res){
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/transaction.csv");
-  csv.fromStream(stream, {headers : ["transaction_id", "transaction_portfolio_id", "transaction_saver_id", "fund_id_bought", "units_bought", "fund_id_sold", "units_sold", "date_value_transaction"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      res.json(csvdata);
-    });
-});
+						// param4 = param4*1 + portdata[0].units_bought;
+						// param6 = param6*1 + portdata[0].units_sold; 
+						
+						// update transaction if there is a previous transaction for that fund on that date
+						sqlLine = "update OrzaDevDB.transaction set" +
+						" units_bought = " + param4 +
+						", units_sold = " + param6 +
+						" where transaction_id = " + portdata[0].transaction_id;
+						// console.log(sqlLine);
+						connection.query(sqlLine, function(err, portdata){
+							if(err) throw err;
+							res.json(portdata);
+						});
+					}
+					// insert transaction if there is no previous transaction for that fund on that date
+					else{
+						// console.log(sqlLine);
+						connection.query(sqlLine, function(err, portdata){
+							if(err) throw err;
+							res.json(portdata);
+						});
+					}
+				})
+			});
+		});
 
-app.get('/delete/:id', function(req, res){
-  var trans_id = req.params.id;
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/transaction.csv");
-  csv.fromStream(stream, {headers : ["transaction_id", "transaction_portfolio_id", "transaction_saver_id", "fund_id_bought", "units_bought", "fund_id_sold", "units_sold", "date_value_transaction"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      var newdata = [];
-      for (var i = 0; i < csvdata.length; i ++){
-        if (csvdata[i].transaction_id == trans_id){
-          continue;
-        }
-        newdata.push(csvdata[i]);
-      }
+		app.get('/delete/:id', function(req, res){
+			var trans_id = req.params.id;
+			var sqlLine = "delete from OrzaDevDB.transaction where transaction_id=" + trans_id;
+			connection.query(sqlLine,function(err,transactions){
+				if(err) throw err;
+				res.json(transactions);
+			});
+		});
 
-      var csvStream = csv.createWriteStream({headers: false}),
-      writableStream = fs.createWriteStream(__dirname + "/testdb/transaction.csv");
+		app.get('/deleteport/:id', function(req, res){
+			var port_id = req.params.id;
+			var sqlLine1 = "delete from OrzaDevDB.transaction where transaction_portfolio_id=" + "'" + port_id +"'";
+			var sqlLine2 = "delete from OrzaDevDB.portfolio where portfolio_id=" + "'" + port_id +"'";
+			connection.query(sqlLine1, function(err){
+				if(err) throw err;
+				connection.query(sqlLine2, function(err, transactions){
+					if(err) throw err;
+					res.json(transactions);
+				});
+			});
+		});
 
-      writableStream.on("finish", function(){
-        res.json("done");
-      });
+		app.get('/addport/:portfolio_id/:valor/:moneda/:nowDate', function(req, res){
+			var param1 = req.params.portfolio_id;
+			var param2 = req.params.valor;
+			var param3 = req.params.moneda;
+			var param4 = req.params.nowDate;
+			var sqlLine = "insert into OrzaDevDB.portfolio " +
+					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
+					" values (";
+			var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'";
+			sqlLine = sqlLine + sqlValues + ")";
+			connection.query(sqlLine, function(err, portdata){
+				res.json(portdata);
+			})
+		});
 
-      csvStream.pipe(writableStream);      
-      for (var i = 0; i < newdata.length; i ++){
-        csvStream.write({"transaction_id" : newdata[i].transaction_id, "transaction_portfolio_id" : newdata[i].transaction_portfolio_id, "transaction_saver_id" : newdata[i].transaction_saver_id, "fund_id_bought" : newdata[i].fund_id_bought, "units_bought" : newdata[i].units_bought, "fund_id_sold" : newdata[i].fund_id_sold, "units_sold" : newdata[i].units_sold, "date_value_transaction" : newdata[i].date_value_transaction});
-      }
-      csvStream.end();
-    });
-});
-
-app.get('/deleteport/:id', function(req, res){
-  var portfolio_id = req.params.id;
-  var csvdata = [];
-  var stream = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-  csv.fromStream(stream, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
-    .on("data", function(data){
-      csvdata.push(data);
-    })
-    .on("end", function(){
-      var newdata = [];
-      for (var i = 0; i < csvdata.length; i ++){
-        if (csvdata[i].portfolio_id == portfolio_id){
-          continue;
-        }
-        newdata.push(csvdata[i]);
-      }
-
-      var csvStream = csv.createWriteStream({headers: false}),
-      writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
-
-      writableStream.on("finish", function(){
-        res.json("done");
-      });
-
-      csvStream.pipe(writableStream);
-      for (var i = 0; i < newdata.length; i ++){
-        csvStream.write({
-            "portfolio_id" : newdata[i].portfolio_id,
-            "portfolio_name_saver" : newdata[i].portfolio_name_saver,
-            "valor" : newdata[i].valor,
-            "moneda" : newdata[i].moneda
-        });
-      }
-      csvStream.end();
-    });
-});
-
- // save transaction to transaction table in MySQL database
- app.get('/buy/:fund_id_bought/:units_bought/:fund_id_sold/:units_sold/:date_value_transaction/:portfolio_id/:saver_id/:nowDate', function(req, res){
-    
-    // default value of 1 for transaction_portfolio_id and transaction_saver_id 
-    var param1 = req.params.portfolio_id;
-    var param2 = req.params.saver_id;
-    var param3 = req.params.fund_id_bought;
-    var param4 = req.params.units_bought;
-    var param5 = req.params.fund_id_sold;
-    var param6 = req.params.units_sold;
-    var param7 = req.params.date_value_transaction;
-    var param8 = req.params.nowDate;
-
-    // console.log("================ Parameters ================");
-    // console.log(param1);
-    // console.log(param2);
-    // console.log(param3);
-    // console.log(param4);
-    // console.log(param5);
-    // console.log(param6);
-    // console.log(param7);
-    // console.log(param8);
-    // console.log("================ Parameters ================");
-    var csvdata_portfolio = [];
-    var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
-      .on("data", function(data){
-        csvdata_portfolio.push(data);
-      })
-      .on("end", function(){
-        var bIsExist = false;
-        for (var i = 0; i < csvdata_portfolio.length; i ++){
-          if (csvdata_portfolio[i].portfolio_id == param1){
-            bIsExist = true;
-            break;
-          }
-        }
-
-        if (bIsExist == true){
-          // exist
-        }else{
-          csvdata_portfolio.push({"portfolio_id" : param1, "portfolio_name_saver" : param1});
-          var csvStream_portfolio = csv.createWriteStream({headers: false}),
-          writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
-
-          writableStream.on("finish", function(){
-            // success injection portfolio data into database
-          });
-
-          csvStream_portfolio.pipe(writableStream);      
-          for (var i = 0; i < csvdata_portfolio.length; i ++){
-            csvStream_portfolio.write({"portfolio_id" : csvdata_portfolio[i].portfolio_id, "portfolio_name_saver" : csvdata_portfolio[i].portfolio_name_saver});
-          }
-          csvStream_portfolio.end();
-        }
-
-        var csvdata_transaction = [];
-        var stream_transaction = fs.createReadStream(__dirname + "/testdb/transaction.csv");
-        csv.fromStream(stream_transaction, {headers : ["transaction_id", "transaction_portfolio_id", "transaction_saver_id", "fund_id_bought", "units_bought", "fund_id_sold", "units_sold", "date_value_transaction"]})
-          .on("data", function(data){
-            csvdata_transaction.push(data);
-          })
-          .on("end", function(){
-            // read transaction data successfully
-            var bIsUpdate = false;
-            for (var i = 0; i < csvdata_transaction.length; i ++){
-              if ((csvdata_transaction[i].transaction_portfolio_id == param1)
-              && (csvdata_transaction[i].date_value_transaction == param7) && (csvdata_transaction[i].fund_id_bought == param3)
-              && (csvdata_transaction[i].fund_id_sold == param5)){
-                // update transaction if there is a previous transaction for that fund on that date
-                bIsUpdate = true;
-                csvdata_transaction[i].units_bought = param4;
-                csvdata_transaction[i].units_sold = param6;
-                break;
-              }
-            }
-
-            if (bIsUpdate == false){
-              for (var i = 1; i < 99999; i ++){
-                var bIsFound = false;
-                for (var j = 0; j < csvdata_transaction.length; j ++){
-                  if (csvdata_transaction[j].transaction_id * 1 == i){
-                    bIsFound = true;
-                    break;
-                  }
-                }
-                if (bIsFound == false){
-                  csvdata_transaction.push({"transaction_id" : csvdata_transaction.length, "transaction_portfolio_id" : param1, "transaction_saver_id" : param2, "fund_id_bought" : param3, "units_bought" : param4, "fund_id_sold" : param5, "units_sold" : param6, "date_value_transaction" : param7});
-                  break;
-                }
-              }
-            }
-
-            var csvStream = csv.createWriteStream({headers: false}),
-            writableStream = fs.createWriteStream(__dirname + "/testdb/transaction.csv");
-
-            writableStream.on("finish", function(){
-              res.json("done");
-            });
-
-            csvStream.pipe(writableStream);      
-            for (var i = 0; i < csvdata_transaction.length; i ++){
-              csvStream.write({"transaction_id" : csvdata_transaction[i].transaction_id, "transaction_portfolio_id" : csvdata_transaction[i].transaction_portfolio_id, "transaction_saver_id" : csvdata_transaction[i].transaction_saver_id, "fund_id_bought" : csvdata_transaction[i].fund_id_bought, "units_bought" : csvdata_transaction[i].units_bought, "fund_id_sold" : csvdata_transaction[i].fund_id_sold, "units_sold" : csvdata_transaction[i].units_sold, "date_value_transaction" : csvdata_transaction[i].date_value_transaction});
-            }
-            csvStream.end();
-          });
-      });
- });
-
-// save transaction to transaction table in MySQL database
- app.get('/addport/:portfolio_id/:valor/:moneda', function(req, res){
-
-    // default value of 1 for transaction_portfolio_id and transaction_saver_id
-    var param1 = req.params.portfolio_id;
-    var param2 = req.params.valor;
-    var param3 = req.params.moneda;
-
-    var csvdata_portfolio = [];
-    var stream_portfolio = fs.createReadStream(__dirname + "/testdb/portnames.csv");
-    csv.fromStream(stream_portfolio, {headers : ["portfolio_id", "portfolio_name_saver", "valor", "moneda"]})
-      .on("data", function(data){
-        csvdata_portfolio.push(data);
-      })
-      .on("end", function(){
-        var bIsExist = false;
-        for (var i = 0; i < csvdata_portfolio.length; i ++){
-          if (csvdata_portfolio[i].portfolio_id == param1){
-            bIsExist = true;
-            break;
-          }
-        }
-
-        if (bIsExist == true){
-          // exist
-        }else{
-          csvdata_portfolio.push({"portfolio_id" : param1, "portfolio_name_saver" : param1, valor: param2, moneda: param3});
-          var csvStream_portfolio = csv.createWriteStream({headers: false}),
-          writableStream = fs.createWriteStream(__dirname + "/testdb/portnames.csv");
-
-          writableStream.on("finish", function(){
-              res.json("done");
-              // success injection portfolio data into database
-          });
-
-          csvStream_portfolio.pipe(writableStream);
-          for (var i = 0; i < csvdata_portfolio.length; i ++){
-            csvStream_portfolio.write({
-                "portfolio_id" : csvdata_portfolio[i].portfolio_id,
-                "portfolio_name_saver" : csvdata_portfolio[i].portfolio_name_saver,
-                "valor" : csvdata_portfolio[i].valor,
-                "moneda" : csvdata_portfolio[i].moneda
-            });
-          }
-          csvStream_portfolio.end();
-        }
-
-      });
- });
+	});
 
 
-http.createServer(app).listen(app.get('port'), function(){
-console.log("Express server listening on port " + app.get('port'));
-  });       
+	app.post('/getExcel', function(req, res){
+		var csvdata = [];
+		
+		csv.fromString(req.body.user, {headers: true})
+			.on("data", function(data){
+					csvdata.push(data);
+			})
+			.on("end", function(){
+					res.json(csvdata);
+			});
+	});
+
+	http.createServer(app).listen(app.get('port'), function(){
+		console.log("Express server listening on port " + app.get('port'));
+	});
 
 }).call(this);
