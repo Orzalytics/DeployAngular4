@@ -12,3 +12,10 @@
 .management-select {
     text-align: left;
 }
+
+@media (max-width: 600px) {
+    .md-table-back div,
+    .md-table-body-back {
+        font-size: 12px;
+    }
+}

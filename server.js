@@ -51,7 +51,7 @@
 
 		// '/userInfo'
 		app.get('/userPortList', function(req, res){
-			var sqlLine = "select portfolio_id, portfolio_name_saver from OrzaDevDB.portfolio";
+			var sqlLine = "select portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver from OrzaDevDB.portfolio";
 			connection.query(sqlLine,function(err,portnames){
 				if(err) throw err;
 				res.json(portnames);
