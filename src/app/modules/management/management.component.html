@@ -27,7 +27,8 @@
             <md-grid-tile class="md-table-body-back" [colspan]="2" >
                 <md-input-container fxFlex="97">
                     <input mdInput
-                           type="number"
+                           [textMask]="{mask: numberMask}"
+                           type="text"
                            placeholder="Valor Meta"
                            formControlName="valor"/>
                 </md-input-container>

@@ -1,6 +1,7 @@
 import { compact } from 'lodash';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
+
 import * as Globals from './../../globals/globals.component';
 import * as MainOpr from './../../mainoperation/mainoperation.component';
 
@@ -10,6 +11,8 @@ import { ObservableMedia } from '@angular/flex-layout';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 // import { Observable } from 'rxjs/Observable';
 // import {FormControl, FormGroup, Validators} from '@angular/forms';
+
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 let HttpService: any;
 let self: any;
@@ -31,6 +34,12 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
 	public routeName: any;
 	public PortfolioList  = [];
+
+	public numberMask = createNumberMask({
+		prefix: '',
+		suffix: '',
+		allowDecimal: false
+	});
 
 	// Portfolio table //
 	// values for icon information on table header
