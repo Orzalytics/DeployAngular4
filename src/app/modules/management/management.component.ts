@@ -1,6 +1,7 @@
 import { compact } from 'lodash';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
+
 import * as Globals from './../../globals/globals.component';
 import * as MainOpr from './../../mainoperation/mainoperation.component';
 
@@ -11,173 +12,176 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 // import { Observable } from 'rxjs/Observable';
 // import {FormControl, FormGroup, Validators} from '@angular/forms';
 
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+
 let HttpService: any;
 let self: any;
 
 @Component({
-  selector: 'app-management',
-  templateUrl: './management.component.html',
-  styleUrls: ['./management.component.css'],
-  providers: [ServiceComponent]
+	selector: 'app-management',
+	templateUrl: './management.component.html',
+	styleUrls: ['./management.component.css'],
+	providers: [ServiceComponent]
 })
+
 export class ManagementComponent implements OnInit, OnDestroy {
-    public isValid = false;
-    public disabled = false;
+	public isValid = false;
+	public disabled = false;
 
-    private sub: any;
-    public cols: any;
-    private nTimerId: any;
+	private sub: any;
+	public cols: any;
+	private nTimerId: any;
 
-    public routeName: any;
-    public PortfolioList  = [];
+	public routeName: any;
+	public PortfolioList  = [];
 
-    // Portfolio table //
-    // values for icon information on table header
-    tbHeader = [
-        {index : 1, title : 'Nombre Portafolio', icon : ''},
-        {index : 2, title : 'Valor Meta', icon : ''},
-        {index : 3, title : 'Moneda', icon : ''},
-    ];
+	public numberMask = createNumberMask({
+		prefix: '',
+		suffix: '',
+		allowDecimal: false
+	});
 
-    public portfolioForm = new FormGroup({
-        portfolio_id: new FormControl(null, Validators.required),
-        valor: new FormControl(0, Validators.required),
-        moneda: new FormControl(0, Validators.required),
-    });
+	// Portfolio table //
+	// values for icon information on table header
+	tbHeader = [
+		{index : 1, title : 'Nombre Portafolio', icon : ''},
+		{index : 2, title : 'Valor Meta', icon : ''},
+		{index : 3, title : 'Moneda', icon : ''},
+	];
 
-    constructor( private service:ServiceComponent,
-                 private observableMedia: ObservableMedia ) {
-        self = this;
-        HttpService = this.service;
-    }
+	public portfolioForm = new FormGroup({
+		portfolio_id: new FormControl(null, Validators.required),
+		valor: new FormControl(0, Validators.required),
+		moneda: new FormControl(0, Validators.required),
+	});
 
-    ngOnInit() {
-        HttpService.getDatabaseInfo();
-        this.nTimerId = setInterval(() => {
-            this.checkStart();
-        }, 100);
+	constructor( private service:ServiceComponent,
+				 private observableMedia: ObservableMedia ) {
+		self = this;
+		HttpService = this.service;
+	}
 
-        // this.isValid = true;
-        const grid = new Map([
-            ['xs', 1],
-            ['sm', 1],
-            ['md', 1],
-            ['lg', 3],
-            ['xl', 3]
-        ]);
-        let start: number;
-        grid.forEach((cols, mqAlias) => {
-            if (this.observableMedia.isActive(mqAlias)) {
-                start = cols;
-            }
-        });
-        this.cols = this.observableMedia.asObservable()
-            .map(change => grid.get(change.mqAlias))
-            .startWith(start);
+	ngOnInit() {
+		HttpService.getDatabaseInfo();
+		this.nTimerId = setInterval(() => {
+			this.checkStart();
+		}, 100);
 
-        this.resetForm();
-    }
+		// this.isValid = true;
+		const grid = new Map([
+			['xs', 1],
+			['sm', 1],
+			['md', 1],
+			['lg', 3],
+			['xl', 3]
+		]);
+		let start: number;
+		grid.forEach((cols, mqAlias) => {
+			if (this.observableMedia.isActive(mqAlias)) {
+				start = cols;
+			}
+		});
+		this.cols = this.observableMedia.asObservable()
+			.map(change => grid.get(change.mqAlias))
+			.startWith(start);
 
-    ngOnDestroy() {
-        // this.sub.unsubscribe();
-    }
+		this.resetForm();
+	}
 
-    checkStart() {
-        if (Globals.g_DatabaseInfo.bIsStartCalc) {
-            clearInterval(this.nTimerId);
+	ngOnDestroy() {
+		// this.sub.unsubscribe();
+	}
 
-            this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
-            MainOpr.onCalculateData();
-            HttpService.getTransactionList().subscribe(
-                response => {
-                    MainOpr.getTransactionData(response);
-                    MainOpr.CalculatePortfolioData();
+	checkStart() {
+		if (Globals.g_DatabaseInfo.bIsStartCalc) {
+			clearInterval(this.nTimerId);
 
-                    this.onRefreshTable(this.PortfolioList);
-                    this.isValid = true;
-                    console.log('Test ',Globals.g_DatabaseInfo.PortfolioList);
-                    console.log('Test ', Globals.g_Portfolios);
-                });
-        }
-    }
+			this.PortfolioList = Globals.g_DatabaseInfo.PortfolioList;
+			MainOpr.onCalculateData();
+			HttpService.getTransactionList().subscribe(
+				response => {
+					MainOpr.getTransactionData(response);
+					MainOpr.CalculatePortfolioData();
 
-    onRefreshTable(portfolioList) {
-        this.PortfolioList = portfolioList;
-        this.tbHeader[0].icon = '';
-        this.onTableReorder(0);
-    }
+					this.onRefreshTable(this.PortfolioList);
+					this.isValid = true;
+				});
+		}
+	}
 
-    onTableReorder(index) {
-        const strIconName = this.tbHeader[index].icon;
-        for (let i = 0; i < this.tbHeader.length; i ++) {
-            this.tbHeader[i].icon = '';
-        }
+	onRefreshTable(portfolioList) {
+		this.PortfolioList = portfolioList;
+		this.tbHeader[0].icon = '';
+		this.onTableReorder(0);
+	}
 
-        let strOrderCmd = '';
-        switch (strIconName) {
-            case '':
-                this.tbHeader[index].icon = 'arrow_drop_down';
-                strOrderCmd = 'down';
-                break;
-            case 'arrow_drop_down':
-                this.tbHeader[index].icon = 'arrow_drop_up';
-                strOrderCmd = 'up';
-                break;
-            case 'arrow_drop_up':
-                this.tbHeader[index].icon = 'arrow_drop_down';
-                strOrderCmd = 'down';
-                break;
-        }
-        this.sortTable(this.tbHeader[index].index, strOrderCmd);
-    }
+	onTableReorder(index) {
+		const strIconName = this.tbHeader[index].icon;
+		for (let i = 0; i < this.tbHeader.length; i ++) {
+			this.tbHeader[i].icon = '';
+		}
 
-    sortTable(index, strOrderCmd) {
-        // this.fondoList.Portarray.sort(function(a, b){
-        //     const keyA = a[Object.keys(a)[index]],
-        //         keyB = b[Object.keys(a)[index]];
-        //
-        //     if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
-        //     if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
-        //     return 0;
-        // });
-    }
+		let strOrderCmd = '';
+		switch (strIconName) {
+			case '':
+				this.tbHeader[index].icon = 'arrow_drop_down';
+				strOrderCmd = 'down';
+				break;
+			case 'arrow_drop_down':
+				this.tbHeader[index].icon = 'arrow_drop_up';
+				strOrderCmd = 'up';
+				break;
+			case 'arrow_drop_up':
+				this.tbHeader[index].icon = 'arrow_drop_down';
+				strOrderCmd = 'down';
+				break;
+		}
+		this.sortTable(this.tbHeader[index].index, strOrderCmd);
+	}
 
-    submitForm(valuesForm) {
-        if (this.portfolioForm.valid === false) return false;
+	sortTable(index, strOrderCmd) {
+		// this.fondoList.Portarray.sort(function(a, b){
+		//     const keyA = a[Object.keys(a)[index]],
+		//         keyB = b[Object.keys(a)[index]];
+		//
+		//     if(keyA < keyB) return (strOrderCmd === 'down') ? -1 : 1;
+		//     if(keyA > keyB) return (strOrderCmd === 'down') ? 1 : -1;
+		//     return 0;
+		// });
+	}
 
-        let url = '/addport';
+	submitForm(valuesForm) {
+		if (this.portfolioForm.valid === false) return false;
 
-        url = url + '/' + valuesForm.portfolio_id;
-        url = url + '/' + valuesForm.valor;
-        url = url + '/' + valuesForm.moneda;
-        console.log('BUY URL', url);
+		let url = '/addport';
 
-        HttpService.getBuyResponse(url).subscribe(
-            response => {
-                console.log('Test',response);
-                HttpService.getPortfolioList().subscribe(
-                    res => {
-                        this.onRefreshTable(res);
+		url = url + '/' + valuesForm.portfolio_id;
+		url = url + '/' + valuesForm.valor;
+		url = url + '/' + valuesForm.moneda;
+		url = url + '/' + Globals.convertDate(new Date());
 
-                        this.resetForm();
-                    });
-            });
+		HttpService.getBuyResponse(url).subscribe(
+			response => {
+				HttpService.getPortfolioList().subscribe(
+					res => {
+						this.onRefreshTable(res);
+						this.resetForm();
+					});
+			});
+	}
 
-    }
+	// delete transaction
+	onDelete(portfolio) {
+		HttpService.getDeletePortResponse(portfolio.portfolio_id).subscribe(
+			response => {
+				HttpService.getPortfolioList().subscribe(
+					res => {
+						this.onRefreshTable(res);
+					});
+			});
+	}
 
-    // delete transaction
-    onDelete(portfolio) {
-        HttpService.getDeletePortResponse(portfolio.portfolio_id).subscribe(
-            response => {
-                HttpService.getPortfolioList().subscribe(
-                    res => {
-                        this.onRefreshTable(res);
-                    });
-            }
-        );
-    }
-
-    resetForm() {
-        this.portfolioForm.reset();
-    }
+	resetForm() {
+		this.portfolioForm.reset();
+	}
 }

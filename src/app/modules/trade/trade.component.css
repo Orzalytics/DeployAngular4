@@ -9,6 +9,14 @@
 .mat-title .mat-display-1 {
     margin-bottom: 0px;
 }
+
+::ng-deep #periodsStat .mat-grid-tile .mat-figure {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: flex-start;
+}
+
 .full-size {
     left:0px !important;
     width: 100% !important;
@@ -21,3 +29,10 @@
     width: 28px;
     cursor: pointer;
 }
+@media (max-width: 600px) {
+    .md-table-back div,
+    .md-table-body-back {
+        font-size: 12px;
+    }
+}
+

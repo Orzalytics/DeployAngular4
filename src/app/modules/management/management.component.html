@@ -27,7 +27,8 @@
             <md-grid-tile class="md-table-body-back" [colspan]="2" >
                 <md-input-container fxFlex="97">
                     <input mdInput
-                           type="number"
+                           [textMask]="{mask: numberMask}"
+                           type="text"
                            placeholder="Valor Meta"
                            formControlName="valor"/>
                 </md-input-container>
@@ -47,10 +48,10 @@
                 <div>{{eachPortfolio.portfolio_id}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2" >
-                <div>{{eachPortfolio.valor | currency:'USD':true:'1.0-6'}}</div>
+                <div>{{eachPortfolio.portfolio_goal_type_saver}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2">
-                <div>{{eachPortfolio.moneda}}</div>
+                <div>{{eachPortfolio.portfolio_ccy_saver}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="1">
                 <button md-button type="button" (click)="onDelete(eachPortfolio)" [disabled]="eachPortfolio.deletable"><i class="material-icons">clear</i></button>

@@ -312,7 +312,6 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 tooltip.style.left = (x(xData)+310 < width) ? ((x(xData) + 30).toFixed() + 'px') : ((width-310) + 'px');
                 tooltip.style.top = (y(yData)+50).toFixed() + 'px';
                 tooltip.style.display = 'block';
-                tooltip.setAttribute('title', scatterTitle);
               }
 
             function onMouseOut() {

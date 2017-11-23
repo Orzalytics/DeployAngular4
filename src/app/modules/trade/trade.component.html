@@ -1,18 +1,24 @@
 <div *ngIf="isValid" class="md-main-page">
     <form [formGroup]="tradeForm" (ngSubmit)="onBuy(tradeForm.value)">
-        <md-grid-list cols="3" rowHeight="100px">
+
+        <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
             <md-grid-tile>
+                <h2 class="title mat-headline">Comprar / Vender</h2>
+            </md-grid-tile>
+        </md-grid-list>
+
+        <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar">
+            <md-grid-tile md-colspan-gt-sm="4">
                 <app-custom-select-field [field]="tradeForm.controls['portfolio']"
                                          [dataSelected]="tradeForm.controls['portfolio'].value"
-                                         [dataList]="PortfolioList"></app-custom-select-field>
-            </md-grid-tile>
-            <md-grid-tile>
-                <h2 class="title mat-headline">Comprar / vender</h2>
+                                         [dataList]="PortfolioList">
+                </app-custom-select-field>
             </md-grid-tile>
             <md-grid-tile>
                 <app-custom-select-field [field]="tradeForm.controls['fondo']"
                                          [dataSelected]="tradeForm.controls['fondo'].value"
-                                         [dataList]="fondosList"></app-custom-select-field>
+                                         [dataList]="fondosList">
+                </app-custom-select-field>
             </md-grid-tile>
         </md-grid-list>
 
@@ -63,25 +69,30 @@
             </md-grid-tile>
         </md-grid-list>
 
-        <md-grid-list [cols]="colsValue | async" rowHeight="60px" style="margin-bottom:10px;">
-            <md-grid-tile class="mat-title">
-                <span class="mat-display-1">{{ngScopeDay91}}%&nbsp;</span> en 91 días
+        <md-grid-list id="periodsStat" [cols]="colsValue | async" rowHeight="100px" style="margin-bottom:10px;">
+            <md-grid-tile class="mat-title qwerty">
+                <span class="mat-display-1">{{ngScopeDay91}}%&nbsp;</span>
+                <span>en 91 días</span>
             </md-grid-tile>
-            <md-grid-tile class="mat-title">
-                <span class="mat-display-1">{{ngScopeDay182}}%&nbsp;</span> en 182 días
+            <md-grid-tile class="mat-title qwerty">
+                <span class="mat-display-1">{{ngScopeDay182}}%&nbsp;</span>
+                <span>en 182 días</span>
             </md-grid-tile>
-            <md-grid-tile class="mat-title">
-                <span class="mat-display-1">{{ngScopeDay365}}%&nbsp;</span> en 365 días
+            <md-grid-tile class="mat-title qwerty">
+                <span class="mat-display-1">{{ngScopeDay365}}%&nbsp;</span>
+                <span>en 365 días</span>
             </md-grid-tile>
-            <md-grid-tile class="mat-title" [colspan]="2">
-                <span class="mat-display-1">{{ngScopeYear}}%&nbsp;</span> desde inicio, tasa periodo o anual
+            <md-grid-tile class="mat-title qwerty">
+                <span class="mat-display-1">{{ngScopeYear}}%&nbsp;</span>
+                <span>desde inicio,</span>
+                <span style="margin-top: -10px;">tasa periodo o anual</span>
             </md-grid-tile>
         </md-grid-list>
 
         <md-card class="md-card-top">
             <md-card-content>
                 <div fxLayout="row" fxLayoutWrap>
-                    <div fxFlex="25" fxFlex.sm="50" fxFlex.xs="50">
+                    <div fxFlex="24" fxFlex.sm="47" fxFlex.xs="70" fxFlexOffset.xs="15">
                         <md-form-field fxFlex="97">
                             <input mdInput
                                    placeholder="Choose a date"
@@ -98,13 +109,13 @@
                             <md-datepicker [value]="tradeForm.controls['date'].value" #pickerForm></md-datepicker>
                         </md-form-field>
                     </div>
-                    <div fxFlex="auto" fxFlex.sm="50" fxFlex.xs="50">
-                        <md-select cdk-connected-overlay fxFlex="97" formControlName="trade">
+                    <div fxFlex="24" fxFlex.sm="47" fxFlex.xs="70" fxFlexOffset.xs="15">
+                        <md-select cdk-connected-overlay fxFlex="97" formControlName="trade" style="padding-bottom: 1.25em;">
                             <md-option value="comprar">Comprar</md-option>
                             <md-option value="vender">Vender</md-option>
                         </md-select>
                     </div>
-                    <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
+                    <div fxFlex="24" fxFlex.sm="47" fxFlex.xs="70" fxFlexOffset.xs="15">
                         <md-input-container fxFlex="97">
                             <input mdInput
                                    type="text"
@@ -114,7 +125,7 @@
                                    (change)="calculateUnidades(tradeForm.controls['pesos'].value)">
                         </md-input-container>
                     </div>
-                    <div fxFlex="25" fxFlex.sm="45" fxFlex.xs="45">
+                    <div fxFlex="24" fxFlex.sm="47" fxFlex.xs="70" fxFlexOffset.xs="15">
                         <md-input-container fxFlex="97">
                             <input mdInput
                                    [textMask]="{mask: numberMask}"
@@ -123,37 +134,70 @@
                                    (change)="calculatePesos(tradeForm.controls['unidades'].value)">
                         </md-input-container>
                     </div>
-                    <div fxFlex="none" fxFlex.sm="none" fxFlex.xs="none" [style.textAlign]="'right'">
+                    <div fxFlex="4" fxFlex.sm="6" fxFlex.xs="15" [style.textAlign]="'center'">
                         <button md-mini-fab><i class="material-icons">check</i></button>
                     </div>
                 </div>
             </md-card-content>
         </md-card>
 
-        <md-grid-list class="md-table-header" cols="15" rowHeight="45px">
-            <md-grid-tile class="md-table-back" (click)="onTableReorder(i)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
+        <md-grid-list [cols]="tabelCols | async" class="md-table-header" rowHeight="45px">
+
+<!--             <md-grid-tile class="md-table-back" (click)="onTableReorder(i)" [colspan]="i === 1 ? 4 : 2" *ngFor="let eachHeader of tbHeader; let i = index">
                 <div>{{eachHeader.title}}</div>
                 <i class="material-icons">{{eachHeader.icon}}</i>
+            </md-grid-tile> -->
+
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(0)" [colspan]="2">
+                <div>fecha</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(1)" [colspan]="4">
+                <div>fondo</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile *ngIf="(tabelCols | async) > 10" class="md-table-back" (click)="onTableReorder(2)" [colspan]="2">
+                <div>compra o venta</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile *ngIf="(tabelCols | async) <= 10" class="md-table-back" (click)="onTableReorder(2)" [colspan]="1">
+                <div>+ / -</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(3)" [colspan]="2" *ngIf="(tabelCols | async) > 10">
+                <div>unidades</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(4)" [colspan]="2" *ngIf="(tabelCols | async) > 13">
+                <div>precio unidad</div>
+                <i class="material-icons"></i>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-back" (click)="onTableReorder(5)" [colspan]="2">
+                <div>total pesos</div>
+                <i class="material-icons"></i>
             </md-grid-tile>
             <md-grid-tile class="md-table-back" [colspan]="1">
                 <div>borrar</div>
             </md-grid-tile>
         </md-grid-list>
 
-        <md-grid-list cols="15" rowHeight="45px" *ngFor="let eachTransaction of fondoList.Portarray">
+        <md-grid-list [cols]="tabelCols | async" rowHeight="45px" *ngFor="let eachTransaction of fondoList.Portarray">
             <md-grid-tile class="md-table-body-back" [colspan]="2">
                 <div>{{eachTransaction.tDate}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="4">
                 <div>{{eachTransaction.strFundName}}</div>
             </md-grid-tile>
-            <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <md-grid-tile *ngIf="(tabelCols | async) > 10" class="md-table-body-back" [colspan]="2">
                 <div>{{eachTransaction.strBoS}}</div>
             </md-grid-tile>
-            <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <md-grid-tile *ngIf="(tabelCols | async) <= 10" class="md-table-body-back" [colspan]="1">
+                <div>{{eachTransaction.strBoS === "Compra" ? '+' : '-'}}</div>
+            </md-grid-tile>
+            <md-grid-tile class="md-table-body-back" [colspan]="2" *ngIf="(tabelCols | async) > 10">
                 <div>{{eachTransaction.str_nItemCnt}}</div>
             </md-grid-tile>
-            <md-grid-tile class="md-table-body-back" [colspan]="2">
+            <md-grid-tile class="md-table-body-back" [colspan]="2" *ngIf="(tabelCols | async) > 13">
                 <div>${{eachTransaction.str_fItemValue}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2">

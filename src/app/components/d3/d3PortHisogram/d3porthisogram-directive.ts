@@ -33,7 +33,7 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 	@Input('DataLength') DataLength: number;
 
 	constructor ( private el: ElementRef,
-                  private resizeService: ResizeService ) {
+				  private resizeService: ResizeService ) {
 		this.chartElement = el.nativeElement;
 	}
 
@@ -42,18 +42,17 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 		this.day91ReturnPortfolio = [];
 		this.portfolioHistogramData = [];
 		this.histogramData = [];
-		this.data = [];
 		this.lastChanged = [];
 		this.createData();
-        this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
-            this.createChart();
-            this.updateChart();
-        });
+		this.resizeService.addResizeEventListener(this.el.nativeElement, (elem) => {
+			this.createChart();
+			this.updateChart();
+		});
 	}
 
 	ngOnDestroy() {
-        this.resizeService.removeResizeEventListener(this.el.nativeElement);
-    }
+		this.resizeService.removeResizeEventListener(this.el.nativeElement);
+	}
 
 	ngOnChanges() {
 		this.day91ReturnPortfolio = [];
@@ -121,7 +120,7 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 		this.histogramData.push({label:" ", value:0});
 		//data calculation for tooltips (the value of each column in percent)
 		let histogramSumm = 0;
-        if (this.portfolioHistogramData[this.SliderIndex])
+		if (this.portfolioHistogramData[this.SliderIndex])
 			for (let i = 0; i < this.portfolioHistogramData[this.SliderIndex].length; i++) {
 				this.histogramData[i].value = this.portfolioHistogramData[this.SliderIndex][i];
 				if (i === this.lastChanged[this.SliderIndex])
@@ -153,16 +152,16 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 	createChart() {
 		const elements = document.querySelectorAll('.d3porthisogram');
 		const tooltips = document.getElementsByClassName('hoverTooltip');
-        for (let i = 0; i < elements.length; i ++) {
-            elements[i].parentNode.removeChild(elements[i]);
-        }
-        for (let j = 0; j < tooltips.length; j ++) {
-            tooltips[j].parentNode.removeChild(tooltips[j]);
-        }
+		for (let i = 0; i < elements.length; i ++) {
+			elements[i].parentNode.removeChild(elements[i]);
+		}
+		for (let j = 0; j < tooltips.length; j ++) {
+			tooltips[j].parentNode.removeChild(tooltips[j]);
+		}
 
 		const element = this.chartElement;
 
-        const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
+		const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
 		this.width = widthContainer - this.margin.right - this.margin.left - 100;
 		this.height = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
