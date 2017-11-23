@@ -22,7 +22,7 @@
             </md-grid-tile>
         </md-grid-list>
 
-        <md-grid-list [cols]="cols | async" rowHeight="380px" style="margin-bottom:10px;">
+        <md-grid-list *ngIf="(cols_2 | async) === 2" [cols]="3" rowHeight="380px" style="margin-bottom:10px;">
             <md-grid-tile #resizableElTreemap [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">
@@ -37,6 +37,7 @@
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
+
             <md-grid-tile #resizableElFanchart [@enterAnimation]="fullscreen[1]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title class="md-card-chat">
@@ -51,6 +52,7 @@
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
+
             <md-grid-tile #resizableElScatter [@enterAnimation]="fullscreen[2]" class="mat-background-tile">
                 <md-card class="md-card-top md-card-child">
                     <md-card-title id="card-title">
@@ -68,6 +70,51 @@
                 </md-card>
             </md-grid-tile>
         </md-grid-list>
+
+        <owl-carousel
+            *ngIf="(cols_2 | async) === 1"
+            [options]="{items: 1, margin: 20, dots: false, navigation: false}"
+            [items]="images"
+            [carouselClasses]="[ 'owl-theme', 'row', 'sliding']">
+            <div class="item">
+                <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                    <md-card-title class="md-card-chat">
+                        <span>Composición portafolio</span>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [PfName]="ngPortfolioName"
+                             d3treemap></div>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div class="item">
+                <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                    <md-card-title class="md-card-chat">
+                        <span>Precio unidad</span>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [Data]="ngScopeFanData"
+                             d3fanchart></div>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div class="item">
+                <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                    <md-card-title id="card-title">
+                        <span>Retornos 91 días portafolio y fondo</span>
+                    </md-card-title>
+                    <md-card-content>
+                        <div [SliderIndex]="ngSliderIndex"
+                             [PfName]="ngPortfolioName"
+                             [fondoSelected]="tradeForm.controls['fondo'].value"
+                             [fondosList]="fondosList"
+                             d3ScatterCompare></div>
+                    </md-card-content>
+                </md-card>
+            </div>
+        </owl-carousel>
 
         <md-grid-list id="periodsStat" [cols]="colsValue | async" rowHeight="100px" style="margin-bottom:10px;">
             <md-grid-tile class="mat-title qwerty">

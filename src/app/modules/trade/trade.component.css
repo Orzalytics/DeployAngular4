@@ -29,10 +29,24 @@
     width: 28px;
     cursor: pointer;
 }
+
 @media (max-width: 600px) {
     .md-table-back div,
     .md-table-body-back {
         font-size: 12px;
     }
+    .mat-card {
+        padding: 24px;
+    }
+    .mat-select {
+        padding-top: 0px;
+    }
+    .mat-display-1 {
+        font-size: 24px;
+    }
+    .title[_ngcontent-c6] {
+        font-size: 24px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
 }
-

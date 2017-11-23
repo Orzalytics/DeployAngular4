@@ -17,7 +17,7 @@
         <md-grid-tile><span class="mat-display-1">{{ngScopeRate}}%&nbsp;</span> cambio desde el inicio</md-grid-tile>
     </md-grid-list>
 
-    <md-grid-list [cols]="cols_1 | async" rowHeight="380px" style="margin-bottom:10px;">
+    <md-grid-list *ngIf="(cols_2 | async) === 2" [cols]="3" rowHeight="380px" style="margin-bottom:10px;">
         <md-grid-tile #resizableElPesos [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
@@ -74,6 +74,61 @@
             </md-card>
         </md-grid-tile>
     </md-grid-list>
+
+    <owl-carousel
+        *ngIf="(cols_2 | async) === 1"
+        [options]="{items: 1, margin: 20, dots: false, navigation: false}"
+        [items]="images"
+        [carouselClasses]="[ 'owl-theme', 'row', 'sliding']">
+        <div class="item">
+            <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                <md-card-title class="md-card-chat">
+                    <span>Utilidad portafolio en pesos</span>
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PfName]="ngPortfolioName"
+                         d3portline></div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div class="item">
+            <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                <md-card-title class="md-card-chat">
+                    <span>Retorno portafolio 91 días</span>
+                </md-card-title>
+                <md-card-content>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PfName]="ngPortfolioName"
+                         [DataLength]="maxVal"
+                         d3porthisogram></div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div class="item">
+            <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
+                <md-card-title id="card-title">
+                    <span>Retorno 91 días, Riesgo 7 días</span>
+                </md-card-title>
+                <md-card-content>
+                    <div class="scatter_tooltip" id="scatter_tooltip"
+                        (mouseleave)="toltipMouseLeave()"
+                        (mouseenter)="toltipMouseEnter()">
+                        <div class="scatter_title" id="scatter_title"></div>
+                        <div class="scatter_y" id="scatter_y"></div>
+                        <div class="scatter_port" id="scatter_port"></div>
+                        <div class="scatter_x" id="scatter_x"></div>
+                    </div>
+                    <div [SliderIndex]="ngSliderIndex"
+                         [PortfolioName]="ngPortfolioName"
+                         [TableInfo]="tableInfo"
+                         [NotMovedToTooltip]="notMovedToTooltip"
+                         d3Scatter></div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </owl-carousel>
+
     <div class="md-button-conteiner" fxHide>
         <button [routerLink]="['/trade/' + ngPortfolioName]" md-button class="mat-button">Buy/sell funds</button>
     </div>

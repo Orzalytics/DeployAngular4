@@ -101,11 +101,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 	public nTimerId: any;
 	// public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
 	public ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
+	public chartWidth: any;
 
 	constructor( private service: ServiceComponent,
 				 private observableMedia: ObservableMedia ) {
 		self = this;
 		HttpService = this.service;
+
+		window.onresize = (e) => {
+			this.setChartWidth();
+		};
 	}
 
 	ngOnInit() {
@@ -115,12 +120,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 		}, 100);
 
 		this.onResizeWindow();
+		this.setChartWidth();
 	}
 
 	ngOnDestroy() {
 		if (this.nTimerId) {
 			clearInterval(this.nTimerId);
 		}
+	}
+
+	setChartWidth() {
+		this.chartWidth = window.innerWidth - 70;
 	}
 
 	onResizeWindow() {

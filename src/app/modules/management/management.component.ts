@@ -156,7 +156,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 		let url = '/addport';
 
 		url = url + '/' + valuesForm.portfolio_id;
-		url = url + '/' + valuesForm.valor;
+		url = url + '/' + valuesForm.valor.replace(/,/g, '');
 		url = url + '/' + valuesForm.moneda;
 		url = url + '/' + Globals.convertDate(new Date());
 

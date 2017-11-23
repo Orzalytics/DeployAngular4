@@ -107,10 +107,16 @@ export class TradeComponent implements OnInit, OnDestroy {
 		unidades: new FormControl(null, Validators.required),
 	});
 
+	public chartWidth: any;
+
 	constructor( private service:ServiceComponent,
 				 private observableMedia: ObservableMedia ) {
 		self = this;
 		HttpService = this.service;
+
+		window.onresize = (e) => {
+			this.setChartWidth();
+		};
 	}
 
 	ngOnInit() {
@@ -136,12 +142,17 @@ export class TradeComponent implements OnInit, OnDestroy {
 		});
 
 		this.resetForm();
+		this.setChartWidth();
 	}
 
 	ngOnDestroy() {
 		if (this.nTimerId) {
 			clearInterval(this.nTimerId);
 		}
+	}
+
+	setChartWidth() {
+		this.chartWidth = window.innerWidth - 70;
 	}
 
 	onResizeWindow() {
@@ -255,19 +266,8 @@ export class TradeComponent implements OnInit, OnDestroy {
 		this.minDate = updatedDate.format('YYYY-MM-DD');
 		this.maxDate = updatedDate.add(this.ngSliderIndex, 'day').format('YYYY-MM-DD');
 
-		// this.ng_strDate = Globals.convertDate(selectedDate);
-		// this.maxDate = Globals.convertDate(selectedDate);
 		this.ngDate = moment(this.maxDate).format('YYYY-MM-DD');
 		this.tradeForm.controls['date'].setValue(this.ngDate);
-		// this.minVal = 0;
-		// this.maxVal = Globals.g_DatabaseInfo.ListofPriceFund[0].ulen - 1;
-		//
-		// this.ngSliderIndex = this.maxVal;
-		// const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-		// const selectedDate = updatedDate.setDate(updatedDate.getDate() + this.ngSliderIndex);
-		//
-		// this.ng_strDate = this.maxDate = Globals.convertDate(selectedDate);
-		// this.tradeForm.controls['date'].setValue(new Date(selectedDate));
 	}
 
 	onInputChange(event: any) {
@@ -281,13 +281,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 		// Update Slider Index for send Event
 		this.ngSliderIndex = event.value;
 		this.tradeForm.controls['date'].setValue(this.ngDate);
-		// const updatedDate = new Date(Globals.g_GlobalStatic.startDate);
-		// const selectedDate = updatedDate.setDate(updatedDate.getDate() + event.value);
-		// this.ng_strDate = Globals.convertDate(selectedDate);
-		// Globals.g_Portfolios.nSliderIndex = event.value;
-		// this.tradeForm.controls['date'].setValue(new Date(selectedDate));
-		//
-		// this.ngSliderIndex = event.value;
+
 		this.setEscojeFondo();
 	}
 
@@ -299,12 +293,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 		// Update Slider Index for send Event
 		this.ngSliderIndex = diffDate;
 		this.tradeForm.controls['date'].setValue(moment(event.value).format('YYYY-MM-DD'));
-		// const diffDate = moment(event.value).diff(moment(Globals.g_GlobalStatic.startDate), 'days');
-		// this.ng_strDate = Globals.convertDate(moment(event.value).format('YYYY-DD-MM'));
-		// this.tradeForm.controls['date'].setValue(new Date(event.value));
-		// Globals.g_Portfolios.nSliderIndex = diffDate;
-		//
-		// this.ngSliderIndex = diffDate;
+
 		this.setEscojeFondo();
 	}
 

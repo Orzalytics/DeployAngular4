@@ -33,6 +33,9 @@ import { CustomSelectComponent } from './components/CustomSelectField/custom.sel
 import { D3ScatterPlotCompare } from './components/d3/d3ScatterCompare/d3scattercompare-directive';
 import {TextMaskModule} from "angular2-text-mask";
 
+// Libraries
+import { OwlModule } from 'ngx-owl-carousel';
+
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
   { path:'trade', component: TradeComponent },
@@ -63,6 +66,8 @@ const appRoutes: Routes = [
     FormsModule,
     TextMaskModule,
     FlexLayoutModule,
+
+    OwlModule,
 
     BrowserAnimationsModule,
     MdButtonModule,
