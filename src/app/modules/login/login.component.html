@@ -8,12 +8,12 @@
         </div>
       </md-toolbar>
       <md-card-content style="padding: 24px 24px 0">
-        <form [formGroup]="loginForm">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <md-input-container fxFill="auto">
             <input mdInput type="text" formControlName="username" placeholder="E-mail" aria-label="username" autofocus />
           </md-input-container>
           <md-input-container fxFill>
-            <input mdInput type="text" formControlName="password" placeholder="phone number" aria-label="username" autofocus />
+            <input mdInput type="text" formControlName="phone" placeholder="phone number" aria-label="username" autofocus />
           </md-input-container>
           <div>
             <button md-button class="mat-background-accent login-button">Login</button>

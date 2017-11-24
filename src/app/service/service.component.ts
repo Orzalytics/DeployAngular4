@@ -92,6 +92,11 @@ export class ServiceComponent {
         return this.http.get(urlHeader + '/deleteport/' + deleteID).map(res => res.json());
     }
 
+    // Get Delete Response
+    login(form) {
+        return this.http.get(`${urlHeader}/login/${form.username}/${form.phone}/${form.rand}`).map(res => res.json());
+    }
+
     // Send Excel Data
     sendExcelData(data) {
         return this.http.post(urlHeader + '/getExcel', {user: data}).map(res => res.json());
