@@ -1,3 +1,25 @@
-<md-input-container>
-  <input mdInput placeholder="Favorite food" value="Sushi">
-</md-input-container>
+<div class="md-main-page">
+  <md-content class="login-form" style="padding-top:100px;" fxLayoutAlign="center">
+    <md-card fxLayout="column" fxFlexAlign="center stretch">
+      <md-toolbar>
+        <div class="md-toolbar-tools" fxFlex="row" fxLayoutAlign="start center" fxFlexFill>
+          <h2 fxFlex="auto"><span>&nbsp;&nbsp;&nbsp;<b>Orza</b>&nbsp;&nbsp;</span></h2>
+          <img fxFlex="90px" src="./WhiteonTransparent.png" class="logo-img">
+        </div>
+      </md-toolbar>
+      <md-card-content style="padding: 24px 24px 0">
+        <form [formGroup]="loginForm">
+          <md-input-container fxFill="auto">
+            <input mdInput type="text" formControlName="username" placeholder="E-mail" aria-label="username" autofocus />
+          </md-input-container>
+          <md-input-container fxFill>
+            <input mdInput type="text" formControlName="password" placeholder="phone number" aria-label="username" autofocus />
+          </md-input-container>
+          <div>
+            <button md-button class="mat-background-accent login-button">Login</button>
+          </div>
+        </form>
+      </md-card-content>
+    </md-card>
+  </md-content>
+</div>
