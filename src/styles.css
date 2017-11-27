@@ -339,4 +339,14 @@ div.hoverTooltip {
     border-radius: 5px;
     pointer-events: none;
 }
+.owl-carousel {
+    margin-bottom: 20px;
+}
+.test.owl-theme .owl-dots .owl-dot.active span,
+.test.owl-theme .owl-dots .owl-dot:hover span {
+    background: #ff6e31;
+}
 
+.test.owl-theme .owl-nav.disabled + .owl-dots {
+    margin-top: 0px;
+}

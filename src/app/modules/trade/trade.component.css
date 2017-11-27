@@ -30,10 +30,17 @@
     cursor: pointer;
 }
 
+/*.owl-theme .owl-nav.disabled + .owl-dots {
+    margin-top: 0px;
+}*/
+
 @media (max-width: 600px) {
     .md-table-back div,
     .md-table-body-back {
         font-size: 12px;
+    }
+    .mat-card {
+        padding: 16px;
     }
     .mat-card-title span{
         font-size: 18px;
