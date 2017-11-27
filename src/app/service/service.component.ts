@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs';
 
 import * as Globals from '../globals/globals.component';
@@ -16,8 +17,13 @@ if (environment.production) {
 @Injectable()
 export class ServiceComponent {
     n_ResponseSuccess: any;
+    user: any;
+    onUserChanged: BehaviorSubject<any> = new BehaviorSubject({});
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+        this.user = Object.assign({}, JSON.parse(localStorage.getItem('user')));
+        this.onUserChanged = new BehaviorSubject(this.user);
+    }
 
     @Input() set b_IsGetSuccess(newValue: any) {
         if (newValue) {
@@ -90,6 +96,16 @@ export class ServiceComponent {
     // Get Delete Response
     getDeletePortResponse(deleteID) {
         return this.http.get(urlHeader + '/deleteport/' + deleteID).map(res => res.json());
+    }
+
+    // Login
+    login(form) {
+        return this.http.get(`${urlHeader}/login/${form.username}/${form.phone}/${form.rand}`).map(res => res.json());
+    }
+
+    setSettings(settings) {
+        this.user = Object.assign({}, this.user, settings);
+        this.onUserChanged.next(this.user);
     }
 
     // Send Excel Data
