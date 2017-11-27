@@ -1,13 +1,13 @@
 <div *ngIf="isValid" class="md-main-page">
     <form [formGroup]="tradeForm" (ngSubmit)="onBuy(tradeForm.value)">
 
-        <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
+        <md-grid-list cols="1" rowHeight="70px" class="custom-analizar row-1">
             <md-grid-tile>
                 <h2 class="title mat-headline">Comprar / Vender</h2>
             </md-grid-tile>
         </md-grid-list>
 
-        <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar">
+        <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar row-2">
             <md-grid-tile md-colspan-gt-sm="4">
                 <app-custom-select-field [field]="tradeForm.controls['portfolio']"
                                          [dataSelected]="tradeForm.controls['portfolio'].value"

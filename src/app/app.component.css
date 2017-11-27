@@ -19,3 +19,14 @@
 
 .sidenav {
 }
+
+
+@media (max-width: 450px) {
+    .sidenav-content .mat-button {
+        margin-right: 8px;
+    }
+    .head-text {
+        margin-top: 3px;
+        font-size: 18px;
+    }
+}

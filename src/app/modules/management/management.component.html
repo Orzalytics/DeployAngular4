@@ -48,7 +48,7 @@
                 <div>{{eachPortfolio.portfolio_id}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2" >
-                <div>{{eachPortfolio.portfolio_goal_type_saver}}</div>
+                <div>{{eachPortfolio.portfolio_goal_type_saver | currency:'USD':true:'1.0-6'}}</div>
             </md-grid-tile>
             <md-grid-tile class="md-table-body-back" [colspan]="2">
                 <div>{{eachPortfolio.portfolio_ccy_saver}}</div>

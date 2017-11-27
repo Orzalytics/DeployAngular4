@@ -45,17 +45,23 @@
 
 @media (max-width: 600px){
     .mat-card {
-        padding: 24px;
+        padding: 22px;
     }
     .mat-select {
         padding-top: 0px;
     }
     .mat-display-1 {
-        font-size: 24px;
+        font-size: 22px;
     }
     .title[_ngcontent-c6] {
-        font-size: 24px;
+        font-size: 22px;
         margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .custom-analizar.mat-grid-list.row-1 {
+        margin-bottom: -15px;
+    }
+    .custom-analizar.mat-grid-list.row-2 {
         margin-bottom: 0px;
     }
 }

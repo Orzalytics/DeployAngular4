@@ -1,5 +1,5 @@
 <div *ngIf="isValid" class="md-main-page">
-    <md-grid-list cols="1" rowHeight="70px" class="custom-analizar">
+    <md-grid-list cols="1" rowHeight="70px" class="custom-analizar row-1">
         <md-grid-tile>
             <h2 class="title mat-headline">Analizar</h2>
             <md-select placeholder=""
@@ -12,7 +12,7 @@
         </md-grid-tile>
     </md-grid-list>
 
-    <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar">
+    <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar row-2">
         <md-grid-tile md-colspan-gt-sm="4"><span class="mat-display-1">${{ngScopeVoP}}&nbsp;</span> valor actual</md-grid-tile>
         <md-grid-tile><span class="mat-display-1">{{ngScopeRate}}%&nbsp;</span> cambio desde el inicio</md-grid-tile>
     </md-grid-list>

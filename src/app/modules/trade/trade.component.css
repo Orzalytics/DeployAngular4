@@ -35,8 +35,8 @@
     .md-table-body-back {
         font-size: 12px;
     }
-    .mat-card {
-        padding: 24px;
+    .mat-card-title span{
+        font-size: 18px;
     }
     .mat-select {
         padding-top: 0px;
@@ -48,5 +48,16 @@
         font-size: 24px;
         margin-top: 0px;
         margin-bottom: 0px;
+    }
+    .custom-analizar.mat-grid-list.row-1 {
+        font-size: 22px;
+        margin-bottom: -25px;
+    }
+    .custom-analizar.mat-grid-list.row-2 {
+        font-size: 22px;
+        margin-bottom: 0px;
+    }
+    .custom-analizar.mat-grid-list.row-2 .mat-select {
+        padding-top: 0px;
     }
 }
