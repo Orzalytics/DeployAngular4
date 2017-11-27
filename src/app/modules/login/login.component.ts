@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ServiceComponent} from '../../service/service.component';
+import {Router} from '@angular/router';
 
 let HttpService: any;
 let self: any;
@@ -9,7 +10,6 @@ let self: any;
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [ ServiceComponent ]
 })
 export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
@@ -17,18 +17,24 @@ export class LoginComponent implements OnInit {
     phone: new FormControl('123456', Validators.required),
     rand: new FormControl(Math.floor(1000 + Math.random() * 9000), Validators.required),
   });
+  user: any;
 
-  constructor(private service: ServiceComponent) {
+  constructor(private service: ServiceComponent, public router: Router) {
     self = this;
     HttpService = this.service;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSubmit() {
+    if (this.loginForm.invalid) {
+      return false;
+    }
+
     HttpService.login(this.loginForm.value).subscribe((res) => {
-      console.log('Login', res);
+      localStorage.setItem('user', JSON.stringify(res));
+      this.service.setSettings(res);
+      this.router.navigate(['/']);
     });
   }
 }

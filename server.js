@@ -47,7 +47,7 @@
                 if(err) throw err;
                 if (rows.length > 0){
                     if (rows[0].confirmed_saver == 1){
-                        res.json(rows);
+                        res.json(rows[0]);
                     }else{
                         client.messages.create({
                             from : '+1 610-679-9200',

@@ -35,6 +35,7 @@ import {TextMaskModule} from "angular2-text-mask";
 
 // Libraries
 import { OwlModule } from 'ngx-owl-carousel';
+import {ServiceComponent} from './service/service.component';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -87,7 +88,7 @@ const appRoutes: Routes = [
 
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ResizeService],
+  providers: [ResizeService, ServiceComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
