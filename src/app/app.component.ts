@@ -20,4 +20,9 @@ export class AppComponent implements OnInit {
   ngOnInit () {
 
   }
+
+  logout() {
+    localStorage.removeItem('user');
+    this.service.setSettings({'user': ''});
+  }
 }

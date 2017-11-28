@@ -104,7 +104,8 @@ export class ServiceComponent {
     }
 
     setSettings(settings) {
-        this.user = Object.assign({}, this.user, settings);
+        // this.user = Object.assign({}, this.user, settings);
+        this.user = Object.assign({}, settings);
         this.onUserChanged.next(this.user);
     }
 

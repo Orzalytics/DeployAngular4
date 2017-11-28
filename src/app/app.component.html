@@ -1,15 +1,24 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<md-toolbar class="md-toolbar-tools" *ngIf="user.saver_id">
+<md-toolbar class="md-toolbar-tools">
     <div class="sidenav-content">
         <button md-button type="button" (click)="sidenav.open()">
             <i class="material-icons">menu</i>
         </button>
     </div>
-    <i class="material-icons">face</i>
-    <span>&nbsp;&nbsp;Deploy Version</span>
-    <span class="md-spacer"></span>
     <span>Orza&nbsp;&nbsp;</span>
     <img src="./WhiteonTransparent.png" class="logo-img-lg">
+    <span class="md-spacer"></span>
+    <i class="material-icons">face</i>
+    <md-button class="language-button"
+               [mdMenuTriggerFor]="menu">
+        <span>&nbsp;&nbsp;{{user.user_name_saver || 'Guest'}}</span>
+    </md-button>
+
+    <md-menu #menu [overlapTrigger]="false">
+        <a *ngIf="!user.saver_id" [routerLink]="['login']" md-menu-item>Login</a>
+        <md-button *ngIf="user.saver_id" (click)="logout()" md-menu-item>Logout</md-button>
+    </md-menu>
+
 </md-toolbar>
 
 <md-sidenav-container class="container">
