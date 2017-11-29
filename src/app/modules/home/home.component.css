@@ -50,18 +50,23 @@
     .mat-select {
         padding-top: 0px;
     }
-    .mat-display-1 {
-        font-size: 22px;
+    .mat-display-1,
+    .mat-card-title span {
+        font-size: 18px;
     }
     .title[_ngcontent-c6] {
-        font-size: 22px;
+        font-size: 18px;
         margin-top: 0px;
         margin-bottom: 0px;
     }
     .custom-analizar.mat-grid-list.row-1 {
-        margin-bottom: -15px;
+        margin-bottom: -20px;
+        margin-top: -10px;
     }
     .custom-analizar.mat-grid-list.row-2 {
-        margin-bottom: 0px;
+        margin-bottom: -20px;
+    }
+    .custom-analizar.mat-grid-list.row-2 .head-data-row-3 {
+        margin-top: -15px;
     }
 }

@@ -213,7 +213,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 if (i >= cntFund) {
                     if (Globals.g_Portfolios.arrDataByPortfolio[i - cntFund].showhide === 0) return 0;
                 }
-            return 0.7;
+                return 0.7;
             });
         // Add dot
         svg.selectAll('.dot')
@@ -255,7 +255,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                     else if (i >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
                         const portName = Globals.g_Portfolios.arrDataByPortfolio[i-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
                         if (nPortfolioName === portName) {
-                            return 'ff0000';
+                            return '#ff0000';
                         }
                         else return '#006e00';
                     }
@@ -294,7 +294,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                     if (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].showhide === 0) return;
                     scatterTitle = Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].portname;
                     scatterPort = (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] > 0)? '+' + Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].yearRateArray[nSliderIndex] + '% desde inicio, tasa periodo o annual';
-                }else {
+                } else {
                     scatterTitle = Globals.g_DatabaseInfo.ListofPriceFund[index].name;
                     scatterPort = (Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] > 0) ? '+' + Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual' : Globals.g_FundParent.arrAllReturns.newstart_return[index][nSliderIndex] + '% desde inicio, tasa periodo o annual';
                 }
@@ -312,7 +312,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 tooltip.style.left = (x(xData)+310 < width) ? ((x(xData) + 30).toFixed() + 'px') : ((width-310) + 'px');
                 tooltip.style.top = (y(yData)+50).toFixed() + 'px';
                 tooltip.style.display = 'block';
-              }
+            }
 
             function onMouseOut() {
                 setTimeout(() => {
