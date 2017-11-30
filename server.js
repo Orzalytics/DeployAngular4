@@ -21,10 +21,13 @@
 	app.use(bodyParser.json());
 
 	var pool = mysql.createPool({
-		host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
-		user: 'JCGutierrez2017',
+		// host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
+		// user: 'JCGutierrez2017',
+		// password: 'HryvniaUcr4n14',
+		host: 'orzacryptocurrencyaws.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
+		user: 'orzacyptoAWS',
+		password: 'W1z3Orz4Ukr',
 		port: '3306',
-		password: 'HryvniaUcr4n14',
 		multipleStatements: true
 	});
 
@@ -100,15 +103,13 @@
                     });
                 }
             });
-
-
             // console.log("sms sent");
             // res.json("ok");
         });
 
 		// '/ret1'
 		app.get('/fundheader', function(req, res){
-			var sqlLine1 = "select fund_id_alias_fund, alias, alias_match_1, alias_match_2, alias_match_3 from OrzaDevDB.alias_fund";
+			var sqlLine1 = "select fund_id_alias_fund, alias, alias_match_1, alias_match_2, alias_match_3 from OrzaDevelopmentDB.alias_fund";
 			connection.query(sqlLine1, function(err,fundnames){
 				if(err) throw err;
 				res.json(fundnames);
@@ -118,7 +119,7 @@
 		// '/ret'
 		app.get('/ret/:sDate', function(req, res){
 			var startDate = req.params.sDate;
-			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevDB.price_fund as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
+			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevelopmentDB.price_fund as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
 			connection.query(sqlLine,function(err,rows){
 				if(err) throw err;
 				res.json(rows);
@@ -127,7 +128,7 @@
 
 		// '/userInfo'
 		app.get('/userPortList', function(req, res){
-			var sqlLine = "select portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver from OrzaDevDB.portfolio";
+			var sqlLine = "select portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver from OrzaDevelopmentDB.portfolio";
 			connection.query(sqlLine,function(err,portnames){
 				if(err) throw err;
 				res.json(portnames);
@@ -138,9 +139,9 @@
 			var portfolio_id = req.params.portid;
 			var sqlLine;
 			if (portfolio_id == "all"){
-				sqlLine = "select * from OrzaDevDB.transaction";
+				sqlLine = "select * from OrzaDevelopmentDB.transaction";
 			}else{
-				sqlLine = "select * from OrzaDevDB.transaction where transaction_portfolio_id = '" + portfolio_id + "'";
+				sqlLine = "select * from OrzaDevelopmentDB.transaction where transaction_portfolio_id = '" + portfolio_id + "'";
 			}
 			connection.query(sqlLine,function(err,transactions){
 				if(err) throw err;
@@ -154,13 +155,13 @@
 			if (pObject.length > 0){
 				var portfolio_ID = pObject[0].portfolio_id;
 				var strDate = pObject[0].nowDate;
-				var sqlPortfolio = "select portfolio_id from OrzaDevDB.portfolio where portfolio_id = '" + portfolio_ID + "'";
+				var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio where portfolio_id = '" + portfolio_ID + "'";
 				connection.query(sqlPortfolio, function(err, portID){
 					if (err) throw err;
 					// res.json(portID);
 					if (portID.length > 0){
 						// same portfolio id is existed
-						var sqlLine = "insert into OrzaDevDB.transaction " +
+						var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
 								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 								" values ";
 						var sqlValues = "";
@@ -185,13 +186,13 @@
 					}
 					else{
 						// there isn't same portfolio id on portfolio table
-						var sqlLine = "insert into OrzaDevDB.portfolio " +
+						var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
 						"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 						" values (";
 						var sqlValues = "'"+portfolio_ID+"'" + ',' + "'"+portfolio_ID+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+strDate+"'";
 						sqlLine = sqlLine + sqlValues + ")";
 						connection.query(sqlLine, function(err, portdata){
-							var sqlLine = "insert into OrzaDevDB.transaction " +
+							var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
 								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 								" values ";
 							var sqlValues = "";
@@ -232,7 +233,7 @@
 			var param8 = req.params.nowDate;
 
 			// check portfolio_id from portfolio table of database
-			var sqlPortfolio = "select portfolio_id from OrzaDevDB.portfolio where portfolio_id = '" + param1 + "'";
+			var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio where portfolio_id = '" + param1 + "'";
 			connection.query(sqlPortfolio, function(err, portID){
 				if (err) throw err;
 				// res.json(portID);
@@ -241,7 +242,7 @@
 				}
 				else{
 					// there isn't same portfolio id on portfolio table
-					var sqlLine = "insert into OrzaDevDB.portfolio " +
+					var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
 					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 					" values (";
 					var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+param8+"'";
@@ -252,14 +253,14 @@
 				}
 
 				// variables to insert transaction if no other transaction for that fund on that date 
-				var sqlLine = "insert into OrzaDevDB.transaction " +
+				var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
 				"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 				" values (";
 				var sqlValues = "'"+param1+"'" + ',' + param2  + ',' + param3  + ',' + param4  + ',' + param5  + ',' + param6  + ',' + "'" + param7 + "'";
 				sqlLine = sqlLine + sqlValues + ")";
 
 				// variable to look for previous transactions if there is already a transaction for that fund on that date
-				var beforeReq = "select * from OrzaDevDB.transaction ";
+				var beforeReq = "select * from OrzaDevelopmentDB.transaction ";
 				beforeReq = beforeReq + "where fund_id_bought = " + param3;
 				beforeReq = beforeReq + " and fund_id_sold = " + param5;
 				beforeReq = beforeReq + " and date_value_transaction = '" + param7 + "'";
@@ -276,7 +277,7 @@
 						// param6 = param6*1 + portdata[0].units_sold; 
 						
 						// update transaction if there is a previous transaction for that fund on that date
-						sqlLine = "update OrzaDevDB.transaction set" +
+						sqlLine = "update OrzaDevelopmentDB.transaction set" +
 						" units_bought = " + param4 +
 						", units_sold = " + param6 +
 						" where transaction_id = " + portdata[0].transaction_id;
@@ -300,7 +301,7 @@
 
 		app.get('/delete/:id', function(req, res){
 			var trans_id = req.params.id;
-			var sqlLine = "delete from OrzaDevDB.transaction where transaction_id=" + trans_id;
+			var sqlLine = "delete from OrzaDevelopmentDB.transaction where transaction_id=" + trans_id;
 			connection.query(sqlLine,function(err,transactions){
 				if(err) throw err;
 				res.json(transactions);
@@ -309,8 +310,8 @@
 
 		app.get('/deleteport/:id', function(req, res){
 			var port_id = req.params.id;
-			var sqlLine1 = "delete from OrzaDevDB.transaction where transaction_portfolio_id=" + "'" + port_id +"'";
-			var sqlLine2 = "delete from OrzaDevDB.portfolio where portfolio_id=" + "'" + port_id +"'";
+			var sqlLine1 = "delete from OrzaDevelopmentDB.transaction where transaction_portfolio_id=" + "'" + port_id +"'";
+			var sqlLine2 = "delete from OrzaDevelopmentDB.portfolio where portfolio_id=" + "'" + port_id +"'";
 			connection.query(sqlLine1, function(err){
 				if(err) throw err;
 				connection.query(sqlLine2, function(err, transactions){
@@ -325,7 +326,7 @@
 			var param2 = req.params.valor;
 			var param3 = req.params.moneda;
 			var param4 = req.params.nowDate;
-			var sqlLine = "insert into OrzaDevDB.portfolio " +
+			var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
 					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 					" values (";
 			var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'";

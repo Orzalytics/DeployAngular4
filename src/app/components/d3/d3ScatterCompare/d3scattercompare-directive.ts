@@ -105,10 +105,12 @@ export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
 
         // setup variables
         const y = d3.scaleLinear()
-                .domain([-0.15, 0.3])
+                // .domain([-0.15, 0.3])
+                .domain([-0.5, 2])
                 .range([this.height - margin.top,  0 + margin.bottom]);
         const x = d3.scaleLinear()
-                .domain([-0.15, 0.3])
+                // .domain([-0.15, 0.3])
+                .domain([-0.5, 2])
                 .range([ 0 + margin.left, this.width - margin.right ]);
 
         const g = svg.append('svg:g')
@@ -135,15 +137,19 @@ export class D3ScatterPlotCompare implements OnInit, OnDestroy, OnChanges {
             .attr('r', 8)
             .attr('cx', function(d, i) {
                 let xValue = d[0];
-                if (xValue > 0.3) xValue = 0.3;
-                if (xValue < -0.15) xValue = -0.15;
+                // if (xValue > 0.3) xValue = 0.3;
+                // if (xValue < -0.15) xValue = -0.15;
+                if (xValue > 2) xValue = 2;
+                if (xValue < -0.5) xValue = -0.5;
                 return x(xValue);
             })
             .attr('cy', function(d, i) {
                 let yValue = d[1];
                 if (yValue !== -1) {
-                    if (yValue > 0.3) yValue = 0.3;
-                    if (yValue < -0.15) yValue = -0.15;
+                    // if (yValue > 0.3) yValue = 0.3;
+                    // if (yValue < -0.15) yValue = -0.15;
+                    if (yValue > 2) yValue = 2;
+                    if (yValue < -0.5) yValue = -0.5;
                 }
                 return y(yValue);
             })

@@ -122,10 +122,12 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
 
         // setup variables
         const y = d3.scaleLinear()
-                .domain([-0.15, 0.3])
+                // .domain([-0.15, 0.3])
+                .domain([-0.5, 2])
                 .range([this.height - margin.top,  0 + margin.bottom]);
         const x = d3.scaleLinear()
-                .domain([0, 0.25])
+                // .domain([0, 0.25])
+                .domain([0, 0.5])
                 .range([ 0 + margin.left, this.width - margin.right ]);
 
         const g = svg.append('svg:g')
@@ -180,14 +182,18 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
         .enter().append('text')
             .attr('x', function(d, i) {
                 let xValue = x_Day7LossMin[i];
-                if (xValue > 0.25) xValue = 0.25;
+                // if (xValue > 0.25) xValue = 0.25;
+                // if (xValue < 0) xValue = 0;
+                if (xValue > 0.5) xValue = 0.5;
                 if (xValue < 0) xValue = 0;
                 return x(xValue) - 6;
             })
             .attr('y', function(d, i) {
                 let yValue = y_Day91Return[i];
-                if (yValue > 0.3) yValue = 0.3;
-                if (yValue < -0.15) yValue = -0.15;
+                // if (yValue > 0.3) yValue = 0.3;
+                // if (yValue < -0.15) yValue = -0.15;
+                if (yValue > 2) yValue = 0.2;
+                if (yValue < -0.5) yValue = -0.5;
                 return y(yValue) - 10;
             })
             .text( function (d, i) {
@@ -234,14 +240,18 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
             .attr('r', 8)
             .attr('cx', function(d, i) {
                 let xValue = x_Day7LossMin[i];
-                if (xValue > 0.25) xValue = 0.25;
+                // if (xValue > 0.25) xValue = 0.25;
+                // if (xValue < 0) xValue = 0;
+                if (xValue > 0.5) xValue = 0.5;
                 if (xValue < 0) xValue = 0;
                 return x(xValue);
             })
             .attr('cy', function(d, i) {
                 let yValue = y_Day91Return[i];
-                if (yValue > 0.3) yValue = 0.3;
-                if (yValue < -0.15) yValue = -0.15;
+                // if (yValue > 0.3) yValue = 0.3;
+                // if (yValue < -0.15) yValue = -0.15;
+                if (yValue > 2) yValue = 0.2;
+                if (yValue < -0.5) yValue = -0.5;
                 return y(yValue);
             })
             .attr('clip-path', 'url(#clip)')
@@ -285,10 +295,15 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 let scatterTitle = '';
                 let scatterPort = '';
 
-                if (xData > 0.25) xData = 0.25;
+                // if (xData > 0.25) xData = 0.25;
+                // if (xData < 0) xData = 0;
+                // if (yData > 0.3) yData = 0.3;
+                // if (yData < -0.15) yData = -0.15;
+                if (xData > 0.5) xData = 0.5;
                 if (xData < 0) xData = 0;
-                if (yData > 0.3) yData = 0.3;
-                if (yData < -0.15) yData = -0.15;
+                if (yData > 2) yData = 2;
+                if (yData < -0.5) yData = -0.5;
+
 
                 if (index >= Globals.g_DatabaseInfo.ListofPriceFund.length) {
                     if (Globals.g_Portfolios.arrDataByPortfolio[index-Globals.g_DatabaseInfo.ListofPriceFund.length].showhide === 0) return;
