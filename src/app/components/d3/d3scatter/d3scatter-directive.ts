@@ -192,7 +192,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 let yValue = y_Day91Return[i];
                 // if (yValue > 0.3) yValue = 0.3;
                 // if (yValue < -0.15) yValue = -0.15;
-                if (yValue > 2) yValue = 0.2;
+                if (yValue > 2) yValue = 2;
                 if (yValue < -0.5) yValue = -0.5;
                 return y(yValue) - 10;
             })
@@ -250,7 +250,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 let yValue = y_Day91Return[i];
                 // if (yValue > 0.3) yValue = 0.3;
                 // if (yValue < -0.15) yValue = -0.15;
-                if (yValue > 2) yValue = 0.2;
+                if (yValue > 2) yValue = 2;
                 if (yValue < -0.5) yValue = -0.5;
                 return y(yValue);
             })

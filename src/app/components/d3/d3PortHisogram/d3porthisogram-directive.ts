@@ -75,8 +75,9 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 			}
 		}
 
-		let histogramRange = ['-0.10', '-0.05', '0.00', '0.05', '0.10', '0.15', '0.20', '0.25'];
-		let dataMask = [0,0,0,0,0,0,0,0,0];
+		// let histogramRange = ['-0.10', '-0.05', '0.00', '0.05', '0.10', '0.15', '0.20', '0.25'];
+		let histogramRange = ['-0.4', '-0.2', '0.00', '0.2', '0.4', '0.6', '0.8', '1.0', '1.2', '1.4', '1.6', '1.8', '2.0'];
+		let dataMask = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 		if (!this.day91ReturnPortfolio.length) {
 			for (let i = 0; i < this.DataLength; i++) {
 				this.portfolioHistogramData.push(dataMask);
@@ -268,7 +269,7 @@ export class D3PortHisogram implements OnInit, OnDestroy, OnChanges {
 				let y = element.attr('y');
 				topChartTooltip
 					.text(d.percentage + "%")
-					.attr('x', parseInt(x) + 12)
+					.attr('x', parseInt(x) + 6)
 					.attr('y', parseInt(y) - 3);
 			}
 		});
