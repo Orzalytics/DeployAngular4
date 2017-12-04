@@ -104,7 +104,7 @@
             <div class="item">
                 <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
                     <md-card-title id="card-title">
-                        <span>Retornos 91 días portafolio y fondo</span>
+                        <span>Retorno 91 portafolio/moneda</span>
                     </md-card-title>
                     <md-card-content>
                         <div [SliderIndex]="ngSliderIndex"
@@ -201,7 +201,7 @@
                 <i class="material-icons"></i>
             </md-grid-tile>
             <md-grid-tile class="md-table-back" (click)="onTableReorder(1)" [colspan]="4">
-                <div>fondo</div>
+                <div>criptomoneda</div>
                 <i class="material-icons"></i>
             </md-grid-tile>
             <md-grid-tile *ngIf="(tabelCols | async) > 10" class="md-table-back" (click)="onTableReorder(2)" [colspan]="2">
@@ -221,7 +221,7 @@
                 <i class="material-icons"></i>
             </md-grid-tile>
             <md-grid-tile class="md-table-back" (click)="onTableReorder(5)" [colspan]="2">
-                <div>total pesos</div>
+                <div>total dólares</div>
                 <i class="material-icons"></i>
             </md-grid-tile>
             <md-grid-tile class="md-table-back" [colspan]="1">

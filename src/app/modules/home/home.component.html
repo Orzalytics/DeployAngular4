@@ -13,7 +13,7 @@
     </md-grid-list>
 
     <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar row-2">
-        <md-grid-tile class="head-data-row-2" md-colspan-gt-sm="4"><span class="mat-display-1">${{ngScopeVoP}}&nbsp;</span> valor actual</md-grid-tile>
+        <md-grid-tile class="head-data-row-2" md-colspan-gt-sm="4"><span class="mat-display-1">${{ngScopeVoP}}&nbsp;</span> dólares</md-grid-tile>
         <md-grid-tile class="head-data-row-3"><span class="mat-display-1">{{ngScopeRate}}%&nbsp;</span> cambio desde el inicio</md-grid-tile>
     </md-grid-list>
 
@@ -21,7 +21,7 @@
         <md-grid-tile #resizableElPesos [@enterAnimation]="fullscreen[0]" class="mat-background-tile">
             <md-card class="md-card-top md-card-child">
                 <md-card-title class="md-card-chat">
-                    <span>Utilidad portafolio en pesos</span>
+                    <span>Utilidad portafolio en dólares</span>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="!fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen</md-icon>
                     <md-icon fxHide.md fxHide.sm fxHide.xs *ngIf="fullscreen[0]" (click)="tranformFunc(resizableElPesos, 0)" class="pull-right">fullscreen_exit</md-icon>
                 </md-card-title>
@@ -84,7 +84,7 @@
         <div class="item">
             <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
                 <md-card-title class="md-card-chat">
-                    <span>Utilidad portafolio en pesos</span>
+                    <span>Utilidad portafolio en dólares</span>
                 </md-card-title>
                 <md-card-content>
                     <div [SliderIndex]="ngSliderIndex"
