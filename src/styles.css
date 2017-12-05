@@ -30,6 +30,14 @@ body {
     box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
 }
 
+.md-toolbar-tools .material-icons{
+    margin-right: 10px;
+}
+
+.md-toolbar-tools .language-button{
+    cursor: pointer;
+}
+
 .md-toolbar-bottom{
     position : fixed;
     bottom : 0px;
@@ -84,7 +92,19 @@ md-slider {
 
 .logo-img-lg{
     width : 60px;
-    margin-top : 4px;
+}
+
+.login-link a {
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.head-text{
+    margin-left: 20px;
 }
 
 .md-main-page{

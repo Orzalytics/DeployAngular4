@@ -5,23 +5,25 @@
             <i class="material-icons">menu</i>
         </button>
     </div>
-    <span>Orza&nbsp;&nbsp;</span>
+
     <img src="./WhiteonTransparent.png" class="logo-img-lg">
+    <span class="head-text">Orza&nbsp;&nbsp;</span>
     <span class="md-spacer"></span>
     <i class="material-icons">face</i>
-    <md-button *ngIf="!user.saver_id" class="language-button" style="outline: none"
-               [routerLink]="['login']">
-        <span>&nbsp;&nbsp;Login</span>
-    </md-button>
+
+    <span *ngIf="!user.saver_id" class="login-link">
+        <a href="" [routerLink]="['login']">Login</a>
+    </span>
 
     <md-button *ngIf="user.saver_id" class="language-button"
                [mdMenuTriggerFor]="menu">
-        <span>&nbsp;&nbsp;{{user.user_name_saver}}</span>
+        <span>{{user.user_name_saver}}</span>
     </md-button>
 
     <md-menu #menu [overlapTrigger]="false">
-        <a *ngIf="!user.saver_id" [routerLink]="['login']" md-menu-item>Login</a>
-        <md-button *ngIf="user.saver_id" (click)="logout()" md-menu-item>Logout</md-button>
+        <md-button (click)="logout()" md-menu-item>Logout</md-button>
+<!--         <md-button (click)="switchToCrypto()" md-menu-item>Crypto</md-button>
+        <md-button (click)="switchToFonds()" md-menu-item>Fonds</md-button> -->
     </md-menu>
 
 </md-toolbar>
