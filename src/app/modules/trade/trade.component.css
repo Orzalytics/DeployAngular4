@@ -52,19 +52,24 @@
         font-size: 24px;
     }
     .title[_ngcontent-c6] {
-        font-size: 24px;
+        font-size: 18px;
         margin-top: 0px;
         margin-bottom: 0px;
     }
     .custom-analizar.mat-grid-list.row-1 {
-        font-size: 22px;
-        margin-bottom: -25px;
+        font-size: 18px;
+        margin-bottom: -30px;
+        margin-top: -10px;
+
     }
     .custom-analizar.mat-grid-list.row-2 {
-        font-size: 22px;
-        margin-bottom: 0px;
+        font-size: 18px;
+        margin-bottom: -10px;
     }
     .custom-analizar.mat-grid-list.row-2 .mat-select {
         padding-top: 0px;
+    }
+    .custom-analizar.mat-grid-list.row-2 .head-data-row-3 {
+        margin-top: -15px;
     }
 }

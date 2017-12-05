@@ -2,19 +2,19 @@
     <form [formGroup]="tradeForm" (ngSubmit)="onBuy(tradeForm.value)">
 
         <md-grid-list cols="1" rowHeight="70px" class="custom-analizar row-1">
-            <md-grid-tile>
+            <md-grid-tile class="head-data-row-1">
                 <h2 class="title mat-headline">Comprar / Vender</h2>
             </md-grid-tile>
         </md-grid-list>
 
         <md-grid-list [cols]="cols_2 | async" rowHeight="40px" class="mat-title custom-analizar row-2">
-            <md-grid-tile md-colspan-gt-sm="4">
+            <md-grid-tile class="head-data-row-2" md-colspan-gt-sm="4">
                 <app-custom-select-field [field]="tradeForm.controls['portfolio']"
                                          [dataSelected]="tradeForm.controls['portfolio'].value"
                                          [dataList]="PortfolioList">
                 </app-custom-select-field>
             </md-grid-tile>
-            <md-grid-tile>
+            <md-grid-tile class="head-data-row-3">
                 <app-custom-select-field [field]="tradeForm.controls['fondo']"
                                          [dataSelected]="tradeForm.controls['fondo'].value"
                                          [dataList]="fondosList">
@@ -75,7 +75,8 @@
             *ngIf="(cols_2 | async) === 1"
             [options]="{items: 1, margin: 20, dots: true, navigation: false}"
             [items]="images"
-            [carouselClasses]="[ 'owl-theme', 'row', 'sliding']">
+            [carouselClasses]="[ 'owl-theme', 'row', 'sliding']"
+            class="swap-block">
             <div class="item">
                 <md-card class="md-card-top md-card-child" [style.width.px]="chartWidth">
                     <md-card-title class="md-card-chat">
