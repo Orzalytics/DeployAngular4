@@ -1,16 +1,33 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<md-toolbar class="md-toolbar-tools" *ngIf="user.saver_id">
+<md-toolbar class="md-toolbar-tools">
     <div class="sidenav-content">
         <button md-button type="button" (click)="sidenav.open()">
             <i class="material-icons">menu</i>
         </button>
     </div>
 
-    <i class="head-text material-icons">face</i>
-    <span class="head-text">&nbsp;&nbsp;Deploy Version</span>
-    <span class="md-spacer"></span>
-    <span class="head-text">Orza&nbsp;&nbsp;</span>
     <img src="./WhiteonTransparent.png" class="logo-img-lg">
+    <span class="head-text">Orza Ideatón 2017</span>
+    <span class="md-spacer"></span>
+
+    <span *ngIf="!user.saver_id" class="login-link">
+        <a href="" [routerLink]="['login']">
+            <i class="material-icons">face</i>
+            <span class="user-login-text">Login</span>
+        </a>
+    </span>
+
+    <md-button *ngIf="user.saver_id" class="language-button"
+               [mdMenuTriggerFor]="menu">
+        <i class="material-icons">face</i>
+        <span class="user-login-text">{{user.user_name_saver}}</span>
+    </md-button>
+
+    <md-menu #menu [overlapTrigger]="false">
+        <md-button (click)="logout()" md-menu-item>Logout</md-button>
+<!--         <md-button (click)="switchToCrypto()" md-menu-item>Crypto</md-button>
+        <md-button (click)="switchToFonds()" md-menu-item>Fonds</md-button> -->
+    </md-menu>
 
 </md-toolbar>
 
@@ -18,9 +35,8 @@
     <md-sidenav #sidenav class="sidenav">
         <md-nav-list>
             <md-list-item [routerLink]="['/']">Analizar Portafolio</md-list-item>
-            <md-list-item [routerLink]="['/trade']">Comprar/vender Fondos</md-list-item>
+            <md-list-item [routerLink]="['/trade']">Comprar/vender Criptomonedas</md-list-item>
             <md-list-item [routerLink]="['/management']">Manejar Portafolio</md-list-item>
-            <md-list-item>Orza</md-list-item>
         </md-nav-list>
     </md-sidenav>
 </md-sidenav-container>

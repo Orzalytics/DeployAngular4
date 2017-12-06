@@ -248,6 +248,12 @@ export class TradeComponent implements OnInit, OnDestroy {
 					});
 					// Set fondos list
 					this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund;
+					for (var i = 0; i < this.fondosList.length; ++i) {
+						if (this.fondosList[i].index === 999) {
+							this.fondosList.splice(i, 1);
+							break;
+						}
+					}
 					this.ngFondoName = this.fondosList[0]['name'];
 					this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
 

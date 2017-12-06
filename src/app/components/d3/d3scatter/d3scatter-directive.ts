@@ -127,7 +127,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 .range([this.height - margin.top,  0 + margin.bottom]);
         const x = d3.scaleLinear()
                 // .domain([0, 0.25])
-                .domain([0, 0.5])
+                .domain([0, 1])
                 .range([ 0 + margin.left, this.width - margin.right ]);
 
         const g = svg.append('svg:g')
@@ -184,7 +184,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 let xValue = x_Day7LossMin[i];
                 // if (xValue > 0.25) xValue = 0.25;
                 // if (xValue < 0) xValue = 0;
-                if (xValue > 0.5) xValue = 0.5;
+                if (xValue > 1) xValue = 1;
                 if (xValue < 0) xValue = 0;
                 return x(xValue) - 6;
             })
@@ -242,7 +242,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 let xValue = x_Day7LossMin[i];
                 // if (xValue > 0.25) xValue = 0.25;
                 // if (xValue < 0) xValue = 0;
-                if (xValue > 0.5) xValue = 0.5;
+                if (xValue > 1) xValue = 1;
                 if (xValue < 0) xValue = 0;
                 return x(xValue);
             })
@@ -299,7 +299,7 @@ export class D3ScatterPlot implements OnInit, OnDestroy, OnChanges, DoCheck {
                 // if (xData < 0) xData = 0;
                 // if (yData > 0.3) yData = 0.3;
                 // if (yData < -0.15) yData = -0.15;
-                if (xData > 0.5) xData = 0.5;
+                if (xData > 1) xData = 1;
                 if (xData < 0) xData = 0;
                 if (yData > 2) yData = 2;
                 if (yData < -0.5) yData = -0.5;
