@@ -117,4 +117,8 @@ export class ServiceComponent {
     uploadBuyData(data) {
         return this.http.post(urlHeader + '/buy', {user: data}).map(res => res.json());
     }
+
+    signIn(data) {
+        return this.http.post(urlHeader + '/signIn', {user: data}).map(res => res.json());
+    }
 }

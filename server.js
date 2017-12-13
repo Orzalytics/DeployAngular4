@@ -7,10 +7,10 @@
 	var parseXlsx = require('xlsx');
 	var csv = require('fast-csv');
 	var app = express();
-    var client = require('twilio')(
-        'AC5428b55a4f53db74fee7425898415543',
-        '6d2d4b5c56b96a3980dc81c00a7c241d'
-    );
+	var client = require('twilio')(
+		'AC5428b55a4f53db74fee7425898415543',
+		'6d2d4b5c56b96a3980dc81c00a7c241d'
+	);
 
 	app.set('port', process.env.PORT || 9051);
 	app.use(function(req, res, next) {
@@ -38,74 +38,74 @@
 		};
 
 		// send sms to cell phone
-        app.get('/login/:user/:phone/:random', function(req, res){
-            var userName = req.params.user;
-            var userPhone = req.params.phone;
-            var verifyNum = req.params.random;
+		app.get('/login/:user/:phone/:random', function(req, res){
+			var userName = req.params.user;
+			var userPhone = req.params.phone;
+			var verifyNum = req.params.random;
 
-            var sqlLine = "select * from OrzaDevelopmentDB.saver where user_name_saver = '" + userName + "'";
-            sqlLine = sqlLine + " and phone_saver = '" + userPhone + "'";
+			var sqlLine = "select * from OrzaDevelopmentDB.saver where user_name_saver = '" + userName + "'";
+			sqlLine = sqlLine + " and phone_saver = '" + userPhone + "'";
 
-            connection.query(sqlLine,function(err, rows){
-                if(err) throw err;
-                if (rows.length > 0){
-                    if (rows[0].confirmed_saver == 1){
-                        res.json(rows[0]);
-                    }else{
-                        client.messages.create({
-                            from : '+1 610-679-9200',
-                            to : userPhone,
-                            body : verifyNum
-                        }, function(err, message){
-                            if (err){
-                                console.log(err.message);
-                            }
-                        });
-                        res.json("verify");
-                    }
-                }else{
-                    var sqlLine = "select * from OrzaDevelopmentDB.saver where user_name_saver = '" + userName + "'";
-                    sqlLine = sqlLine + " or phone_saver = '" + userPhone + "'";
-                    connection.query(sqlLine,function(err, rows){
-                        if (rows.length == 0){
-                            var curDate = new Date();
-                            var month = (curDate.getMonth()+1 < 10) ? '0'+(curDate.getMonth()+1) : (curDate.getMonth()+1);
-                            var day = (curDate.getDate()<10) ? '0'+curDate.getDate() : curDate.getDate();
+			connection.query(sqlLine,function(err, rows){
+				if(err) throw err;
+				if (rows.length > 0){
+					if (rows[0].confirmed_saver == 1){
+						res.json(rows[0]);
+					}else{
+						client.messages.create({
+							from : '+1 610-679-9200',
+							to : userPhone,
+							body : verifyNum
+						}, function(err, message){
+							if (err){
+								console.log(err.message);
+							}
+						});
+						res.json("verify");
+					}
+				}else{
+					var sqlLine = "select * from OrzaDevelopmentDB.saver where user_name_saver = '" + userName + "'";
+					sqlLine = sqlLine + " or phone_saver = '" + userPhone + "'";
+					connection.query(sqlLine,function(err, rows){
+						if (rows.length == 0){
+							var curDate = new Date();
+							var month = (curDate.getMonth()+1 < 10) ? '0'+(curDate.getMonth()+1) : (curDate.getMonth()+1);
+							var day = (curDate.getDate()<10) ? '0'+curDate.getDate() : curDate.getDate();
 
-                            var param1 = userName;
-                            var param2 = userPhone;
-                            var param3 = 0;
-                            var param4 = 1;
-                            var param5 = curDate.getFullYear() + '-' + (month) + '-' + day;
+							var param1 = userName;
+							var param2 = userPhone;
+							var param3 = 0;
+							var param4 = 1;
+							var param5 = curDate.getFullYear() + '-' + (month) + '-' + day;
 
-                            sqlLine = "insert into OrzaDevelopmentDB.saver " +
-                                "(user_name_saver, phone_saver, confirmed_saver, fp_id_saver, date_created_saver)" +
-                                " values (";
-                            var sqlValues = "'"+param1+"'" + ',' + "'"+param2+"'"  + ',' + param3  + ',' + param4  + ',' + "'"+param5+"'";
-                            sqlLine = sqlLine + sqlValues + ")";
+							sqlLine = "insert into OrzaDevelopmentDB.saver " +
+								"(user_name_saver, phone_saver, confirmed_saver, fp_id_saver, date_created_saver)" +
+								" values (";
+							var sqlValues = "'"+param1+"'" + ',' + "'"+param2+"'"  + ',' + param3  + ',' + param4  + ',' + "'"+param5+"'";
+							sqlLine = sqlLine + sqlValues + ")";
 
-                            console.log(sqlLine);
-                            connection.query(sqlLine,function(err,inserted){
-                                if(err) throw err;
-                            });
+							console.log(sqlLine);
+							connection.query(sqlLine,function(err,inserted){
+								if(err) throw err;
+							});
 
-                            client.messages.create({
-                                from : '+1 610-679-9200',
-                                to : userPhone,
-                                body : verifyNum
-                            }, function(err, message){
-                                if (err){
-                                    console.log(err.message);
-                                }
-                            });
-                            res.json("verify");
-                        }
-                    });
-                }
-            });
-            // console.log("sms sent");
-            // res.json("ok");
-        });
+							client.messages.create({
+								from : '+1 610-679-9200',
+								to : userPhone,
+								body : verifyNum
+							}, function(err, message){
+								if (err){
+									console.log(err.message);
+								}
+							});
+							res.json("verify");
+						}
+					});
+				}
+			});
+			// console.log("sms sent");
+			// res.json("ok");
+		});
 
 		// '/ret1'
 		app.get('/fundheader', function(req, res){
@@ -147,6 +147,37 @@
 				if(err) throw err;
 				res.json(transactions);
 			});
+		});
+
+		app.post('/signIn', function(req, res){
+			var userObject = req.body.user;
+			console.log(req.body.user);
+			if (userObject && userObject.id) {
+				var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + userObject.id + "'";
+					connection.query(sqlLine,function(err, rows){
+						if (rows.length == 0){
+							var param1 = userObject.id;
+							var param2 = userObject.email;
+							var param3 = userObject.firstName || '';
+							var param4 = userObject.lastName || '';
+							var param5 = userObject.name || '';
+
+							sqlLine = "insert into OrzaDevelopmentDB.users " +
+								"(saver_id, email, first_name, last_name, name)" +
+								" values (";
+							var sqlValues = "'"+param1+"','"+param2+"','"+param3+"','"+param4+"','"+param5+"'";
+							sqlLine = sqlLine + sqlValues + ")";
+
+							connection.query(sqlLine,function(err,inserted){
+								if(err) throw err;
+							});
+
+							res.json("User stored to DB");
+						} else {
+							res.json("User already exist");
+						}
+					});
+			}
 		});
 
 		app.post('/buy', function(req, res){

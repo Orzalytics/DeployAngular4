@@ -37,6 +37,11 @@ body {
 
 .md-toolbar-tools .language-button{
     cursor: pointer;
+    height: 40px;
+}
+
+.md-toolbar-tools .language-button.default-text-btn{
+    padding-top: 10px;
 }
 
 .md-toolbar-bottom{

@@ -20,6 +20,11 @@
 .sidenav {
 }
 
+@media (max-width: 600px) {
+    .user-login-text {
+        display: none;
+    }
+}
 
 @media (max-width: 450px) {
     .sidenav-content .mat-button {
@@ -28,9 +33,6 @@
     .head-text {
         margin-top: 3px;
         font-size: 18px;
-    }
-    .user-login-text {
-        display: none;
     }
     .md-toolbar-tools .material-icons{
         margin-right: 0px;
