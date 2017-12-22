@@ -121,6 +121,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 		this.onResizeWindow();
 		this.setChartWidth();
+
+		// this.getTop50Cryptos(); //import to crypto Names to BD
+		// this.setPriceFunds();
 	}
 
 	ngOnDestroy() {
@@ -178,7 +181,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 				response => {
 					MainOpr.getTransactionData(response);
 					MainOpr.CalculatePortfolioData();
-
 					this.ngPortfolioName = Globals.g_DatabaseInfo.PortfolioList[0].portfolio_id;
 					this.setSlider();
 					this.onRefreshTable();
@@ -369,5 +371,105 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 	toltipMouseEnter() {
 		this.notMovedToTooltip = false;
+	}
+
+	setFundNames(data){
+	    HttpService.setFundNames(data).subscribe(
+	        response => {
+	          console.log(response);
+	    });
+	}
+
+	setPriceFunds(){
+	    HttpService.setPriceFunds().subscribe(
+	        response => {
+	          console.log(response);
+	    });
+	}
+
+	getTop50Cryptos() {
+		let arr: Array<any>;
+		let arrFull: Array<any>;
+		let arrShort: Array<any>;
+
+		arrFull = [];
+		arrShort = [];
+
+		arr = [
+			"Bitcoin BTC",
+			"Ethereum ETH",
+			"Bitcoin Cash BCH",
+			"Ripple XRP",
+			"Litecoin LTC",
+			"IOTA IOT",
+			"Dash DASH",
+			"Bitcoin Gold BTG",
+			"NEM XEM",
+			"Monero XMR",
+			"EOS EOS",
+			"Cardano ADA",
+			"NEO NEO",
+			"Ethereum Classic ETC",
+			"Stellar XLM",
+			"BitConnect BCC",
+			"Populous PPT",
+			"Waves WAVES",
+			"TRON TRX",
+			"Lisk LSK",
+			"OmiseGO OMG",
+			"Qtum QTUM",
+			"Zcash ZEC",
+			"Stratis STRAT",
+			"Ardor ARDR",
+			"Ignis IGNIS",
+			"Tether USDT",
+			"MagicCoin MAGE",
+			"MonaCoin MONA",
+			"Hshare HSR",
+			"Nxt NXT",
+			"BitShares BTS",
+			"Kyber Network KNC",
+			"Veritaseum VERI",
+			"Ark ARK",
+			"Steem STEEM",
+			"Augur REP",
+			"RaiBlocks XRB",
+			"SALT SALT",
+			"Decred DCR",
+			"Komodo KMD",
+			"Dogecoin DOGE",
+			"Einsteinium EMC2",
+			"Vertcoin VTC",
+			"Siacoin SC",
+			"Walton WTC",
+			"DigixDAO DGD",
+			"Binance Coin BNB",
+			"Decentraland MANA",
+			"PIVX PIVX"
+		];
+
+		let tmpArr: Array<any>;
+		tmpArr = [];
+
+		for (var i = 0; i < arr.length; ++i) {
+			tmpArr = arr[i].split(' ');
+			let abbrId = tmpArr.length - 1;
+
+			arrShort.push(tmpArr[abbrId]);
+
+			let cryptoFullName = '';
+			if (abbrId > 1) {
+				for (var k = 0; k < abbrId; ++k) {
+					let sep = k + 1 === abbrId ? '' : ' ';
+					cryptoFullName += tmpArr[k] + sep;
+				}
+			}
+			else {
+				cryptoFullName += tmpArr[0];
+			}
+			arrFull.push(cryptoFullName);
+		}
+
+		this.setFundNames({arrFull: arrFull, arrShort: arrShort});
 	}
 }

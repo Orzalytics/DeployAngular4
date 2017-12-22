@@ -2,6 +2,7 @@
 	var fs = require('fs');
 	var express = require('express');
 	var http = require('http');
+	var https = require('https');
 	var mysql = require('mysql');
 	var bodyParser = require('body-parser');
 	var parseXlsx = require('xlsx');
@@ -84,7 +85,6 @@
 							var sqlValues = "'"+param1+"'" + ',' + "'"+param2+"'"  + ',' + param3  + ',' + param4  + ',' + "'"+param5+"'";
 							sqlLine = sqlLine + sqlValues + ")";
 
-							console.log(sqlLine);
 							connection.query(sqlLine,function(err,inserted){
 								if(err) throw err;
 							});
@@ -103,13 +103,11 @@
 					});
 				}
 			});
-			// console.log("sms sent");
-			// res.json("ok");
 		});
 
 		// '/ret1'
 		app.get('/fundheader', function(req, res){
-			var sqlLine1 = "select fund_id_alias_fund, alias, alias_match_1, alias_match_2, alias_match_3 from OrzaDevelopmentDB.alias_fund";
+			var sqlLine1 = "select fund_id_alias_fund, alias, alias_match_1, alias_match_2, alias_match_3 from OrzaDevelopmentDB.alias_fund_crypto";
 			connection.query(sqlLine1, function(err,fundnames){
 				if(err) throw err;
 				res.json(fundnames);
@@ -119,7 +117,7 @@
 		// '/ret'
 		app.get('/ret/:sDate', function(req, res){
 			var startDate = req.params.sDate;
-			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevelopmentDB.price_fund as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
+			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevelopmentDB.price_fund_crypto as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
 			connection.query(sqlLine,function(err,rows){
 				if(err) throw err;
 				res.json(rows);
@@ -128,7 +126,7 @@
 
 		// '/userInfo'
 		app.get('/userPortList', function(req, res){
-			var sqlLine = "select portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver from OrzaDevelopmentDB.portfolio";
+			var sqlLine = "select portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver from OrzaDevelopmentDB.portfolio_crypto";
 			connection.query(sqlLine,function(err,portnames){
 				if(err) throw err;
 				res.json(portnames);
@@ -139,9 +137,9 @@
 			var portfolio_id = req.params.portid;
 			var sqlLine;
 			if (portfolio_id == "all"){
-				sqlLine = "select * from OrzaDevelopmentDB.transaction";
+				sqlLine = "select * from OrzaDevelopmentDB.transaction_crypto";
 			}else{
-				sqlLine = "select * from OrzaDevelopmentDB.transaction where transaction_portfolio_id = '" + portfolio_id + "'";
+				sqlLine = "select * from OrzaDevelopmentDB.transaction_crypto where transaction_portfolio_id = '" + portfolio_id + "'";
 			}
 			connection.query(sqlLine,function(err,transactions){
 				if(err) throw err;
@@ -151,7 +149,6 @@
 
 		app.post('/signIn', function(req, res){
 			var userObject = req.body.user;
-			console.log(req.body.user);
 			if (userObject && userObject.id) {
 				var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + userObject.id + "'";
 					connection.query(sqlLine,function(err, rows){
@@ -181,18 +178,17 @@
 		});
 
 		app.post('/buy', function(req, res){
-			console.log('BUY');
 			var pObject = req.body.user;
 			if (pObject.length > 0){
 				var portfolio_ID = pObject[0].portfolio_id;
 				var strDate = pObject[0].nowDate;
-				var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio where portfolio_id = '" + portfolio_ID + "'";
+				var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio_crypto where portfolio_id = '" + portfolio_ID + "'";
 				connection.query(sqlPortfolio, function(err, portID){
 					if (err) throw err;
 					// res.json(portID);
 					if (portID.length > 0){
 						// same portfolio id is existed
-						var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
+						var sqlLine = "insert into OrzaDevelopmentDB.transaction_crypto " +
 								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 								" values ";
 						var sqlValues = "";
@@ -217,13 +213,13 @@
 					}
 					else{
 						// there isn't same portfolio id on portfolio table
-						var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
+						var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
 						"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 						" values (";
 						var sqlValues = "'"+portfolio_ID+"'" + ',' + "'"+portfolio_ID+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+strDate+"'";
 						sqlLine = sqlLine + sqlValues + ")";
 						connection.query(sqlLine, function(err, portdata){
-							var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
+							var sqlLine = "insert into OrzaDevelopmentDB.transaction_crypto " +
 								"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 								" values ";
 							var sqlValues = "";
@@ -264,7 +260,7 @@
 			var param8 = req.params.nowDate;
 
 			// check portfolio_id from portfolio table of database
-			var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio where portfolio_id = '" + param1 + "'";
+			var sqlPortfolio = "select portfolio_id from OrzaDevelopmentDB.portfolio_crypto where portfolio_id = '" + param1 + "'";
 			connection.query(sqlPortfolio, function(err, portID){
 				if (err) throw err;
 				// res.json(portID);
@@ -273,32 +269,30 @@
 				}
 				else{
 					// there isn't same portfolio id on portfolio table
-					var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
+					var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
 					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 					" values (";
 					var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + '1' + ',' + "'"+'COP'+"'" + ',' + "'"+param8+"'";
 					sqlLine = sqlLine + sqlValues + ")";
 					connection.query(sqlLine, function(err, portdata){
-						// console.log("success injected into portfolio");
 					})
 				}
 
 				// variables to insert transaction if no other transaction for that fund on that date 
-				var sqlLine = "insert into OrzaDevelopmentDB.transaction " +
+				var sqlLine = "insert into OrzaDevelopmentDB.transaction_crypto " +
 				"(transaction_portfolio_id, transaction_saver_id, fund_id_bought, units_bought, fund_id_sold, units_sold, date_value_transaction)" +
 				" values (";
 				var sqlValues = "'"+param1+"'" + ',' + param2  + ',' + param3  + ',' + param4  + ',' + param5  + ',' + param6  + ',' + "'" + param7 + "'";
 				sqlLine = sqlLine + sqlValues + ")";
 
 				// variable to look for previous transactions if there is already a transaction for that fund on that date
-				var beforeReq = "select * from OrzaDevelopmentDB.transaction ";
+				var beforeReq = "select * from OrzaDevelopmentDB.transaction_crypto ";
 				beforeReq = beforeReq + "where fund_id_bought = " + param3;
 				beforeReq = beforeReq + " and fund_id_sold = " + param5;
 				beforeReq = beforeReq + " and date_value_transaction = '" + param7 + "'";
 				beforeReq = beforeReq + " and transaction_portfolio_id = " + "'"+param1+"'";
 				beforeReq = beforeReq + " and transaction_saver_id = " + "'"+param2+"'";
 
-				// console.log(beforeReq);
 				// if between insert and update of transaction
 				connection.query(beforeReq, function(err, portdata){
 					if(err) throw err;
@@ -306,13 +300,11 @@
 
 						// param4 = param4*1 + portdata[0].units_bought;
 						// param6 = param6*1 + portdata[0].units_sold; 
-						
 						// update transaction if there is a previous transaction for that fund on that date
-						sqlLine = "update OrzaDevelopmentDB.transaction set" +
+						sqlLine = "update OrzaDevelopmentDB.transaction_crypto set" +
 						" units_bought = " + param4 +
 						", units_sold = " + param6 +
 						" where transaction_id = " + portdata[0].transaction_id;
-						// console.log(sqlLine);
 						connection.query(sqlLine, function(err, portdata){
 							if(err) throw err;
 							res.json(portdata);
@@ -320,7 +312,6 @@
 					}
 					// insert transaction if there is no previous transaction for that fund on that date
 					else{
-						// console.log(sqlLine);
 						connection.query(sqlLine, function(err, portdata){
 							if(err) throw err;
 							res.json(portdata);
@@ -332,7 +323,7 @@
 
 		app.get('/delete/:id', function(req, res){
 			var trans_id = req.params.id;
-			var sqlLine = "delete from OrzaDevelopmentDB.transaction where transaction_id=" + trans_id;
+			var sqlLine = "delete from OrzaDevelopmentDB.transaction_crypto where transaction_id=" + trans_id;
 			connection.query(sqlLine,function(err,transactions){
 				if(err) throw err;
 				res.json(transactions);
@@ -341,8 +332,8 @@
 
 		app.get('/deleteport/:id', function(req, res){
 			var port_id = req.params.id;
-			var sqlLine1 = "delete from OrzaDevelopmentDB.transaction where transaction_portfolio_id=" + "'" + port_id +"'";
-			var sqlLine2 = "delete from OrzaDevelopmentDB.portfolio where portfolio_id=" + "'" + port_id +"'";
+			var sqlLine1 = "delete from OrzaDevelopmentDB.transaction_crypto where transaction_portfolio_id=" + "'" + port_id +"'";
+			var sqlLine2 = "delete from OrzaDevelopmentDB.portfolio_crypto where portfolio_id=" + "'" + port_id +"'";
 			connection.query(sqlLine1, function(err){
 				if(err) throw err;
 				connection.query(sqlLine2, function(err, transactions){
@@ -357,7 +348,7 @@
 			var param2 = req.params.valor;
 			var param3 = req.params.moneda;
 			var param4 = req.params.nowDate;
-			var sqlLine = "insert into OrzaDevelopmentDB.portfolio " +
+			var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
 					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
 					" values (";
 			var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'";
@@ -367,8 +358,81 @@
 			})
 		});
 
-	});
+//=====================================================================================================
 
+		app.post('/setFundNames', function(req, res) {
+			var data = req.body.data;
+			var insertDataStr = '';
+			var sep = ',';
+			for (var i = 0; i < data.arrShort.length; i++) {
+				sep = i === data.arrShort.length - 1 ? '' : sep;
+				insertDataStr += "(" + (i + 1) + ",'" + data.arrFull[i] + "','" + data.arrShort[i] + "')" + sep;
+			}
+
+			var query = connection.query("INSERT INTO OrzaDevelopmentDB.alias_fund_crypto (fund_id_alias_fund, alias, alias_match_1) VALUES " + insertDataStr, function (error, results, fields) {
+				if (error) throw error;
+				else res.json('setFundNames success');
+			});
+		});
+
+		app.get('/setPriceFunds', function(req, res){
+			var startDate = req.params.sDate;
+			var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto";
+			var req = function(row, id) {
+				https.get('https://coincap.io/history/365day/' + row.alias_match_1, (resp) => {
+					let data = '';
+					let rowId = row.fund_id_alias_fund;
+
+					// A chunk of data has been recieved.
+					resp.on('data', (chunk) => {
+						data += chunk;
+					});
+
+					// The whole response has been received. Print out the result.
+					resp.on('end', () => {
+						let price365Arr = JSON.parse(data).price;
+
+						var insertDataStr = '';
+						var sep = ',';
+						var price365ActualLength = 364;
+						var dataLength = price365Arr.length > price365ActualLength ? price365ActualLength : price365Arr.length;
+
+						for (var k = 0; k < dataLength; k++) {
+							var date = new Date(price365Arr[k][0]);
+
+							var year = date.getFullYear();
+							var month = date.getMonth() + 1;
+							var day = date.getDate();
+
+							month = month.toString().length === 1 ? '0' + month : month;
+							day = day.toString().length === 1 ? '0' + day : day;
+
+							var dateStr = year + '-' + month + '-' + day;
+
+							sep = k === dataLength - 1 ? '' : sep;
+							insertDataStr += "(" + rowId + "," + price365Arr[k][1] + ",'" + dateStr + "')" + sep;
+						}
+
+						var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
+							if (error) throw error;
+						});
+					});
+
+				}).on("error", (err) => {
+					console.log("Error: " + err.message);
+				});
+			}
+
+			connection.query(sqlLine,function(err, rows){
+				if(err) throw err;
+				for (var i = 0; i < rows.length; i++) {
+					req(rows[i], i);
+				}
+				console.log("done");
+				res.json("done");
+			});
+		});
+	});
 
 	app.post('/getExcel', function(req, res){
 		var csvdata = [];

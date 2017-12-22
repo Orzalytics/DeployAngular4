@@ -425,7 +425,6 @@ export class TradeComponent implements OnInit, OnDestroy {
 			url = url + '/' + valuesForm.portfolio;
 			url = url + '/' + '2';
 			url = url + '/' + Globals.convertDate(new Date());
-			console.log('BUY URL', url);
 		} else {
 			// sell item
 			url = url + '/' + 999;
@@ -436,7 +435,6 @@ export class TradeComponent implements OnInit, OnDestroy {
 			url = url + '/' + valuesForm.portfolio;
 			url = url + '/' + '2';
 			url = url + '/' + Globals.convertDate(new Date());
-			console.log('SELL URL', url);
 		}
 
 		HttpService.getBuyResponse(url).subscribe(

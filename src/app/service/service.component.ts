@@ -121,4 +121,14 @@ export class ServiceComponent {
     signIn(data) {
         return this.http.post(urlHeader + '/signIn', {user: data}).map(res => res.json());
     }
+
+// ============================================================================================
+
+    setFundNames(data) {
+        return this.http.post(urlHeader + '/setFundNames', {data: data}).map(res => res.json());
+    }
+
+    setPriceFunds(data) {
+        return this.http.get(urlHeader + '/setPriceFunds').map(res => res.json());
+    }
 }
