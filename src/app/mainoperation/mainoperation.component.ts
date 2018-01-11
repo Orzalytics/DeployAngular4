@@ -26,20 +26,24 @@ export function onCalculateData(){
 	///////////////////////////////////////////////////////////////////
 	////////////////////// Filter Fund Pricess ////////////////////////
 	///////////////////////////////////////////////////////////////////
+	//names are reduced to save space while saving data to the LocalStorage
+	// .i - .fund_id_pr_fund
+	// .f - .pr_fund
+	// .d - .date_value_pr_fund
 
 	var f = [];
 	var rows = Globals.g_DatabaseInfo.RawFundPriceList;
-	for (var i = 0; i < rows.length; i ++){
 
-		rows[i].fund_id_pr_fund = rows[i].fund_id_pr_fund * 1;
-		rows[i].pr_fund = rows[i].pr_fund * 1;
+	for (var i = 0; i < rows.length; i ++){
+		rows[i].i = rows[i].i * 1;
+		rows[i].f = rows[i].f * 1;
 	}
 	// loop to create fund-filtered arrays
 
 	for (var i=0; i<Globals.g_GlobalStatic.arrPortIndex.length; i++){
 		f[Globals.g_GlobalStatic.arrPortIndex[i]] = [];
 		for (var j = 0; j < rows.length; j ++){
-			if (rows[j].fund_id_pr_fund == Globals.g_GlobalStatic.arrPortIndex[i]){
+			if (rows[j].i == Globals.g_GlobalStatic.arrPortIndex[i]){
 				f[Globals.g_GlobalStatic.arrPortIndex[i]].push(rows[j]);
 			}
 		}
@@ -58,8 +62,8 @@ export function onCalculateData(){
 		arru.push([]);
 		arrudate.push([]);
 		for (var i = 0; i < f[Globals.g_GlobalStatic.arrPortIndex[j]].length; i++) {
-			u = f[Globals.g_GlobalStatic.arrPortIndex[j]][i].pr_fund;
-			dt = new Date(f[Globals.g_GlobalStatic.arrPortIndex[j]][i].date_value_pr_fund);
+			u = f[Globals.g_GlobalStatic.arrPortIndex[j]][i].f;
+			dt = new Date(f[Globals.g_GlobalStatic.arrPortIndex[j]][i].d);
 			arru[j].push(u);
 			arrudate[j].push(dt);
 		}

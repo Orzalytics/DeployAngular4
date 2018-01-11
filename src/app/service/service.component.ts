@@ -43,12 +43,6 @@ export class ServiceComponent {
                 this.b_IsGetSuccess = true;
             }
         );
-        this.getFundPriceList(Globals.g_GlobalStatic.startDate).subscribe(
-            response => {
-                Globals.g_DatabaseInfo.RawFundPriceList = response;
-                this.b_IsGetSuccess = true;
-            }
-        );
         this.getPortfolioList().subscribe(
             response => {
                 Globals.g_DatabaseInfo.PortfolioList = response;
@@ -61,6 +55,25 @@ export class ServiceComponent {
                 this.b_IsGetSuccess = true;
             }
         );
+
+        let RawFundPriceList = localStorage.getItem('RawFundPriceList');
+        if (RawFundPriceList !== null) {
+            Globals.g_DatabaseInfo.RawFundPriceList = JSON.parse(RawFundPriceList);
+            this.b_IsGetSuccess = true;
+        }
+        else {
+            this.getFundPriceList(Globals.g_GlobalStatic.startDate).subscribe(
+                response => {
+                    Globals.g_DatabaseInfo.RawFundPriceList = response;
+                    try {
+                        localStorage.setItem('RawFundPriceList', JSON.stringify(response));
+                    } catch (e) {
+                        console.warn('LocalStorage error. Error code -', e.code, e.name);
+                    }
+                    this.b_IsGetSuccess = true;
+                }
+            );
+        }
     }
 
     // Get Fund Names and IDs

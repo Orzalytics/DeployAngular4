@@ -8,6 +8,7 @@
 	var parseXlsx = require('xlsx');
 	var csv = require('fast-csv');
 	var app = express();
+	var cron = require('node-cron');
 	var client = require('twilio')(
 		'AC5428b55a4f53db74fee7425898415543',
 		'6d2d4b5c56b96a3980dc81c00a7c241d'
@@ -21,6 +22,83 @@
 	});
 	app.use(bodyParser.json());
 
+	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *'
+		console.log('cron.schedule, update DB data' + new Date());
+		getAliases()
+			.then(response => {
+				let aliasArr = [];
+				console.log('number of currencies to be updated - ', response.length);
+				for (var i = 0; i < response.length; i++) { //response.length
+					aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
+				}
+				return aliasArr;
+			})
+			.then(aliasArr => {
+				return getMaxDate(aliasArr);
+			})
+			.then(data => {
+				Promise.all( data.aliasArr.map(httpGet) )
+					.then(
+						response => { return sortDataForUpdate(response, data) },
+						error => console.log("Error: " + error.message)
+					)
+					.then(
+						response => updatePriceFundCrypto(response)
+					);
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		// task.stop();
+	}, false);
+	task.start();
+
+	function sortDataForUpdate(data, data2) {
+		var priceArr = [];
+		var newDataArray = [];
+		var startPos = 0;
+
+		for (var i = 0; i < data.length; i++) {
+			priceArr.push(JSON.parse(data[i]).price);
+		}
+
+		for (var i = 0; i < priceArr.length; i++) {
+			for (var k = 0; k < priceArr[i].length; k++) {
+				var date = new Date(priceArr[i][k][0]);
+				priceArr[i][k][0] = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+				if (priceArr[i][k][0] === maxDate) {
+					startPos = k+1;
+				}
+			}
+			for (var k = startPos; k < priceArr[i].length-2; k++) {
+				newDataArray.push("(" + data2.aliasArr[i][1] + "," + priceArr[i][k][1] + ",'" + priceArr[i][k][0] + "')");
+			}
+		}
+		return newDataArray;
+	}
+
+	function httpGet(alias) {
+		return new Promise(function(resolve, reject) {
+			https.get('https://coincap.io/history/365day/' + alias[0], (resp) => {
+				let data = '';
+
+				// A chunk of data has been recieved.
+				resp.on('data', (chunk) => {
+					data += chunk;
+				});
+
+				// The whole response has been received. Print out the result.
+				resp.on('end', () => {
+					resolve(data);
+				});
+
+			}).on("error", (err) => {
+				console.log("Error: " + err.message);	
+				reject(err);
+			});
+		});}
+
+	
 	var pool = mysql.createPool({
 		// host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
 		// user: 'JCGutierrez2017',
@@ -38,6 +116,49 @@
 		 return;
 		};
 
+		getAliases = function() {
+			return new Promise(function(resolve, reject) {
+				var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto where fund_id_alias_fund <= 50";
+				connection.query(sqlLine, function(err, rows){
+					if (err) reject(err);
+					if (!rows.length) {
+						reject("Empty getAliases request result");
+					}
+					resolve(rows);
+				});
+			});
+		}
+
+		getMaxDate = function(aliasArr) {
+			return new Promise(function(resolve, reject) {
+				var sqlLine = "select max(date_value_pr_fund) as maxDate from OrzaDevelopmentDB.price_fund_crypto where fund_id_pr_fund = 1";
+				connection.query(sqlLine, function(err, rows){
+					if (err) reject(err);
+					if (!rows) {
+						reject("Empty getMaxDate request result");
+					}
+					else {
+						var date = new Date(rows[0].maxDate);
+						maxDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+						resolve({aliasArr: aliasArr, maxDate: maxDate});
+					}
+				});
+
+			});
+		}
+
+		updatePriceFundCrypto = function(insertDataStr) {
+			return new Promise(function(resolve, reject) {
+				var insertLine = "INSERT INTO OrzaDevelopmentDB.price_fund_crypto (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES ";
+				var rowNum = insertDataStr.length;
+				insertDataStr = insertDataStr.join(',');
+				connection.query(insertLine + insertDataStr, function(err, rows){
+					if (err) reject(err);
+					resolve('update complete, updated ' + rowNum + ' records!');
+				});
+			});
+		}
+
 		// send sms to cell phone
 		app.get('/login/:user/:phone/:random', function(req, res){
 			var userName = req.params.user;
@@ -50,7 +171,7 @@
 			connection.query(sqlLine,function(err, rows){
 				if(err) throw err;
 				if (rows.length > 0){
-					if (rows[0].confirmed_saver == 1){
+					if (rows[0].confirmed_saver == 1){ 
 						res.json(rows[0]);
 					}else{
 						client.messages.create({
@@ -117,9 +238,14 @@
 		// '/ret'
 		app.get('/ret/:sDate', function(req, res){
 			var startDate = req.params.sDate;
-			var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund from OrzaDevelopmentDB.price_fund_crypto as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
+			//names are reduced to save space while saving data to the LocalStorage
+			var sqlLine = "select date_value_pr_fund as d, fund_id_pr_fund as i, pr_fund as f from OrzaDevelopmentDB.price_fund_crypto as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
+			// var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund, pr_1, pr_2, pr_3, pr_4, pr_5, pr_6, pr_7, pr_8, pr_9 from OrzaDevelopmentDB.price_fund_crypto_test as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
 			connection.query(sqlLine,function(err,rows){
 				if(err) throw err;
+				for (var i = 0; i < rows.length; i++) {
+					rows[i].d = rows[i].d.getFullYear() + '-' + ('0' + (rows[i].d.getMonth() + 1)).slice(-2) + '-' + ('0' + rows[i].d.getDate()).slice(-2);
+				}
 				res.json(rows);
 			});
 		});
@@ -377,7 +503,7 @@
 
 		app.get('/setPriceFunds', function(req, res){
 			var startDate = req.params.sDate;
-			var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto";
+			var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto where fund_id_alias_fund <= 50";
 			var req = function(row, id) {
 				https.get('https://coincap.io/history/365day/' + row.alias_match_1, (resp) => {
 					let data = '';
@@ -413,7 +539,7 @@
 							insertDataStr += "(" + rowId + "," + price365Arr[k][1] + ",'" + dateStr + "')" + sep;
 						}
 
-						var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
+						var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto_test (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
 							if (error) throw error;
 						});
 					});
@@ -432,6 +558,57 @@
 				res.json("done");
 			});
 		});
+
+		// // functionality that stote test data to DB to check rate of parameter calculation
+		// // the test data is bitcoin history data available at http://coincap.io/history/BTC
+		// app.get('/setPriceFunds', function(req, res){
+		// 	var startDate = req.params.sDate;
+		// 	var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto";
+
+		// 	https.get('https://coincap.io/history/BTC', (resp) => {
+		// 		var data = '';
+
+		// 		// A chunk of data has been recieved.
+		// 		resp.on('data', (chunk) => {
+		// 			data += chunk;
+		// 		});
+
+		// 		// The whole response has been received. Print out the result.
+		// 		resp.on('end', () => {
+		// 			var priceArr = JSON.parse(data).price;
+
+		// 			var insertDataStr = '';
+		// 			var sep = ',';
+
+		// 			for (var i = 1; i <= 50; i++) {
+		// 				for (var k = 0; k < priceArr.length; k++) {
+		// 					var date = new Date(priceArr[k][0]);
+ 
+ 
+		// 					var year = date.getFullYear();
+		// 					var month = date.getMonth() + 1;
+		// 					var day = date.getDate();
+
+		// 					month = month.toString().length === 1 ? '0' + month : month;
+		// 					day = day.toString().length === 1 ? '0' + day : day;
+
+		// 					var dateStr = year + '-' + month + '-' + day;
+
+		// 					sep = (k === priceArr.length - 1 && i === 50) ? '' : sep;
+		// 					insertDataStr += "(" + i + "," + priceArr[k][1] + ",'" + dateStr + "')" + sep;
+		// 				}
+		// 			}
+
+		// 			var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto_test (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
+		// 				if (error) throw error;
+		// 			});
+
+		// 		});
+
+		// 	}).on("error", (err) => {
+		// 		console.log("Error: " + err.message);
+		// 	});
+		// });
 	});
 
 	app.post('/getExcel', function(req, res){

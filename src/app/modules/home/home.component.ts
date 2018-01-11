@@ -122,8 +122,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 		this.onResizeWindow();
 		this.setChartWidth();
 
-		// this.getTop50Cryptos(); //import to crypto Names to BD
-		// this.setPriceFunds();
+		// this.getTop50Cryptos(); //import to crypto Names to DB
+		// this.setPriceFunds(); //import initial currencies values to DB
 	}
 
 	ngOnDestroy() {
