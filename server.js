@@ -30,8 +30,9 @@
 	});
 	app.use(bodyParser.json());
 
-	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *'
-		logger.info("Cron schedule start, update DB data");
+	var updId = 1;
+	var task = cron.schedule('*/30 * * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
+		logger.info("Cron schedule start, update DB data #" + updId);
 		getAliases()
 			.then(response => {
 				let aliasArr = [];
@@ -57,7 +58,11 @@
 			.catch(error => {
 				logger.info("Error res: " + error.message);
 			});
-		// task.stop();
+		if (updId == 5) {
+			task.stop();
+		}
+		updId++;
+		
 	}, false);
 	task.start();
 
