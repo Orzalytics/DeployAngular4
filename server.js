@@ -9,10 +9,18 @@
 	var csv = require('fast-csv');
 	var app = express();
 	var cron = require('node-cron');
+	var winston = require('winston');
 	var client = require('twilio')(
 		'AC5428b55a4f53db74fee7425898415543',
 		'6d2d4b5c56b96a3980dc81c00a7c241d'
 	);
+
+	var logger = new winston.Logger({
+		transports: [
+			new winston.transports.Console(),
+			new winston.transports.File({ filename: 'server.log' })
+		]
+	});
 
 	app.set('port', process.env.PORT || 9051);
 	app.use(function(req, res, next) {
@@ -23,12 +31,12 @@
 	app.use(bodyParser.json());
 
 	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *'
-		console.log('cron.schedule, update DB data' + new Date());
+		logger.info("Cron schedule start, update DB data");
 		getAliases()
 			.then(response => {
 				let aliasArr = [];
 				console.log('number of currencies to be updated - ', response.length);
-				for (var i = 0; i < response.length; i++) { //response.length
+				for (var i = 0; i < response.length; i++) {
 					aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
 				}
 				return aliasArr;
@@ -40,14 +48,14 @@
 				Promise.all( data.aliasArr.map(httpGet) )
 					.then(
 						response => { return sortDataForUpdate(response, data) },
-						error => console.log("Error: " + error.message)
+						error => logger.info("Error: " + error.message)
 					)
 					.then(
 						response => updatePriceFundCrypto(response)
 					);
 			})
 			.catch(error => {
-				console.log(error);
+				logger.info("Error res: " + error.message);
 			});
 		// task.stop();
 	}, false);
@@ -93,7 +101,6 @@
 				});
 
 			}).on("error", (err) => {
-				console.log("Error: " + err.message);	
 				reject(err);
 			});
 		});}
@@ -154,7 +161,8 @@
 				insertDataStr = insertDataStr.join(',');
 				connection.query(insertLine + insertDataStr, function(err, rows){
 					if (err) reject(err);
-					resolve('update complete, updated ' + rowNum + ' records!');
+					logger.info('Update complete, updated ' + rowNum + ' records!');
+					resolve('Update complete, updated ' + rowNum + ' records!');
 				});
 			});
 		}

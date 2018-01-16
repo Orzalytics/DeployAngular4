@@ -39,6 +39,7 @@
     "rxjs": "^5.4.2",
     "text-mask-addons": "^3.7.0",
     "twilio": "^3.10.0",
+    "winston": "^2.4.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
