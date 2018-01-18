@@ -8,7 +8,7 @@
 	var parseXlsx = require('xlsx');
 	var csv = require('fast-csv');
 	var app = express();
-	var cron = require('node-cron');
+	var CronJob = require('cron').CronJob;
 	var winston = require('winston');
 	var client = require('twilio')(
 		'AC5428b55a4f53db74fee7425898415543',
@@ -31,60 +31,75 @@
 	app.use(bodyParser.json());
 
 	var updId = 1;
-	var task = cron.schedule('*/30 * * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
-		logger.info("Cron schedule start, update DB data #" + updId);
-		getAliases()
-			.then(response => {
-				let aliasArr = [];
-				console.log('number of currencies to be updated - ', response.length);
-				for (var i = 0; i < response.length; i++) {
-					aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
-				}
-				return aliasArr;
-			})
-			.then(aliasArr => {
-				return getMaxDate(aliasArr);
-			})
-			.then(data => {
-				Promise.all( data.aliasArr.map(httpGet) )
-					.then(
-						response => { return sortDataForUpdate(response, data) },
-						error => logger.info("Error: " + error.message)
-					)
-					.then(
-						response => updatePriceFundCrypto(response)
-					);
-			})
-			.catch(error => {
-				logger.info("Error res: " + error.message);
-			});
-		if (updId == 5) {
-			task.stop();
-		}
-		updId++;
-		
-	}, false);
-	task.start();
 
-	function sortDataForUpdate(data, data2) {
+	logger.info("NodeJS server started" + updId);
+
+	var job = new CronJob({
+		cronTime: '*/30 * * * *', //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
+		onTick: function() {
+			logger.info("Cron schedule start, update DB data #" + updId);
+			getAliases()
+				.then(response => {
+					let aliasArr = [];
+					console.log('number of currencies to be updated - ', response.length);
+					for (var i = 0; i < response.length; i++) {
+						aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
+					}
+					return aliasArr;
+				})
+				.then(aliasArr => {
+					return getMaxDate(aliasArr);
+				})
+				.then(data => {
+					Promise.all( data.aliasArr.map(httpGet) )
+						.then(
+							response => { return sortDataForUpdate(response, data) },
+							error => logger.info("Error: " + error.message)
+						)
+						.then(
+							response => updatePriceFundCrypto(response)
+						)
+						.then(
+							response => logger.info(response)
+						);
+				})
+				.catch(error => {
+					logger.info("Error res: " + error.message);
+				});
+
+			if (updId == 5) {
+				job.stop();
+			}
+			updId++;
+		}
+		start: false
+	});
+
+	job.start();
+
+
+	function sortDataForUpdate(response, data) {
 		var priceArr = [];
 		var newDataArray = [];
-		var startPos = 0;
+		var startPos;
 
-		for (var i = 0; i < data.length; i++) {
-			priceArr.push(JSON.parse(data[i]).price);
+		for (var i = 0; i < response.length; i++) {
+			priceArr.push(JSON.parse(response[i]).price);
 		}
 
 		for (var i = 0; i < priceArr.length; i++) {
+			startPos = 0;
 			for (var k = 0; k < priceArr[i].length; k++) {
 				var date = new Date(priceArr[i][k][0]);
 				priceArr[i][k][0] = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
-				if (priceArr[i][k][0] === maxDate) {
+				if (priceArr[i][k][0] === data.maxDate) {
 					startPos = k+1;
 				}
 			}
-			for (var k = startPos; k < priceArr[i].length-2; k++) {
-				newDataArray.push("(" + data2.aliasArr[i][1] + "," + priceArr[i][k][1] + ",'" + priceArr[i][k][0] + "')");
+			if (startPos > 0) {
+				for (var k = startPos; k < priceArr[i].length-2; k++) {
+					newDataArray.push("(" + data.aliasArr[i][1] + "," + priceArr[i][k][1] + ",'" + priceArr[i][k][0] + "')");
+				}
 			}
 		}
 		return newDataArray;
@@ -143,7 +158,7 @@
 
 		getMaxDate = function(aliasArr) {
 			return new Promise(function(resolve, reject) {
-				var sqlLine = "select max(date_value_pr_fund) as maxDate from OrzaDevelopmentDB.price_fund_crypto where fund_id_pr_fund = 1";
+				var sqlLine = "select max(date_value_pr_fund) as maxDate from OrzaDevelopmentDB.price_fund_crypto";
 				connection.query(sqlLine, function(err, rows){
 					if (err) reject(err);
 					if (!rows) {
@@ -151,7 +166,7 @@
 					}
 					else {
 						var date = new Date(rows[0].maxDate);
-						maxDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+						var maxDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
 						resolve({aliasArr: aliasArr, maxDate: maxDate});
 					}
 				});
@@ -163,12 +178,16 @@
 			return new Promise(function(resolve, reject) {
 				var insertLine = "INSERT INTO OrzaDevelopmentDB.price_fund_crypto (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES ";
 				var rowNum = insertDataStr.length;
-				insertDataStr = insertDataStr.join(',');
-				connection.query(insertLine + insertDataStr, function(err, rows){
-					if (err) reject(err);
-					logger.info('Update complete, updated ' + rowNum + ' records!');
-					resolve('Update complete, updated ' + rowNum + ' records!');
-				});
+				if (rowNum) {
+					insertDataStr = insertDataStr.join(',');
+					connection.query(insertLine + insertDataStr, function(err, rows){
+						if (err) reject(err);
+						resolve('Update complete, updated ' + rowNum + ' records!');
+					});
+				}
+				else {
+					resolve('No data to update!');
+				}
 			});
 		}
 

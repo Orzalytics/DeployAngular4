@@ -12,6 +12,7 @@ import {
 
 // Services
 import { ResizeService } from './service/resize.service';
+import { ServiceComponent } from './service/service.component';
 
 // Components
 import { AppComponent } from './app.component';
@@ -35,7 +36,6 @@ import {TextMaskModule} from "angular2-text-mask";
 
 // Libraries
 import { OwlModule } from 'ngx-owl-carousel';
-import {ServiceComponent} from './service/service.component';
 import { SocialLoginModule } from "angular4-social-login";
 import { AuthServiceConfig, GoogleLoginProvider } from 'angular4-social-login';
 
@@ -45,10 +45,6 @@ let config = new AuthServiceConfig([
     provider: new GoogleLoginProvider("466781828593-brtt5d4pmvanj8h3dp39trcd08ihlvuf.apps.googleusercontent.com")
   }
 ]);
-
-export function provideConfig() {
-  return config;
-}
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -82,7 +78,6 @@ const appRoutes: Routes = [
     FlexLayoutModule,
 
     OwlModule,
-    SocialLoginModule,
 
     BrowserAnimationsModule,
     MdButtonModule,
@@ -100,17 +95,16 @@ const appRoutes: Routes = [
     MdSidenavModule,
     MdListModule,
 
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    SocialLoginModule.initialize(config)
   ],
 
   providers: [
     ResizeService,
-    ServiceComponent,
-    {
-      provide: AuthServiceConfig,
-      useFactory: provideConfig
-    }],
+    ServiceComponent
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }
