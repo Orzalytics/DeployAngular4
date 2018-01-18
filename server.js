@@ -18,7 +18,7 @@
 	var logger = new winston.Logger({
 		transports: [
 			new winston.transports.Console(),
-			new winston.transports.File({ filename: 'server.log' })
+			new winston.transports.File({ filename: 'logs/server.log' })
 		]
 	});
 
