@@ -32,7 +32,7 @@
 
 	var updId = 1;
 
-	logger.info("NodeJS server started" + updId);
+	logger.info("NodeJS server started");
 
 	var job = new CronJob({
 		cronTime: '*/30 * * * *', //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
@@ -71,7 +71,7 @@
 				job.stop();
 			}
 			updId++;
-		}
+		},
 		start: false
 	});
 
