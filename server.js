@@ -8,7 +8,7 @@
 	var parseXlsx = require('xlsx');
 	var csv = require('fast-csv');
 	var app = express();
-	var CronJob = require('cron').CronJob;
+	var cron = require('node-cron');
 	var winston = require('winston');
 	var client = require('twilio')(
 		'AC5428b55a4f53db74fee7425898415543',
@@ -33,50 +33,43 @@
 	var updId = 1;
 
 	logger.info("NodeJS server started");
+	var task = cron.schedule('*/5 * * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
+		logger.info("Cron schedule start, update DB data #" + updId);
+		getAliases()
+			.then(response => {
+				let aliasArr = [];
+				console.log('number of currencies to be updated - ', response.length);
+				for (var i = 0; i < response.length; i++) {
+					aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
+				}
+				return aliasArr;
+			})
+			.then(aliasArr => {
+				return getMaxDate(aliasArr);
+			})
+			.then(data => {
+				Promise.all( data.aliasArr.map(httpGet) )
+					.then(
+						response => { return sortDataForUpdate(response, data) },
+						error => logger.info("Error: " + error.message)
+					)
+					.then(
+						response => updatePriceFundCrypto(response)
+					)
+					.then(
+						response => logger.info(response)
+					);
+			})
+			.catch(error => {
+				logger.info("Error res: " + error.message);
+			});
 
-	var job = new CronJob({
-		cronTime: '*/30 * * * *', //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
-		onTick: function() {
-			logger.info("Cron schedule start, update DB data #" + updId);
-			getAliases()
-				.then(response => {
-					let aliasArr = [];
-					console.log('number of currencies to be updated - ', response.length);
-					for (var i = 0; i < response.length; i++) {
-						aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
-					}
-					return aliasArr;
-				})
-				.then(aliasArr => {
-					return getMaxDate(aliasArr);
-				})
-				.then(data => {
-					Promise.all( data.aliasArr.map(httpGet) )
-						.then(
-							response => { return sortDataForUpdate(response, data) },
-							error => logger.info("Error: " + error.message)
-						)
-						.then(
-							response => updatePriceFundCrypto(response)
-						)
-						.then(
-							response => logger.info(response)
-						);
-				})
-				.catch(error => {
-					logger.info("Error res: " + error.message);
-				});
-
-			if (updId == 5) {
-				job.stop();
-			}
-			updId++;
-		},
-		start: false
-	});
-
-	job.start();
-
+		if (updId == 5) {
+			task.stop();
+		}
+		updId++;
+	}, false);
+	task.start();
 
 	function sortDataForUpdate(response, data) {
 		var priceArr = [];
@@ -309,29 +302,29 @@
 			var userObject = req.body.user;
 			if (userObject && userObject.id) {
 				var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + userObject.id + "'";
-					connection.query(sqlLine,function(err, rows){
-						if (rows.length == 0){
-							var param1 = userObject.id;
-							var param2 = userObject.email;
-							var param3 = userObject.firstName || '';
-							var param4 = userObject.lastName || '';
-							var param5 = userObject.name || '';
+				connection.query(sqlLine,function(err, rows){
+					if (rows.length == 0){
+						var param1 = userObject.id;
+						var param2 = userObject.email;
+						var param3 = userObject.firstName || '';
+						var param4 = userObject.lastName || '';
+						var param5 = userObject.name || '';
 
-							sqlLine = "insert into OrzaDevelopmentDB.users " +
-								"(saver_id, email, first_name, last_name, name)" +
-								" values (";
-							var sqlValues = "'"+param1+"','"+param2+"','"+param3+"','"+param4+"','"+param5+"'";
-							sqlLine = sqlLine + sqlValues + ")";
+						sqlLine = "insert into OrzaDevelopmentDB.users " +
+							"(saver_id, email, first_name, last_name, name)" +
+							" values (";
+						var sqlValues = "'"+param1+"','"+param2+"','"+param3+"','"+param4+"','"+param5+"'";
+						sqlLine = sqlLine + sqlValues + ")";
 
-							connection.query(sqlLine,function(err,inserted){
-								if(err) throw err;
-							});
+						connection.query(sqlLine,function(err,inserted){
+							if(err) throw err;
+						});
 
-							res.json("User stored to DB");
-						} else {
-							res.json("User already exist");
-						}
-					});
+						res.json("User stored to DB");
+					} else {
+						res.json("User already exist");
+					}
+				});
 			}
 		});
 
