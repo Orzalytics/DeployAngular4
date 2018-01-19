@@ -32,9 +32,9 @@
 
 	var updId = 1;
 
-	logger.info("NodeJS server started");
+	console.log("NodeJS server started");
 	var task = cron.schedule('*/5 * * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
-		logger.info("Cron schedule start, update DB data #" + updId);
+		console.log("Cron schedule start, update DB data #" + updId);
 		getAliases()
 			.then(response => {
 				let aliasArr = [];
@@ -51,17 +51,17 @@
 				Promise.all( data.aliasArr.map(httpGet) )
 					.then(
 						response => { return sortDataForUpdate(response, data) },
-						error => logger.info("Error: " + error.message)
+						error => console.log("Error: " + error.message)
 					)
 					.then(
 						response => updatePriceFundCrypto(response)
 					)
 					.then(
-						response => logger.info(response)
+						response => console.log(response)
 					);
 			})
 			.catch(error => {
-				logger.info("Error res: " + error.message);
+				console.log("Error res: " + error.message);
 			});
 
 		if (updId == 5) {
