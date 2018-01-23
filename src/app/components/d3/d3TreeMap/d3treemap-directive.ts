@@ -56,7 +56,7 @@ export class D3TreeMap implements OnInit, OnDestroy, OnChanges {
             for (let j = 0; j < Globals.g_DatabaseInfo.ListofPriceFund.length; j ++) {
               const children = {'name' : '', 'size' : 0};
               children.name = Globals.g_DatabaseInfo.ListofPriceFund[j].name;
-              children.size = Globals.g_Portfolios.arrDataByPortfolio[i].weightArray[j][nSliderIndex];
+              children.size = Globals.g_Portfolios.arrDataByPortfolio[i].weightArray[j+1][nSliderIndex];
               eachTree.children[j] = children;
             }
             listofTreeMap.children.push(eachTree);
@@ -92,11 +92,11 @@ export class D3TreeMap implements OnInit, OnDestroy, OnChanges {
             // }
             // width = width - margin.right - margin.left;
 
-        const element = this.chartElement;
+            const element = this.chartElement;
 
-        const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
-        this.width = widthContainer - this.margin.right - this.margin.left - 50;
-        this.height = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
+            const widthContainer = element.parentNode.parentNode.parentNode.clientWidth;
+            this.width = widthContainer - this.margin.right - this.margin.left - 50;
+            this.height = 270 - element.parentNode.parentNode.querySelector('.mat-card-title').clientHeight;
 
             // creating a div to contain line charts.
             const color = d3.scaleOrdinal().range(d3.schemeCategory20c);
