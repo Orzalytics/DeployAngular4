@@ -33,7 +33,7 @@
 	var updId = 1;
 
 	console.log("NodeJS server started");
-	var task = cron.schedule('*/5 * * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
+	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
 		console.log("Cron schedule start, update DB data #" + updId);
 		getAliases()
 			.then(response => {
@@ -68,7 +68,9 @@
 			task.stop();
 		}
 		updId++;
+
 	}, false);
+
 	task.start();
 
 	function sortDataForUpdate(response, data) {
@@ -163,7 +165,6 @@
 						resolve({aliasArr: aliasArr, maxDate: maxDate});
 					}
 				});
-
 			});
 		}
 
@@ -261,18 +262,33 @@
 		});
 
 		// '/ret'
-		app.get('/ret/:sDate', function(req, res){
+		app.get('/ret/:sDate/:lDate?', function(req, res){
 			var startDate = req.params.sDate;
+			var lastDate = req.params.lDate || 0;
+			var maxDateSqlLine = "select max(date_value_pr_fund) as maxDate from OrzaDevelopmentDB.price_fund_crypto";
 			//names are reduced to save space while saving data to the LocalStorage
 			var sqlLine = "select date_value_pr_fund as d, fund_id_pr_fund as i, pr_fund as f from OrzaDevelopmentDB.price_fund_crypto as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
 			// var sqlLine = "select date_value_pr_fund, fund_id_pr_fund, pr_fund, pr_1, pr_2, pr_3, pr_4, pr_5, pr_6, pr_7, pr_8, pr_9 from OrzaDevelopmentDB.price_fund_crypto_test as a where a.date_value_pr_fund >= " + "'" + startDate +"'";
-			connection.query(sqlLine,function(err,rows){
+			connection.query(maxDateSqlLine, function(err, row){
 				if(err) throw err;
-				for (var i = 0; i < rows.length; i++) {
-					rows[i].d = rows[i].d.getFullYear() + '-' + ('0' + (rows[i].d.getMonth() + 1)).slice(-2) + '-' + ('0' + rows[i].d.getDate()).slice(-2);
+				if (!row) {
+					throw "Empty MaxDate request result";
 				}
-				res.json(rows);
+				var maxDate = new Date(row[0].maxDate).getTime();
+				if (lastDate < maxDate) {
+					connection.query(sqlLine,function(err, rows){
+						if(err) throw err;
+						for (var i = 0; i < rows.length; i++) {
+							rows[i].d = rows[i].d.getFullYear() + '-' + ('0' + (rows[i].d.getMonth() + 1)).slice(-2) + '-' + ('0' + rows[i].d.getDate()).slice(-2);
+						}
+						res.json({isThereNewData: true, maxDate: maxDate, data: rows});
+					});
+				}
+				else {
+					res.json({isThereNewData: false});
+				}
 			});
+
 		});
 
 		// '/userInfo'

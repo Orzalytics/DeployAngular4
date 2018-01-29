@@ -56,24 +56,24 @@ export class ServiceComponent {
             }
         );
 
-        let RawFundPriceList = localStorage.getItem('RawFundPriceList');
-        if (RawFundPriceList !== null) {
-            Globals.g_DatabaseInfo.RawFundPriceList = JSON.parse(RawFundPriceList);
-            this.b_IsGetSuccess = true;
-        }
-        else {
-            this.getFundPriceList(Globals.g_GlobalStatic.startDate).subscribe(
-                response => {
-                    Globals.g_DatabaseInfo.RawFundPriceList = response;
+        let LastAvailableDate = localStorage.getItem('LastAvailableDate');
+        this.getFundPriceList(Globals.g_GlobalStatic.startDate, LastAvailableDate).subscribe(
+            response => {
+                if (response.isThereNewData) {
+                    Globals.g_DatabaseInfo.RawFundPriceList = response.data;
                     try {
-                        localStorage.setItem('RawFundPriceList', JSON.stringify(response));
+                        localStorage.setItem('RawFundPriceList', JSON.stringify(response.data));
+                        localStorage.setItem('LastAvailableDate', JSON.stringify(response.maxDate));
                     } catch (e) {
                         console.warn('LocalStorage error. Error code -', e.code, e.name);
                     }
-                    this.b_IsGetSuccess = true;
                 }
-            );
-        }
+                else {
+                    Globals.g_DatabaseInfo.RawFundPriceList = JSON.parse(localStorage.getItem('RawFundPriceList'));
+                }
+                this.b_IsGetSuccess = true;
+            }
+        );
     }
 
     // Get Fund Names and IDs
@@ -82,8 +82,9 @@ export class ServiceComponent {
     }
 
     // Get Price Fund List
-    getFundPriceList(startDate) {
-        return this.http.get(urlHeader + '/ret/' + startDate).map(res => res.json());
+    getFundPriceList(startDate, lastDate) {
+        let params = startDate + (lastDate ? ('/' + lastDate) : '');
+        return this.http.get(urlHeader + '/ret/' + params).map(res => res.json());
     }
 
     // Get Portfolio List
