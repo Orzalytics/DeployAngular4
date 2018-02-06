@@ -7,7 +7,8 @@ declare const gapi: any;
 
 @Component({
 	selector: 'google-signin',
-	template: '<button id="googleBtn">Google Sign-In</button>'
+  styleUrls: ['./app.component.css'],
+  template: '<button id="googleBtn">Google Sign-In</button>'
 })
 
 export class GoogleSigninComponent implements AfterContentInit {
@@ -29,7 +30,8 @@ export class GoogleSigninComponent implements AfterContentInit {
 			this.auth2 = gapi.auth2.init({
 				client_id: this.clientId,
 				cookiepolicy: 'single_host_origin',
-				scope: this.scope
+				scope: this.scope,
+				width: 300
 			});
 			console.log(this.element.nativeElement);
 			this.attachSignin(this.element.nativeElement.firstChild);
