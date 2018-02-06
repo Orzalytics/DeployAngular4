@@ -16,10 +16,12 @@
             <span class="user-login-text">Login</span>
         </a>
     </span> -->
-    <md-button *ngIf="!googleUser" class="language-button default-text-btn" (click)="signInWithGoogle()">
-        <span class="user-login-text">Login</span>
-        <i class="material-icons">face</i>
-    </md-button>
+    <google-signin>
+    </google-signin>
+        <md-button id="googleBtn" *ngIf="!googleUser" class="language-button default-text-btn">
+            <span class="user-login-text">Login</span>
+            <i class="material-icons">face</i>
+        </md-button>
 
     <md-button *ngIf="googleUser" class="language-button"
                [mdMenuTriggerFor]="menu">

@@ -4,16 +4,24 @@
 	var http = require('http');
 	var https = require('https');
 	var mysql = require('mysql');
+	// var session = require('express-session');
+	// var MySQLStore = require('express-mysql-session')(session);
+	var GoogleAuth = require('google-auth-library');
 	var bodyParser = require('body-parser');
 	var parseXlsx = require('xlsx');
 	var csv = require('fast-csv');
 	var app = express();
 	var cron = require('node-cron');
 	var winston = require('winston');
+	var uuidv4 = require('uuid/v4');
 	var client = require('twilio')(
 		'AC5428b55a4f53db74fee7425898415543',
 		'6d2d4b5c56b96a3980dc81c00a7c241d'
 	);
+
+	var googleAppID = '466781828593-brtt5d4pmvanj8h3dp39trcd08ihlvuf.apps.googleusercontent.com';
+	var auth = new GoogleAuth;
+	var authClient = new auth.OAuth2(googleAppID, '', '');
 
 	var logger = new winston.Logger({
 		transports: [
@@ -30,11 +38,38 @@
 	});
 	app.use(bodyParser.json());
 
-	var updId = 1;
+	var optionsDB = {
+		// host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
+		// user: 'JCGutierrez2017',
+		// password: 'HryvniaUcr4n14',
+		host: 'orzacryptocurrencyaws.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
+		user: 'orzacyptoAWS',
+		password: 'W1z3Orz4Ukr',
+		port: '3306',
+		database: 'OrzaDevelopmentDB',
+		multipleStatements: true
+	}
+
+	// var sessionStore = new MySQLStore(optionsDB);
+
+	// app.use(session({
+	//     key: 'session_cookie_name',
+	//     secret: 'session_cookie_secret',
+	//     store: sessionStore,
+	//     resave: false,
+	//     saveUninitialized: false
+	// }));
+
+	// app.get('/session', function(req, res, next) {
+	// 	console.log(req);
+	//     req.session.number = req.session.number + 3 || 2;
+	//     res.end("You saw this "+req.session.number.toString()+" times");
+	//     next();
+	// })
 
 	console.log("NodeJS server started");
 	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
-		console.log("Cron schedule start, update DB data #" + updId);
+		console.log("Cron schedule start, update DB data");
 		getAliases()
 			.then(response => {
 				let aliasArr = [];
@@ -63,12 +98,6 @@
 			.catch(error => {
 				console.log("Error res: " + error.message);
 			});
-
-		if (updId == 5) {
-			task.stop();
-		}
-		updId++;
-
 	}, false);
 
 	task.start();
@@ -121,16 +150,7 @@
 		});}
 
 	
-	var pool = mysql.createPool({
-		// host: 'orzatestinginstance.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
-		// user: 'JCGutierrez2017',
-		// password: 'HryvniaUcr4n14',
-		host: 'orzacryptocurrencyaws.crkgmcy3tvtc.us-east-1.rds.amazonaws.com',
-		user: 'orzacyptoAWS',
-		password: 'W1z3Orz4Ukr',
-		port: '3306',
-		multipleStatements: true
-	});
+	var pool = mysql.createPool(optionsDB);
 
 	pool.getConnection(function(err,connection){
 		if(err){
@@ -315,33 +335,42 @@
 		});
 
 		app.post('/signIn', function(req, res){
-			var userObject = req.body.user;
-			if (userObject && userObject.id) {
-				var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + userObject.id + "'";
-				connection.query(sqlLine,function(err, rows){
-					if (rows.length == 0){
-						var param1 = userObject.id;
-						var param2 = userObject.email;
-						var param3 = userObject.firstName || '';
-						var param4 = userObject.lastName || '';
-						var param5 = userObject.name || '';
+			var token = req.body.token;
+			authClient.verifyIdToken(token, googleAppID, function(e, login) {
+				if (e) {
+					console.log(e);
+				}
+				else {
+					var payload = login.getPayload();
+					console.log('payload:', payload);
+					var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + payload.sub + "'";
+					connection.query(sqlLine, function(err, rows){
+						if(err) throw err;
+						if (rows.length == 0){
+							var param1 = payload.sub;
+							var param2 = payload.email;
+							var param3 = payload.given_name || '';
+							var param4 = payload.family_name || '';
+							var param5 = payload.name || '';
+							var param6 = payload.picture || '';
+							var param7 = uuidv4();
 
-						sqlLine = "insert into OrzaDevelopmentDB.users " +
-							"(saver_id, email, first_name, last_name, name)" +
-							" values (";
-						var sqlValues = "'"+param1+"','"+param2+"','"+param3+"','"+param4+"','"+param5+"'";
-						sqlLine = sqlLine + sqlValues + ")";
+							sqlLine = "insert into OrzaDevelopmentDB.users " +
+								"(saver_id, email, first_name, last_name, name, picture, guid, registered)" +
+								" values (";
+							var sqlValues = "'"+param1+"','"+param2+"','"+param3+"','"+param4+"','"+param5+"','"+param6+"','"+param7+"','1'";
+							sqlLine = sqlLine + sqlValues + ")";
 
-						connection.query(sqlLine,function(err,inserted){
-							if(err) throw err;
-						});
-
-						res.json("User stored to DB");
-					} else {
-						res.json("User already exist");
-					}
-				});
-			}
+							connection.query(sqlLine, function(err, inserted){
+								if(err) throw err;
+								res.json({guid: inserted.guid});
+							});
+						} else {
+							res.json({guid: rows[0].guid});
+						}
+					});
+				}
+			});
 		});
 
 		app.post('/buy', function(req, res){
@@ -464,7 +493,6 @@
 				connection.query(beforeReq, function(err, portdata){
 					if(err) throw err;
 					if (portdata.length > 0){
-
 						// param4 = param4*1 + portdata[0].units_bought;
 						// param6 = param6*1 + portdata[0].units_sold; 
 						// update transaction if there is a previous transaction for that fund on that date

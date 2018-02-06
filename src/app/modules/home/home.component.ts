@@ -14,8 +14,6 @@ import { Observable } from 'rxjs/Observable';
 
 import * as moment from 'moment';
 
-import { AuthService, SocialUser } from "angular4-social-login";
-
 let HttpService: any;
 let self: any;
 
@@ -105,12 +103,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 	// public ngDatepicker = new Date(Globals.g_GlobalStatic.startDate);
 	public ngDate = moment(Globals.g_GlobalStatic.startDate).format('YYYY-MM-DD');
 	public chartWidth: any;
-	private user: SocialUser;
 	private loggedIn: boolean;
 
 	constructor( private service: ServiceComponent,
-				 private observableMedia: ObservableMedia,
-				 private authService: AuthService ) {
+				 private observableMedia: ObservableMedia ) {
 		self = this;
 		HttpService = this.service;
 
@@ -120,12 +116,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.authService.authState.subscribe((user) => {
-			this.user = user;
-			this.loggedIn = (user != null);
-		});
-		
-		console.log(this.user, this.loggedIn);
 		HttpService.getDatabaseInfo();
 		this.nTimerId = setInterval(() => {
 			this.checkStart();

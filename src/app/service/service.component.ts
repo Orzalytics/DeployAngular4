@@ -76,6 +76,10 @@ export class ServiceComponent {
         );
     }
 
+    setSession() {
+        return this.http.get(urlHeader + '/session').map(res => res.json());
+    }
+
     // Get Fund Names and IDs
     getFundHeader() {
         return this.http.get(urlHeader + '/fundheader').map(res => res.json());
@@ -133,7 +137,7 @@ export class ServiceComponent {
     }
 
     signIn(data) {
-        return this.http.post(urlHeader + '/signIn', {user: data}).map(res => res.json());
+        return this.http.post(urlHeader + '/signIn', {token: data}).map(res => res.json());
     }
 
 // ============================================================================================
