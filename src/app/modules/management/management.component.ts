@@ -159,6 +159,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 		url = url + '/' + valuesForm.valor.replace(/,/g, '');
 		url = url + '/' + valuesForm.moneda;
 		url = url + '/' + Globals.convertDate(new Date());
+		url = url + '/' + localStorage['userToken'] || null;
 
 		HttpService.getBuyResponse(url).subscribe(
 			response => {

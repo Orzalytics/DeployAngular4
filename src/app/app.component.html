@@ -10,33 +10,27 @@
     <span class="head-text">Orza Ideatón 2017</span>
     <span class="md-spacer"></span>
 
-<!--     <span *ngIf="!googleUser" class="login-link">
-        <a href="" (click)="signInWithGoogle()">
-            <i class="material-icons">face</i>
-            <span class="user-login-text">Login</span>
-        </a>
-    </span> -->
-    <google-signin></google-signin>
+    <google-signin>
+    </google-signin>
+
     <md-button *ngIf="!googleUser" class="language-button default-text-btn">
-        <!--<span class="user-login-text">Login</span>-->
+        <span class="user-login-text">Login</span>
         <i class="material-icons">face</i>
     </md-button>
 
     <md-button *ngIf="googleUser" class="language-button"
                [mdMenuTriggerFor]="menu">
         <div class="user-login-text" style="float: left; padding-top: 5px; margin-right: 10px;">
-            <span>{{googleUserName}}</span>
-            <i *ngIf="!googleUser.photoUrl" class="material-icons">face</i>
+            <span>{{googleUser.name}}</span>
+            <i *ngIf="!googleUser.imageUrl" class="material-icons">face</i>
         </div>
         <div style="float: right;">
-            <img *ngIf="googleUser.photoUrl" style="height: 40px; border-radius: 50%;" class="card-img-top img-responsive photo" src="{{ googleUser.photoUrl }}">
+            <img *ngIf="googleUser.imageUrl" style="height: 40px; border-radius: 50%;" class="card-img-top img-responsive photo" src="{{ googleUser.imageUrl }}">
         </div>
     </md-button>
 
     <md-menu #menu [overlapTrigger]="false">
-        <md-button (click)="signOut()" md-menu-item>Logout</md-button>
-<!--         <md-button (click)="switchToCrypto()" md-menu-item>Crypto</md-button>
-        <md-button (click)="switchToFonds()" md-menu-item>Fonds</md-button> -->
+        <md-button md-menu-item>Logout</md-button>
     </md-menu>
 
 </md-toolbar>
