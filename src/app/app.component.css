@@ -19,7 +19,20 @@
 
 .sidenav {
 }
-
+#googleBtn {
+    padding-top: 4px;
+    cursor: pointer;
+    height: 40px;
+    color: white;
+    font-size: 20px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 500;
+    background-color: transparent;
+    border: none;
+}
+.md-toolbar-tools .language-button.default-text-btn {
+    padding-top: 8px;
+}
 @media (max-width: 600px) {
     .user-login-text {
         display: none;
