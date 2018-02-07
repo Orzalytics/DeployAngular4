@@ -1,7 +1,5 @@
 .container {
-    /*width: 100%;*/
     height: calc(100vh - 64px);
-    /*min-height: calc(100% - 64px);*/
 }
 
 .sidenav-content {
@@ -29,6 +27,7 @@
     font-weight: 500;
     background-color: transparent;
     border: none;
+    outline: none;
 }
 .md-toolbar-tools .language-button.default-text-btn {
     padding-top: 8px;
