@@ -108,13 +108,13 @@ export class GoogleSigninComponent implements AfterContentInit {
 
 export class AppComponent implements OnInit {
 	title = 'app';
-
+	googleUser = localStorage['userData'] ? JSON.parse(localStorage['userData']) : null;
 	constructor(
 		private service: ServiceComponent ) {
 		HttpService = this.service;
 	}
 
 	ngOnInit() {
+		console.log(this.googleUser);
 	}
-
 }

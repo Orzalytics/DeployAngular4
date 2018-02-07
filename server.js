@@ -538,19 +538,59 @@
 			});
 		});
 
-		app.get('/addport/:portfolio_id/:valor/:moneda/:nowDate', function(req, res){
+		app.get('/addport/:portfolio_id/:valor/:moneda/:nowDate/:userID', function(req, res){
 			var param1 = req.params.portfolio_id;
 			var param2 = req.params.valor;
 			var param3 = req.params.moneda;
 			var param4 = req.params.nowDate;
-			var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
-					"(portfolio_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver)" +
-					" values (";
-			var sqlValues = "'"+param1+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'";
-			sqlLine = sqlLine + sqlValues + ")";
-			connection.query(sqlLine, function(err, portdata){
-				res.json(portdata);
-			})
+			var param5 = req.params.userID;
+			var portfolioExpires;
+
+			var sqlLine = "select * from OrzaDevelopmentDB.users where guid = '" + param5 + "'";
+			connection.query(sqlLine, function(err, user){
+				if(err) throw err;
+				if (user.length) {
+					if (!user[0].registered) {
+						portfolioExpires = parseInt(new Date(new Date().setHours(new Date().getHours()+24)).getTime().toString().slice(0, -3));
+						// portfolioExpires = parseInt(new Date(new Date().setDate(new Date().getDate()+7)).getTime().toString().slice(0, -3));
+					}
+					var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
+								"(portfolio_id, user_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver, expires)" +
+								" values (";
+					var sqlValues = "'"+param1+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
+					sqlLine = sqlLine + sqlValues + ")";
+					connection.query(sqlLine, function(err){
+						if(err) throw err;
+						res.json({userID: param5, expires: portfolioExpires});
+					})
+				}
+				else {
+					param5 = uuidv4();
+					unregUserExpires = parseInt(new Date(new Date().setMonth(new Date().getMonth()+1)).getTime().toString().slice(0, -3));
+					console.log(typeof(unregUserExpires), unregUserExpires);
+					var sqlLine = "insert into OrzaDevelopmentDB.users " +
+								  "(saver_id, guid, expires)" +
+								  " values (";
+					var sqlValues = "'"+param5+"','"+param5+"','"+unregUserExpires+"'";
+					sqlLine = sqlLine + sqlValues + ")";
+
+					connection.query(sqlLine, function(err){
+						if(err) throw err;
+						var portfolioExpires = parseInt(new Date(new Date().setHours(new Date().getHours()+24)).getTime().toString().slice(0, -3));
+						var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
+								"(portfolio_id, user_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver, expires)" +
+								" values (";
+						var sqlValues = "'"+param1+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
+						sqlLine = sqlLine + sqlValues + ")";
+						connection.query(sqlLine, function(err){
+							if(err) throw err;
+							res.json({userID: param5, expires: portfolioExpires});
+						});
+					});
+				}
+
+			});
+
 		});
 
 //=====================================================================================================
