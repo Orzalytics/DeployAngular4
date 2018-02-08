@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="mat-simple-snackbar">
+    {{data.message}}
+    <button *ngIf="data.action" class="mat-simple-snackbar-action">{{data.action}}</button>
+</div>

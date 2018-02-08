@@ -11,8 +11,10 @@ import { ObservableMedia } from '@angular/flex-layout';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 // import { Observable } from 'rxjs/Observable';
 // import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { MdSnackBar } from '@angular/material';
 
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+import {SnackBarComponent} from '../../components/SnackBar/snackbar.component';
 
 let HttpService: any;
 let self: any;
@@ -55,8 +57,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
 		moneda: new FormControl(0, Validators.required),
 	});
 
-	constructor( private service:ServiceComponent,
-				 private observableMedia: ObservableMedia ) {
+	constructor( private service: ServiceComponent,
+							 public snackBar: MdSnackBar,
+							 private observableMedia: ObservableMedia ) {
 		self = this;
 		HttpService = this.service;
 	}
@@ -165,6 +168,13 @@ export class ManagementComponent implements OnInit, OnDestroy {
 			response => {
 				HttpService.getPortfolioList().subscribe(
 					res => {
+						this.snackBar.openFromComponent(SnackBarComponent, {
+							duration: 100000,
+							data: {
+								message: 'Message',
+								action: ''
+							}
+						});
 						this.onRefreshTable(res);
 						this.resetForm();
 					});
