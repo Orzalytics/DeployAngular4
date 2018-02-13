@@ -7,7 +7,8 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MdButtonModule, MdCardModule, MdMenuModule, MdToolbarModule, MdIconModule, MdInputModule, MdSliderModule,
-  MdGridListModule, MdSelectModule, MdDatepickerModule, MdNativeDateModule, MdSidenavModule, MdListModule
+  MdGridListModule, MdSelectModule, MdDatepickerModule, MdNativeDateModule, MdSidenavModule, MdListModule,
+  MdSnackBarModule
 } from '@angular/material';
 
 // Services
@@ -37,6 +38,7 @@ import {TextMaskModule} from "angular2-text-mask";
 // Libraries
 import { OwlModule } from 'ngx-owl-carousel';
 import { ServiceComponent } from './service/service.component';
+import {SnackBarComponent} from './components/SnackBar/snackbar.component';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -61,8 +63,11 @@ const appRoutes: Routes = [
     D3PortHisogram,
     CustomSelectComponent,
     D3ScatterPlotCompare,
+    SnackBarComponent,
   ],
-
+  entryComponents: [
+    SnackBarComponent,
+  ],
   imports: [
     BrowserModule,
     HttpModule,
@@ -88,6 +93,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MdSidenavModule,
     MdListModule,
+    MdSnackBarModule,
 
     RouterModule.forRoot(appRoutes)
   ],

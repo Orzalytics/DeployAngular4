@@ -1,0 +1,11 @@
+.mat-simple-snackbar {
+    display: flex;
+    justify-content: space-between;
+    line-height: 20px;
+}
+.mat-simple-snackbar-action {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
