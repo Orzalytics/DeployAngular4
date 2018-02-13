@@ -538,8 +538,8 @@
 			});
 		});
 
-		app.get('/addport/:portfolio_id/:valor/:moneda/:nowDate/:userID', function(req, res){
-			var param1 = req.params.portfolio_id;
+		app.get('/addport/:portfolio_name/:valor/:moneda/:nowDate/:userID', function(req, res){
+			var param1 = req.params.portfolio_name;
 			var param2 = req.params.valor;
 			var param3 = req.params.moneda;
 			var param4 = req.params.nowDate;
@@ -557,7 +557,7 @@
 					var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
 								"(portfolio_id, user_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver, expires)" +
 								" values (";
-					var sqlValues = "'"+param1+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
+					var sqlValues = "'"+uuidv4()+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
 					sqlLine = sqlLine + sqlValues + ")";
 					connection.query(sqlLine, function(err){
 						if(err) throw err;
@@ -580,7 +580,7 @@
 						var sqlLine = "insert into OrzaDevelopmentDB.portfolio_crypto " +
 								"(portfolio_id, user_id, portfolio_name_saver, portfolio_goal_type_saver, portfolio_ccy_saver, date_created_portfolio_saver, expires)" +
 								" values (";
-						var sqlValues = "'"+param1+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
+						var sqlValues = "'"+uuidv4()+"'" + ',' + "'"+param5+"'" + ',' + "'"+param1+"'" + ',' + "'"+param2+"'" + ',' + "'"+'COP'+"'" + ',' + "'"+param4+"'" + ',' + "'"+portfolioExpires+"'";
 						sqlLine = sqlLine + sqlValues + ")";
 						connection.query(sqlLine, function(err){
 							if(err) throw err;

@@ -13,10 +13,10 @@
     <google-signin>
     </google-signin>
 
-    <md-button *ngIf="!googleUser" class="language-button default-text-btn">
+<!--     <md-button *ngIf="!googleUser" class="language-button default-text-btn">
         <span class="user-login-text">Login</span>
         <i class="material-icons">face</i>
-    </md-button>
+    </md-button> -->
 
     <md-button *ngIf="googleUser" class="language-button"
                [mdMenuTriggerFor]="menu">
@@ -30,7 +30,7 @@
     </md-button>
 
     <md-menu #menu [overlapTrigger]="false">
-        <md-button md-menu-item>Logout</md-button>
+        <md-button md-menu-item (click)="logout()">Logout</md-button>
     </md-menu>
 
 </md-toolbar>

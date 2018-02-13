@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, AfterViewInit, AfterContentInit } from '@angular/core';
 import { ServiceComponent } from './service/service.component';
+import { StorageService } from './service/storage.service';
+
 import { DataSource } from '@angular/cdk/collections';
 
 let HttpService: any;
@@ -7,8 +9,9 @@ declare const gapi: any;
 
 @Component({
 	selector: 'google-signin',
-  styleUrls: ['./app.component.css'],
-  template: '<button id="googleBtn">Google Sign-In</button>'
+	styleUrls: ['./app.component.css'],
+	template: '<button [hidden]="loggedIn" id="googleBtn">Google Sign-In</button>',
+	providers: [ServiceComponent]
 })
 
 export class GoogleSigninComponent implements AfterContentInit {
@@ -24,6 +27,7 @@ export class GoogleSigninComponent implements AfterContentInit {
 	].join(' ');
 
 	public auth2: any;
+	public loggedIn: boolean;
 	
 	public googleInit() {
 		gapi.load('auth2', () => {
@@ -33,7 +37,6 @@ export class GoogleSigninComponent implements AfterContentInit {
 				scope: this.scope,
 				width: 300
 			});
-			console.log(this.element.nativeElement);
 			this.attachSignin(this.element.nativeElement.firstChild);
 		});
 	}
@@ -43,7 +46,7 @@ export class GoogleSigninComponent implements AfterContentInit {
 			let profile = googleUser.getBasicProfile();
 			let token = googleUser.getAuthResponse().id_token;
 			HttpService.signIn(token).subscribe( response => {
-				console.log(response);
+				// console.log(response);
 				if (response.guid) {
 					let user = {
 						id: profile.Eea,
@@ -53,8 +56,11 @@ export class GoogleSigninComponent implements AfterContentInit {
 						email: profile.U3,
 						imageUrl: profile.Paa
 					};
-					this.saveToken(response.guid);
-					this.saveUser(user);
+					this.loggedIn = true;
+					this.storageService.saveToken(response.guid);
+					this.storageService.saveUser(user);
+					this.service.setSettings(user);
+					location.reload();
 				}
 			});
 				
@@ -63,40 +69,19 @@ export class GoogleSigninComponent implements AfterContentInit {
 		});
 	}
 
-	public saveToken(token) {
-		localStorage['userToken'] = token;
+	constructor( private element: ElementRef,
+				 private service: ServiceComponent,
+				 private storageService: StorageService ) {
 	}
 
-	public getToken() {
-		return localStorage['userToken'];
-	}
-
-	public removeToken() {
-		localStorage.removeItem('userToken');
-	}
-
-	public saveUser(user) {
-		localStorage['userData'] = JSON.stringify(user);
-	}
-
-	public getUser() {
-		return JSON.parse(localStorage['userData']);
-	}
-
-	public removeUser() {
-		localStorage.removeItem('userData');
-	}
-
-	constructor(private element: ElementRef) {
-		console.log('ElementRef: ', this.element);
+	ngOnInit() {
+		this.loggedIn = localStorage['userData'] ? true : false;
 	}
 
 	ngAfterContentInit() {
-		console.log('ngAfterContentInit');
 		setTimeout(() => {
 			this.googleInit();
 		}, 500);
-
 	}
 }
 
@@ -110,13 +95,21 @@ export class GoogleSigninComponent implements AfterContentInit {
 
 export class AppComponent implements OnInit {
 	title = 'app';
-	googleUser = localStorage['userData'] ? JSON.parse(localStorage['userData']) : null;
+	googleUser:Object;
 	constructor(
-		private service: ServiceComponent ) {
+		private service: ServiceComponent,
+		private storageService: StorageService ) {
 		HttpService = this.service;
 	}
 
 	ngOnInit() {
-		console.log(this.googleUser);
+		this.googleUser = localStorage['userData'] ? JSON.parse(localStorage['userData']) : null;
+	}
+
+	logout() {
+		this.googleUser = {};
+		this.storageService.removeToken();
+		this.storageService.removeUser();
+		location.reload();
 	}
 }

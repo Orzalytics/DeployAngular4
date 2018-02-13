@@ -21,7 +21,7 @@ export class ServiceComponent {
     onUserChanged: BehaviorSubject<any> = new BehaviorSubject({});
 
     constructor(private http: Http) {
-        this.user = Object.assign({}, JSON.parse(localStorage.getItem('user')));
+        this.user = Object.assign({}, JSON.parse(localStorage.getItem('userData')));
         this.onUserChanged = new BehaviorSubject(this.user);
     }
 

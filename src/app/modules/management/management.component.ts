@@ -1,6 +1,7 @@
 import { compact } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServiceComponent } from '../../service/service.component';
+import { StorageService } from '../../service/storage.service';
 
 import * as Globals from './../../globals/globals.component';
 import * as MainOpr from './../../mainoperation/mainoperation.component';
@@ -56,7 +57,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
 	});
 
 	constructor( private service:ServiceComponent,
-				 private observableMedia: ObservableMedia ) {
+				 private observableMedia: ObservableMedia,
+				 private storageService: StorageService ) {
 		self = this;
 		HttpService = this.service;
 	}
@@ -159,7 +161,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 		url = url + '/' + valuesForm.valor.replace(/,/g, '');
 		url = url + '/' + valuesForm.moneda;
 		url = url + '/' + Globals.convertDate(new Date());
-		url = url + '/' + localStorage['userToken'] || null;
+		url = url + '/' + this.storageService.getToken() || null;
 
 		HttpService.getBuyResponse(url).subscribe(
 			response => {

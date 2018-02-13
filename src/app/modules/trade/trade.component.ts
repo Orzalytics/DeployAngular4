@@ -254,6 +254,11 @@ export class TradeComponent implements OnInit, OnDestroy {
 							break;
 						}
 					}
+
+					// this.fondosList = Globals.g_DatabaseInfo.ListofPriceFund.filter((obj) => {
+					// 	return obj.index !== 999;
+					// });
+
 					this.ngFondoName = this.fondosList[0]['name'];
 					this.tradeForm.controls['fondo'].setValue(this.fondosList[0]['name']);
 

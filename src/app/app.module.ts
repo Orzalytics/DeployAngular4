@@ -12,6 +12,7 @@ import {
 
 // Services
 import { ResizeService } from './service/resize.service';
+import { StorageService } from './service/storage.service';
 
 // Components
 import { AppComponent, GoogleSigninComponent } from './app.component';
@@ -93,6 +94,7 @@ const appRoutes: Routes = [
 
   providers: [
     ResizeService,
+    StorageService,
     ServiceComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
