@@ -2,7 +2,6 @@ import { fill, last } from 'lodash';
 import * as Globals from '../globals/globals.component';
 
 export function onCalculateData(){
-	var time = performance.now();
 	///////////////////////////////////////////////////////////////////
 	//////////////////////// Filter Fund Names ////////////////////////
 	///////////////////////////////////////////////////////////////////
@@ -193,14 +192,9 @@ export function onCalculateData(){
 			if (Globals.g_FundParent.arrAllReturns.newstart_return[i][j] == "-0.00") Globals.g_FundParent.arrAllReturns.newstart_return[i][j] = "0.00";
 		}
 	}
-
-	time = performance.now() - time;
-	console.log('1. Execution time onCalculateData = ', time);
 }
 
 export function  getTransactionData(response){
-	var time = performance.now();
-
 	Globals.g_DatabaseInfo.TransactionList = [];
 	Globals.g_DatabaseInfo.TransactionList = response;
 	var TransactionList = Globals.g_DatabaseInfo.TransactionList;
@@ -246,14 +240,9 @@ export function  getTransactionData(response){
 		tempArr.str_fTotal = Globals.numberWithCommas(Globals.toFixedDecimal(tempArr.fTotal, 2));
 		Globals.g_FundParent.arrAllTransaction.push(tempArr);
 	}
-
-	time = performance.now() - time;
-	console.log('2. Execution time getTransactionData = ', time);
 }
 
 export function CalculatePortfolioData(){
-	var time = performance.now();
-
 	Globals.g_Portfolios.arrDataByPortfolio = [];
 	for (var n = 0; n < Globals.g_DatabaseInfo.PortfolioList.length; n ++){
 		var PortfolioID = Globals.g_DatabaseInfo.PortfolioList[n].portfolio_id;
@@ -460,14 +449,9 @@ export function CalculatePortfolioData(){
 
 		Globals.g_Portfolios.arrDataByPortfolio.push(objOther);
 	}
-
-	time = performance.now() - time;
-	console.log('3. Execution time CalculatePortfolioData = ', time);
 }
 
 export function calculateFanChartData(fundIndex) {
-	var time = performance.now();
-
 	const THRESHOLD = 91;
 	const {u: fundPrices, udate: fundPricesDates} = Globals.g_DatabaseInfo.ListofPriceFund[fundIndex];
 	const day91Returns = Globals.g_FundParent.arrAllReturns.day91_return[fundIndex];
@@ -483,8 +467,6 @@ export function calculateFanChartData(fundIndex) {
 			if(day91return < minReturn) {
 				minReturn = day91return;
 			}
-
-
 			return {
 				date: fundPricesDates[idx],
 				fundPrice,
@@ -493,8 +475,6 @@ export function calculateFanChartData(fundIndex) {
 				maxReturn
 			};
 		});
-		var time1 = performance.now() - time;
-		console.log('4.1. Execution time calculateFanChartData = ', time1);
 
 		let lastExtreme = last(extremeData);
 		const chartData = [];
@@ -516,13 +496,7 @@ export function calculateFanChartData(fundIndex) {
 				chartData.push(extremeItem);
 			}
 		}
-		var time2 = performance.now() - time;
-		console.log('4.2. Execution time calculateFanChartData = ', time2);
-
 		return chartData;
 	}
-	var time3 = performance.now() - time;
-	console.log('4.3. Execution time calculateFanChartData = ', time3);
-
 	return [];
 }

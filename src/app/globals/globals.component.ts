@@ -3,8 +3,8 @@
 'use strict'
 
 export const urlHeader = {
-	production: 'http://orza.clockwisesoftware.com/api',
-	development: 'http://localhost:9051'
+	production: 'http://angularprod4.8jm7serjgh.us-east-1.elasticbeanstalk.com',
+	development: 'http://localhost:8081'
 };
 
 export const g_DatabaseInfo = {

@@ -4,8 +4,7 @@
 	var http = require('http');
 	var https = require('https');
 	var mysql = require('mysql');
-	// var session = require('express-session');
-	// var MySQLStore = require('express-mysql-session')(session);
+	var path = require('path');
 	var GoogleAuth = require('google-auth-library');
 	var bodyParser = require('body-parser');
 	var parseXlsx = require('xlsx');
@@ -30,7 +29,7 @@
 		]
 	});
 
-	app.set('port', process.env.PORT || 9051);
+	app.set('port', process.env.PORT || 8081);
 	app.use(function(req, res, next) {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-XSRF-TOKEN, Content-Type, Accept");
@@ -50,30 +49,10 @@
 		multipleStatements: true
 	}
 
-	// var sessionStore = new MySQLStore(optionsDB);
-
-	// app.use(session({
-	//     key: 'session_cookie_name',
-	//     secret: 'session_cookie_secret',
-	//     store: sessionStore,
-	//     resave: false,
-	//     saveUninitialized: false
-	// }));
-
-	// app.get('/session', function(req, res, next) {
-	// 	console.log(req);
-	//     req.session.number = req.session.number + 3 || 2;
-	//     res.end("You saw this "+req.session.number.toString()+" times");
-	//     next();
-	// })
-
-	console.log("NodeJS server started");
-	var task = cron.schedule('0 4 * * *', function() { //'*/10 * * * * *' //'*/30 * * * *' //'0 4 * * *'
-		console.log("Cron schedule start, update DB data");
+	var task = cron.schedule('0 4 * * *', function() {
 		getAliases()
 			.then(response => {
 				let aliasArr = [];
-				console.log('number of currencies to be updated - ', response.length);
 				for (var i = 0; i < response.length; i++) {
 					aliasArr.push([response[i].alias_match_1, response[i].fund_id_alias_fund]);
 				}
@@ -342,7 +321,6 @@
 				}
 				else {
 					var payload = login.getPayload();
-					console.log('payload:', payload);
 					var sqlLine = "select * from OrzaDevelopmentDB.users where saver_id = '" + payload.sub + "'";
 					connection.query(sqlLine, function(err, rows){
 						if(err) throw err;
@@ -567,7 +545,6 @@
 				else {
 					param5 = uuidv4();
 					unregUserExpires = parseInt(new Date(new Date().setMonth(new Date().getMonth()+1)).getTime().toString().slice(0, -3));
-					console.log(typeof(unregUserExpires), unregUserExpires);
 					var sqlLine = "insert into OrzaDevelopmentDB.users " +
 								  "(saver_id, guid, expires)" +
 								  " values (";
@@ -593,82 +570,78 @@
 
 		});
 
-//=====================================================================================================
+	//== Set initial cryptocurrency DB data ===================================================================================================
+		// app.post('/setFundNames', function(req, res) {
+		// 	var data = req.body.data;
+		// 	var insertDataStr = '';
+		// 	var sep = ',';
+		// 	for (var i = 0; i < data.arrShort.length; i++) {
+		// 		sep = i === data.arrShort.length - 1 ? '' : sep;
+		// 		insertDataStr += "(" + (i + 1) + ",'" + data.arrFull[i] + "','" + data.arrShort[i] + "')" + sep;
+		// 	}
 
-		app.post('/setFundNames', function(req, res) {
-			logger.info("setFundNames request");
-			res.json('setFundNames success');
-			// var data = req.body.data;
-			// var insertDataStr = '';
-			// var sep = ',';
-			// for (var i = 0; i < data.arrShort.length; i++) {
-			// 	sep = i === data.arrShort.length - 1 ? '' : sep;
-			// 	insertDataStr += "(" + (i + 1) + ",'" + data.arrFull[i] + "','" + data.arrShort[i] + "')" + sep;
-			// }
+		// 	var query = connection.query("INSERT INTO OrzaDevelopmentDB.alias_fund_crypto (fund_id_alias_fund, alias, alias_match_1) VALUES " + insertDataStr, function (error, results, fields) {
+		// 		if (error) throw error;
+		// 		else res.json('setFundNames success');
+		// 	});
+		// });
 
-			// var query = connection.query("INSERT INTO OrzaDevelopmentDB.alias_fund_crypto (fund_id_alias_fund, alias, alias_match_1) VALUES " + insertDataStr, function (error, results, fields) {
-			// 	if (error) throw error;
-			// 	else res.json('setFundNames success');
-			// });
-		});
+		// app.get('/setPriceFunds', function(req, res){
+		// 	var startDate = req.params.sDate;
+		// 	var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto where fund_id_alias_fund <= 50";
+		// 	var req = function(row, id) {
+		// 		https.get('https://coincap.io/history/365day/' + row.alias_match_1, (resp) => {
+		// 			let data = '';
+		// 			let rowId = row.fund_id_alias_fund;
 
-		app.get('/setPriceFunds', function(req, res){
-			// var startDate = req.params.sDate;
-			// var sqlLine = "select fund_id_alias_fund, alias_match_1 from OrzaDevelopmentDB.alias_fund_crypto where fund_id_alias_fund <= 50";
-			// var req = function(row, id) {
-			// 	https.get('https://coincap.io/history/365day/' + row.alias_match_1, (resp) => {
-			// 		let data = '';
-			// 		let rowId = row.fund_id_alias_fund;
+		// 			// A chunk of data has been recieved.
+		// 			resp.on('data', (chunk) => {
+		// 				data += chunk;
+		// 			});
 
-			// 		// A chunk of data has been recieved.
-			// 		resp.on('data', (chunk) => {
-			// 			data += chunk;
-			// 		});
+		// 			// The whole response has been received. Print out the result.
+		// 			resp.on('end', () => {
+		// 				let price365Arr = JSON.parse(data).price;
 
-			// 		// The whole response has been received. Print out the result.
-			// 		resp.on('end', () => {
-			// 			let price365Arr = JSON.parse(data).price;
+		// 				var insertDataStr = '';
+		// 				var sep = ',';
+		// 				var price365ActualLength = 364;
+		// 				var dataLength = price365Arr.length > price365ActualLength ? price365ActualLength : price365Arr.length;
 
-			// 			var insertDataStr = '';
-			// 			var sep = ',';
-			// 			var price365ActualLength = 364;
-			// 			var dataLength = price365Arr.length > price365ActualLength ? price365ActualLength : price365Arr.length;
+		// 				for (var k = 0; k < dataLength; k++) {
+		// 					var date = new Date(price365Arr[k][0]);
 
-			// 			for (var k = 0; k < dataLength; k++) {
-			// 				var date = new Date(price365Arr[k][0]);
+		// 					var year = date.getFullYear();
+		// 					var month = date.getMonth() + 1;
+		// 					var day = date.getDate();
 
-			// 				var year = date.getFullYear();
-			// 				var month = date.getMonth() + 1;
-			// 				var day = date.getDate();
+		// 					month = month.toString().length === 1 ? '0' + month : month;
+		// 					day = day.toString().length === 1 ? '0' + day : day;
 
-			// 				month = month.toString().length === 1 ? '0' + month : month;
-			// 				day = day.toString().length === 1 ? '0' + day : day;
+		// 					var dateStr = year + '-' + month + '-' + day;
 
-			// 				var dateStr = year + '-' + month + '-' + day;
+		// 					sep = k === dataLength - 1 ? '' : sep;
+		// 					insertDataStr += "(" + rowId + "," + price365Arr[k][1] + ",'" + dateStr + "')" + sep;
+		// 				}
 
-			// 				sep = k === dataLength - 1 ? '' : sep;
-			// 				insertDataStr += "(" + rowId + "," + price365Arr[k][1] + ",'" + dateStr + "')" + sep;
-			// 			}
+		// 				var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto_test (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
+		// 					if (error) throw error;
+		// 				});
+		// 			});
 
-			// 			var query = connection.query("INSERT INTO OrzaDevelopmentDB.price_fund_crypto_test (fund_id_pr_fund, pr_fund, date_value_pr_fund) VALUES " + insertDataStr, function (error, results, fields) {
-			// 				if (error) throw error;
-			// 			});
-			// 		});
+		// 		}).on("error", (err) => {
+		// 			console.log("Error: " + err.message);
+		// 		});
+		// 	}
 
-			// 	}).on("error", (err) => {
-			// 		console.log("Error: " + err.message);
-			// 	});
-			// }
-
-			// connection.query(sqlLine,function(err, rows){
-			// 	if(err) throw err;
-			// 	for (var i = 0; i < rows.length; i++) {
-			// 		req(rows[i], i);
-			// 	}
-			// 	console.log("done");
-				res.json("done");
-			// });
-		});
+		// 	connection.query(sqlLine,function(err, rows){
+		// 		if(err) throw err;
+		// 		for (var i = 0; i < rows.length; i++) {
+		// 			req(rows[i], i);
+		// 		}
+		// 		res.json("done");
+		// 	});
+		// });
 
 		// // functionality that stote test data to DB to check rate of parameter calculation
 		// // the test data is bitcoin history data available at http://coincap.io/history/BTC
@@ -732,6 +705,15 @@
 			.on("end", function(){
 					res.json(csvdata);
 			});
+	});
+
+	app.get('/:file?', function(req, res, next) {
+		var file = req.params.file || 'index.html';
+		var filePath = path.resolve('./dist/' + file);
+		fs.stat(filePath, (err) => {
+			if(!err) res.sendFile(filePath);
+			else next();
+		});
 	});
 
 	http.createServer(app).listen(app.get('port'), function(){
